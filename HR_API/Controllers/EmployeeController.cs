@@ -1,0 +1,159 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using MultipleAPIs.HR_BLL.DTO.Requests;
+using MultipleAPIs.HR_BLL.DTO.Responses;
+using MultipleAPIs.HR_DAL.Exceptions;
+using MultipleAPIs.HR_BLL.Services.Abstract;
+using AutoMapper;
+
+namespace HR_API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class EmployeeController : ControllerBase
+    {
+        private readonly IEmployeeService employeeService;
+        private readonly IImageService imageService;
+        private readonly IMapper mapper;
+
+        public EmployeeController(IEmployeeService employeeService, IImageService imageService, IMapper mapper)
+        {
+            this.employeeService = employeeService;
+            this.imageService = imageService;
+            this.mapper = mapper;
+        }
+
+        // GET: api/Employee
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> Get()
+        {
+            try
+            {
+                var results = await employeeService.GetAllAsync();
+                return Ok(results);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+            }
+        }
+
+        // GET: api/Employee/5
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<EmployeeResponse>> Get(int id)
+        {
+            try
+            {
+                var result = await employeeService.GetByIdAsync(id);
+                return Ok(result);
+            }
+            catch (EntityNotFoundException e)
+            {
+                return NotFound(new { e.Message });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+            }
+        }
+
+        // POST: api/Employee
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> Post([FromBody] EmployeeRequest request)
+        {
+            try
+            {
+                await employeeService.InsertAsync(request);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+            }
+        }
+
+        // PUT: api/Employee
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> Put([FromBody] EmployeeRequest request)
+        {
+            try
+            {
+                await employeeService.UpdateAsync(request);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+            }
+        }
+
+        // PUT: api/Employee/passport
+        // { body: form-data }
+        [HttpPut("passport")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> PutPassport([FromForm] ImageUploadRequest request)
+        {
+            try
+            {
+                EmployeeResponse response = await employeeService.GetByIdAsync(request.Id);
+                var employee = mapper.Map<EmployeeResponse, EmployeeRequest>(response);
+                employee.PassportImgPath = await imageService.SaveImageAsync(request.Image);
+                await employeeService.UpdateAsync(employee);
+                return Ok();
+            }
+            catch (EntityNotFoundException e)
+            {
+                return NotFound(new { e.Message });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+            }
+        }
+
+        // DELETE: api/Employee
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> Delete(int Id)
+        {
+            try
+            {
+                await employeeService.DeleteByIdAsync(Id);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+            }
+        }
+
+        // GET: api/Employee/statusId/2
+        [HttpGet("statusId/{status}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> GetByStatus(string status)
+        {
+            try
+            {
+                IEnumerable<EmployeeResponse> results = await employeeService.GetByStatusAsync(status);
+                return Ok(results);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+            }
+        }
+    }
+}
