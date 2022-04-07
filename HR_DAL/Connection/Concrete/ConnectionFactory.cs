@@ -1,9 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
-using System.IO;
 using MultipleAPIs.HR_DAL.Connection.Abstract;
 
 namespace MultipleAPIs.HR_DAL.Connection.Concrete
@@ -18,7 +16,11 @@ namespace MultipleAPIs.HR_DAL.Connection.Concrete
                 var Connection = DbFactory.CreateConnection();
                 if (Connection != null)
                 {
-                    Connection.ConnectionString = @"Data Source=WIN-G0UNAO9UIKB\SQLEXPRESS;Initial Catalog=BarbershopDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+                    IConfigurationRoot configuration = new ConfigurationBuilder()
+                    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                    .AddJsonFile("appsettings.json")
+                    .Build();
+                    Connection.ConnectionString = configuration.GetConnectionString("MSSQLConnection");
                     Connection.Open();
                 }
                 return Connection ?? throw new Exception("No connection to the database");
