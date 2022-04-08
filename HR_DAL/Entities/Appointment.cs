@@ -12,8 +12,6 @@ namespace MultipleAPIs.HR_DAL.Entities
 
         public int CustomerId { get; set; }
 
-        public int BranchId { get; set; }
-
         public int AppointmentStatusId { get; set; }
 
         public DateTime AppDate { get; set; }
