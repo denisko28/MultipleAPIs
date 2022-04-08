@@ -10,7 +10,7 @@ namespace MultipleAPIs.HR_BLL.DTO.Responses
 
         public int BranchId { get; set; }
 
-        public string EmployeeStatus { get; set; }
+        public string EmployeeStatus { get; set; } = null!;
 
         public string? Adress { get; set; }
 
