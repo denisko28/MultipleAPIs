@@ -1,7 +1,7 @@
-using Dapper.Contrib.Extensions;
 using System;
+using Dapper.Contrib.Extensions;
 
-namespace MultipleAPIs.HR_DAL.Entities
+namespace HR_DAL.Entities
 {
     [Table("DayOff")]
 

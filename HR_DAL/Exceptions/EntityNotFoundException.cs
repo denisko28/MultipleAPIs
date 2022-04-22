@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MultipleAPIs.HR_DAL.Exceptions
+namespace HR_DAL.Exceptions
 {
     public class EntityNotFoundException : Exception
     {

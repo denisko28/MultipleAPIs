@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MultipleAPIs.HR_BLL.DTO.Responses
+namespace HR_BLL.DTO.Responses
 {
     public class DayOffResponse
     {

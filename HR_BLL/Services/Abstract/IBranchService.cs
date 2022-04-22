@@ -1,20 +1,20 @@
-﻿using MultipleAPIs.HR_BLL.DTO.Responses;
-using MultipleAPIs.HR_BLL.DTO.Requests;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using HR_BLL.DTO.Requests;
+using HR_BLL.DTO.Responses;
 
-namespace MultipleAPIs.HR_BLL.Services.Abstract
+namespace HR_BLL.Services.Abstract
 {
     public interface IBranchService
     {
         Task<IEnumerable<BranchResponse>> GetAllAsync();
 
-        Task<BranchResponse> GetByIdAsync(int Id);
+        Task<BranchResponse> GetByIdAsync(int id);
 
         Task<int> InsertAsync(BranchRequest request);
 
         Task<bool> UpdateAsync(BranchRequest request);
 
-        Task DeleteByIdAsync(int Id);
+        Task DeleteByIdAsync(int id);
     }
 }

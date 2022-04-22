@@ -1,39 +1,29 @@
-﻿namespace MultipleAPIs.HR_BLL.Helpers
+﻿namespace HR_BLL.Helpers
 {
     public static class AppointmentStatusHelper
     {
         public static string GetStringStatus(int statusId)
         {
-            switch (statusId)
-            { 
-                case 1:
-                    return "Очікується підтвердження";
-                case 2:
-                    return "Заплановано";
-                case 3:
-                    return "Виконано";
-                case 4:
-                    return "Відхилено";
-                default:
-                    return "???";
-            }
+            return statusId switch
+            {
+                1 => "Очікується підтвердження",
+                2 => "Заплановано",
+                3 => "Виконано",
+                4 => "Відхилено",
+                _ => "???"
+            };
         }
 
         public static int GetIntStatus(string status)
         {
-            switch (status)
+            return status switch
             {
-                case "Очікується підтвердження":
-                    return 1;
-                case "Заплановано":
-                    return 2;
-                case "Виконано":
-                    return 3;
-                case "Відхилено":
-                    return 4;
-                default:
-                    return 0;
-            }
+                "Очікується підтвердження" => 1,
+                "Заплановано" => 2,
+                "Виконано" => 3,
+                "Відхилено" => 4,
+                _ => 0
+            };
         }
     }
 }

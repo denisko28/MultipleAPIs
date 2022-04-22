@@ -1,54 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 using Dapper;
 using Dapper.Contrib.Extensions;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Data.SqlClient;
-using System.Data;
-using System.Reflection;
-using System.Data.Common;
-using MultipleAPIs.HR_DAL.Connection.Abstract;
-using MultipleAPIs.HR_DAL.Repositories.Abstract;
-using MultipleAPIs.HR_DAL.Exceptions;
+using HR_DAL.Connection.Abstract;
+using HR_DAL.Exceptions;
+using HR_DAL.Repositories.Abstract;
 
-namespace MultipleAPIs.HR_DAL.Repositories.Concrete
+namespace HR_DAL.Repositories.Concrete
 {
-    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
+    public abstract class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
-        protected IConnectionFactory connection;
-        public GenericRepository(IConnectionFactory connectionFactory)
+        protected readonly IConnectionFactory Connection;
+
+        protected GenericRepository(IConnectionFactory connectionFactory)
         {
-            connection = connectionFactory;
+            Connection = connectionFactory;
         }
 
-        public async Task<IEnumerable<TEntity>> GetAllAsync()
+        public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            var sql = "EXEC [GetAllProc] @Table_Name";
+            const string sql = "EXEC [GetAllProc] @Table_Name";
             var values = new { Table_Name = typeof(TEntity).Name};
-            IEnumerable<TEntity> results = await connection.Connect.QueryAsync<TEntity>(sql, values);
+            IEnumerable<TEntity> results = await Connection.Connect.QueryAsync<TEntity>(sql, values);
             return results;
         }
 
-        public async Task<TEntity> GetByIdAsync(int IdParam)
+        public virtual async Task<TEntity> GetByIdAsync(int idParam)
         {
-            var sql = "EXEC [GetByIdProc] @Table_Name, @Id";
-            //var values = new { Table_Name = typeof(TEntity).Name, Id = IdParam };
-            //TEntity result = await connection.Connect.QuerySingleAsync<TEntity>(sql, values);
-            //return result;
+            const string? sql = "EXEC [GetByIdProc] @Table_Name, @Id";
 
-            using (DbCommand command = (DbCommand)connection.Connect.CreateCommand())
+            using (DbCommand command = (DbCommand)Connection.Connect.CreateCommand())
             {
                 Type modelType = typeof(TEntity);
-                var MyAttribute = Attribute.GetCustomAttribute(modelType, typeof(TableAttribute)) as TableAttribute;
-                if(MyAttribute == null)
+                if(Attribute.GetCustomAttribute(modelType, typeof(TableAttribute)) is not TableAttribute myAttribute)
                     throw new Exception("Entity doesn't have the Table attribute!");
 
                 command.CommandText = sql;
-                SqlParameter tableName = new SqlParameter("@Table_Name", MyAttribute.Name);
-                SqlParameter Id = new SqlParameter("@Id", IdParam);
+                SqlParameter tableName = new SqlParameter("@Table_Name", myAttribute.Name);
+                SqlParameter id = new SqlParameter("@Id", idParam);
                 command.Parameters.Add(tableName);
-                command.Parameters.Add(Id);
+                command.Parameters.Add(id);
 
                 using (var reader = await command.ExecuteReaderAsync())
                 {
@@ -56,52 +52,49 @@ namespace MultipleAPIs.HR_DAL.Repositories.Concrete
                     {
                         await reader.ReadAsync();
 
-                        TEntity? instance = Activator.CreateInstance(modelType) as TEntity;
-                        if (instance != null)
+                        var instance = Activator.CreateInstance(modelType) as TEntity;
+                        if (instance == null)
+                            return instance ?? throw new Exception("Entity model doesn't correspond table!");
+                        
+                        PropertyInfo[] modelProps = modelType.GetProperties();
+                        foreach (PropertyInfo srcProp in modelProps)
                         {
-                            PropertyInfo[] modelProps = modelType.GetProperties();
-                            foreach (PropertyInfo srcProp in modelProps)
-                            {
-                                var value = reader[srcProp.Name];
-                                srcProp.SetValue(instance, Convert.ChangeType(value, srcProp.PropertyType));
-                            }
+                            var value = reader[srcProp.Name];
+                            srcProp.SetValue(instance, Convert.ChangeType(value, srcProp.PropertyType));
                         }
-                        return instance ?? throw new Exception("Enity model doesn't correspond table!");
+                        return instance ?? throw new Exception("Entity model doesn't correspond table!");
                     }
                     else 
-                        throw new EntityNotFoundException(GetEntityNotFoundErrorMessage(IdParam));
+                        throw new EntityNotFoundException(GetEntityNotFoundErrorMessage(idParam));
                 }
             }
         }
 
-        public async Task<int> InsertAsync(TEntity entity)
+        public virtual async Task<int> InsertAsync(TEntity entity)
         {
-            var sql = "EXEC [GetByIdProc] @Table_Name, @Params, @Values";
+            const string? sql = "EXEC [GetByIdProc] @Table_Name, @Params, @Values";
             var values = new {
                 Table_Name = typeof(TEntity).Name,
                 Params = string.Join(", ", typeof(TEntity).GetProperties().Select(a => a.Name)),
                 Values = string.Join(", ", typeof(TEntity).GetEnumValues()),
             };
-            var added = await connection.Connect.QuerySingleAsync<int>(sql, values);
+            var added = await Connection.Connect.QuerySingleAsync<int>(sql, values);
             return added;
         }
 
-        public async Task<bool> UpdateAsync(TEntity entity)
+        public virtual async Task<bool> UpdateAsync(TEntity entity)
         {
-            var updated = await connection.Connect.UpdateAsync<TEntity>(entity);
+            var updated = await Connection.Connect.UpdateAsync(entity);
             return updated;
         }
 
-        public async Task DeleteByIdAsync(int IdParam)
+        public virtual async Task DeleteByIdAsync(int idParam)
         {
-            // var deleted = await SqlMapperExtensions.DeleteAsync<TEntity>(connection.Connect, Id);
-            // return deleted;
+            await GetByIdAsync(idParam);
 
-            await GetByIdAsync(IdParam);
-
-            var sql = "EXEC [DeleteByIdProc] @Table_Name, @Id";
-            var values = new { Table_Name = typeof(TEntity).Name, Id = IdParam };
-            await connection.Connect.ExecuteAsync(sql, values);
+            const string sql = "EXEC [DeleteByIdProc] @Table_Name, @Id";
+            var values = new { Table_Name = typeof(TEntity).Name, Id = idParam };
+            await Connection.Connect.ExecuteAsync(sql, values);
         }
 
         protected static string GetEntityNotFoundErrorMessage(int id) =>

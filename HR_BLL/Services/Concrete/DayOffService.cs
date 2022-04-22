@@ -2,14 +2,14 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using MultipleAPIs.HR_DAL.UnitOfWorks.Abstract;
-using MultipleAPIs.HR_BLL.DTO.Requests;
-using MultipleAPIs.HR_BLL.DTO.Responses;
-using MultipleAPIs.HR_DAL.Entities;
-using MultipleAPIs.HR_DAL.Repositories.Abstract;
-using MultipleAPIs.HR_BLL.Services.Abstract;
+using HR_BLL.DTO.Requests;
+using HR_BLL.DTO.Responses;
+using HR_BLL.Services.Abstract;
+using HR_DAL.Entities;
+using HR_DAL.Repositories.Abstract;
+using HR_DAL.UnitOfWork.Abstract;
 
-namespace MultipleAPIs.HR_BLL.Services.Concrete
+namespace HR_BLL.Services.Concrete
 {
     public class DayOffService : IDayOffService
     {
@@ -32,9 +32,9 @@ namespace MultipleAPIs.HR_BLL.Services.Concrete
             return results.Select(mapper.Map<DayOff, DayOffResponse>);
         }
 
-        public async Task<DayOffResponse> GetByIdAsync(int Id)
+        public async Task<DayOffResponse> GetByIdAsync(int id)
         {
-            var result = await dayOffRepository.GetByIdAsync(Id);
+            var result = await dayOffRepository.GetByIdAsync(id);
             return mapper.Map<DayOff, DayOffResponse>(result);
         }
 
@@ -54,9 +54,9 @@ namespace MultipleAPIs.HR_BLL.Services.Concrete
             return result;
         }
 
-        public async Task DeleteByIdAsync(int Id)
+        public async Task DeleteByIdAsync(int id)
         {
-            await dayOffRepository.DeleteByIdAsync(Id);
+            await dayOffRepository.DeleteByIdAsync(id);
             unitOfWork.Commit();
         }
     }

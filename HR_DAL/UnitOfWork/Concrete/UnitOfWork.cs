@@ -1,14 +1,15 @@
-﻿using MultipleAPIs.HR_DAL.UnitOfWorks.Abstract;
-using MultipleAPIs.HR_DAL.Connection.Abstract;
-using MultipleAPIs.HR_DAL.Repositories.Abstract;
+﻿using System;
 using System.Data;
+using HR_DAL.Connection.Abstract;
+using HR_DAL.Repositories.Abstract;
+using HR_DAL.UnitOfWork.Abstract;
 
-namespace MultipleAPIs.HR_DAL.UnitOfWorks.Concrete
+namespace HR_DAL.UnitOfWork.Concrete
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
-        private IConnectionFactory factoryConnection;
-        private IDbConnection connection;
+        private readonly IConnectionFactory factoryConnection;
+        private readonly IDbConnection connection;
         private IDbTransaction transaction;
 
         public IAppointmentRepository AppointmentRepository { get; }
@@ -76,9 +77,9 @@ namespace MultipleAPIs.HR_DAL.UnitOfWorks.Concrete
         }
         public void Dispose()
         {
-            if (factoryConnection != null) { factoryConnection.Dispose();}
-            if (transaction != null) { transaction.Dispose();}
-            if (connection != null) { connection.Dispose();}
+            factoryConnection.Dispose();
+            transaction.Dispose();
+            connection.Dispose();
         }
     }
 }

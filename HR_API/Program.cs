@@ -1,4 +1,6 @@
 ﻿using HR_API;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 CreateHostBuilder(args).Build().Run();
 

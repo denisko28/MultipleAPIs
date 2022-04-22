@@ -1,20 +1,20 @@
-﻿using MultipleAPIs.HR_BLL.DTO.Responses;
-using MultipleAPIs.HR_BLL.DTO.Requests;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using HR_BLL.DTO.Requests;
+using HR_BLL.DTO.Responses;
 
-namespace MultipleAPIs.HR_BLL.Services.Abstract
+namespace HR_BLL.Services.Abstract
 {
     public interface IDayOffService
     {
         Task<IEnumerable<DayOffResponse>> GetAllAsync();
 
-        Task<DayOffResponse> GetByIdAsync(int Id);
+        Task<DayOffResponse> GetByIdAsync(int id);
 
         Task<int> InsertAsync(DayOffRequest request);
 
         Task<bool> UpdateAsync(DayOffRequest request);
 
-        Task DeleteByIdAsync(int Id);
+        Task DeleteByIdAsync(int id);
     }
 }

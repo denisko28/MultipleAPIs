@@ -1,17 +1,19 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
-using MultipleAPIs.HR_DAL.Connection.Abstract;
-using MultipleAPIs.HR_DAL.Connection.Concrete;
-using MultipleAPIs.HR_DAL.Repositories.Abstract;
-using MultipleAPIs.HR_DAL.Repositories.Concrete;
-using MultipleAPIs.HR_DAL.UnitOfWorks.Abstract;
-using MultipleAPIs.HR_DAL.UnitOfWorks.Concrete;
-using MultipleAPIs.HR_BLL.Services.Abstract;
-using MultipleAPIs.HR_BLL.Services.Concrete;
-using MultipleAPIs.HR_BLL.Configurations;
 using AutoMapper;
+using HR_BLL.Configurations;
+using HR_BLL.Services.Abstract;
+using HR_BLL.Services.Concrete;
+using HR_DAL.Connection.Abstract;
+using HR_DAL.Connection.Concrete;
+using HR_DAL.Repositories.Abstract;
+using HR_DAL.Repositories.Concrete;
+using HR_DAL.UnitOfWork.Abstract;
+using HR_DAL.UnitOfWork.Concrete;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace HR_API
 {
@@ -20,7 +22,7 @@ namespace HR_API
         public Startup(IConfiguration configuration) =>
             Configuration = configuration;
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         // This method gets called by the runtime.
         // Use this method to add services to the container.
@@ -68,7 +70,7 @@ namespace HR_API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "HumanResoursesAPI",
+                    Title = "HumanResourcesAPI",
                     Version = "v1"
                 });
             });
@@ -84,7 +86,7 @@ namespace HR_API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint(
                     "/swagger/v1/swagger.json",
-                    "HumanResoursesAPI v1"));
+                    "HumanResourcesAPI v1"));
             }
 
             app.UseHttpsRedirection();

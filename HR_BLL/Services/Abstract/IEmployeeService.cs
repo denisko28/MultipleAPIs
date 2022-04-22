@@ -1,15 +1,15 @@
-﻿using MultipleAPIs.HR_BLL.DTO.Responses;
-using MultipleAPIs.HR_BLL.DTO.Requests;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using HR_BLL.DTO.Requests;
+using HR_BLL.DTO.Responses;
 
-namespace MultipleAPIs.HR_BLL.Services.Abstract
+namespace HR_BLL.Services.Abstract
 {
     public interface IEmployeeService
     {
         Task<IEnumerable<EmployeeResponse>> GetAllAsync();
 
-        Task<EmployeeResponse> GetByIdAsync(int Id);
+        Task<EmployeeResponse> GetByIdAsync(int id);
 
         Task<IEnumerable<EmployeeResponse>> GetByStatusAsync(string status);
 
@@ -17,6 +17,6 @@ namespace MultipleAPIs.HR_BLL.Services.Abstract
 
         Task<bool> UpdateAsync(EmployeeRequest request);
 
-        Task DeleteByIdAsync(int Id);
+        Task DeleteByIdAsync(int id);
     }
 }

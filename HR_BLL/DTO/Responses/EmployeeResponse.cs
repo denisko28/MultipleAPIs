@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MultipleAPIs.HR_BLL.DTO.Responses
+namespace HR_BLL.DTO.Responses
 {
     public class EmployeeResponse
     {
@@ -12,7 +12,7 @@ namespace MultipleAPIs.HR_BLL.DTO.Responses
 
         public string EmployeeStatus { get; set; } = null!;
 
-        public string? Adress { get; set; }
+        public string? Address { get; set; }
 
         public string? PassportImgPath { get; set; }
 

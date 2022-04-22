@@ -1,15 +1,15 @@
-﻿using MultipleAPIs.HR_BLL.DTO.Responses;
-using MultipleAPIs.HR_BLL.DTO.Requests;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using HR_BLL.DTO.Requests;
+using HR_BLL.DTO.Responses;
 
-namespace MultipleAPIs.HR_BLL.Services.Abstract
+namespace HR_BLL.Services.Abstract
 {
     public interface IBarberService
     {
         Task<IEnumerable<BarberResponse>> GetAllAsync();
 
-        Task<BarberResponse> GetByIdAsync(int Id);
+        Task<BarberResponse> GetByIdAsync(int id);
 
         Task<IEnumerable<BarbersAppointmentsResponse>> GetBarbersAppointmentsAsync(BarbersAppointmentsRequest request);
 
@@ -17,6 +17,6 @@ namespace MultipleAPIs.HR_BLL.Services.Abstract
 
         Task<bool> UpdateAsync(BarberRequest request);
 
-        Task DeleteByIdAsync(int Id);
+        Task DeleteByIdAsync(int id);
     }
 }

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using HR_BLL.Services.Abstract;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using MultipleAPIs.HR_BLL.Services.Abstract;
 
-namespace MultipleAPIs.HR_BLL.Services.Concrete
+namespace HR_BLL.Services.Concrete
 {
     public class ImageService : IImageService
     {
@@ -16,20 +16,20 @@ namespace MultipleAPIs.HR_BLL.Services.Concrete
             this.environment = environment;
         }
 
-        public async Task<string> SaveImageAsync(IFormFile photo)
+        public async Task<string> SaveImageAsync(IFormFile? photo)
         {
-            const string ImagesFolderPath = "Public\\Images";
+            const string imagesFolderPath = "Public\\Images";
 
-            if (!Directory.Exists($"{environment.WebRootPath}\\{ImagesFolderPath}\\"))
+            if (!Directory.Exists($"{environment.WebRootPath}\\{imagesFolderPath}\\"))
             {
-                Directory.CreateDirectory($"{environment.WebRootPath}\\{ImagesFolderPath}\\");
+                Directory.CreateDirectory($"{environment.WebRootPath}\\{imagesFolderPath}\\");
             }
 
-            string fileExtension = Path.GetExtension(photo.FileName);
+            var fileExtension = Path.GetExtension(photo?.FileName);
             string newFileName = $"{DateTime.Now:yyyyMMddHHmmssffff}{fileExtension}";
-            await using var fileStream = File.Create($"{environment.WebRootPath}\\{ImagesFolderPath}\\{newFileName}");
+            await using var fileStream = File.Create($"{environment.WebRootPath}\\{imagesFolderPath}\\{newFileName}");
 
-            photo.CopyTo(fileStream);
+            await photo?.CopyToAsync(fileStream)!;
             await fileStream.FlushAsync();
 
             return newFileName;

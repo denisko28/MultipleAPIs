@@ -1,4 +1,4 @@
-﻿namespace MultipleAPIs.HR_BLL.DTO.Requests
+﻿namespace HR_BLL.DTO.Requests
 {
     public class BranchRequest
     {
@@ -6,6 +6,6 @@
 
         public string? Descript { get; set; }
 
-        public string? Adress { get; set; }
+        public string? Address { get; set; }
     }
 }

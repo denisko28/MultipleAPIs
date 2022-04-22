@@ -1,35 +1,27 @@
-﻿namespace MultipleAPIs.HR_BLL.Helpers
+﻿namespace HR_BLL.Helpers
 {
     public static class EmployeeStatusHelper
     {
         public static string GetStringStatus(int statusId)
         {
-            switch (statusId)
-            { 
-                case 1:
-                    return "Ген. директор";
-                case 2:
-                    return "Директор філії";
-                case 3:
-                    return "Барбер";
-                default:
-                    return "???";
-            }
+            return statusId switch
+            {
+                1 => "Ген. директор",
+                2 => "Директор філії",
+                3 => "Барбер",
+                _ => "???"
+            };
         }
 
         public static int GetIntStatus(string status)
         {
-            switch (status)
+            return status switch
             {
-                case "Ген. директор":
-                    return 1;
-                case "Директор філії":
-                    return 2;
-                case "Барбер":
-                    return 3;
-                default:
-                    return 0;
-            }
+                "Ген. директор" => 1,
+                "Директор філії" => 2,
+                "Барбер" => 3,
+                _ => 0
+            };
         }
     }
 }

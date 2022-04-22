@@ -2,14 +2,14 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using MultipleAPIs.HR_DAL.UnitOfWorks.Abstract;
-using MultipleAPIs.HR_BLL.DTO.Requests;
-using MultipleAPIs.HR_BLL.DTO.Responses;
-using MultipleAPIs.HR_DAL.Entities;
-using MultipleAPIs.HR_DAL.Repositories.Abstract;
-using MultipleAPIs.HR_BLL.Services.Abstract;
+using HR_BLL.DTO.Requests;
+using HR_BLL.DTO.Responses;
+using HR_BLL.Services.Abstract;
+using HR_DAL.Entities;
+using HR_DAL.Repositories.Abstract;
+using HR_DAL.UnitOfWork.Abstract;
 
-namespace MultipleAPIs.HR_BLL.Services.Concrete
+namespace HR_BLL.Services.Concrete
 {
     public class EmployeeStatusService : IEmployeeStatusService
     {
@@ -32,9 +32,9 @@ namespace MultipleAPIs.HR_BLL.Services.Concrete
             return results.Select(mapper.Map<EmployeeStatus, EmployeeStatusResponse>);
         }
 
-        public async Task<EmployeeStatusResponse> GetByIdAsync(int Id)
+        public async Task<EmployeeStatusResponse> GetByIdAsync(int id)
         {
-            var result = await employeeStatusRepository.GetByIdAsync(Id);
+            var result = await employeeStatusRepository.GetByIdAsync(id);
             return mapper.Map<EmployeeStatus, EmployeeStatusResponse>(result);
         }
 
@@ -54,9 +54,9 @@ namespace MultipleAPIs.HR_BLL.Services.Concrete
             return result;
         }
 
-        public async Task DeleteByIdAsync(int Id)
+        public async Task DeleteByIdAsync(int id)
         {
-            await employeeStatusRepository.DeleteByIdAsync(Id);
+            await employeeStatusRepository.DeleteByIdAsync(id);
             unitOfWork.Commit();
         }
     }

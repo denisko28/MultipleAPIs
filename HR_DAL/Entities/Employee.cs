@@ -1,7 +1,7 @@
-using Dapper.Contrib.Extensions;
 using System;
+using Dapper.Contrib.Extensions;
 
-namespace MultipleAPIs.HR_DAL.Entities
+namespace HR_DAL.Entities
 { 
     [Table("Employee")]
 
@@ -13,7 +13,7 @@ namespace MultipleAPIs.HR_DAL.Entities
 
         public int EmployeeStatusId { get; set; }
 
-        public string? Adress  { get; set; }
+        public string? Address  { get; set; }
 
         public string? PassportImgPath  { get; set; }
 

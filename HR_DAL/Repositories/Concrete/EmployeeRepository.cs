@@ -1,11 +1,11 @@
-﻿using Dapper;
-using MultipleAPIs.HR_DAL.Connection.Abstract;
-using MultipleAPIs.HR_DAL.Entities;
-using MultipleAPIs.HR_DAL.Repositories.Abstract;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Dapper;
+using HR_DAL.Connection.Abstract;
+using HR_DAL.Entities;
+using HR_DAL.Repositories.Abstract;
 
-namespace MultipleAPIs.HR_DAL.Repositories.Concrete
+namespace HR_DAL.Repositories.Concrete
 {
     public class EmployeeRepository : GenericRepository<Employee>, IEmployeeRepository
     {
@@ -13,10 +13,10 @@ namespace MultipleAPIs.HR_DAL.Repositories.Concrete
         {
         }
 
-        public async Task<IEnumerable<Employee>> GetByStatusIdAsync(int StatusId)
+        public async Task<IEnumerable<Employee>> GetByStatusIdAsync(int statusId)
         {
-            string sql = @"SELECT * FROM Employee WHERE EmployeeStatusId = @StatusId";
-            IEnumerable<Employee> results = await connection.Connect.QueryAsync<Employee>(sql, new { StatusId = StatusId });
+            const string sql = @"SELECT * FROM Employee WHERE EmployeeStatusId = @StatusId";
+            IEnumerable<Employee> results = await Connection.Connect.QueryAsync<Employee>(sql, new { StatusId = statusId });
             return results;
         }
     }

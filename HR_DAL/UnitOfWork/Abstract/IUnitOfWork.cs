@@ -1,6 +1,6 @@
-﻿using MultipleAPIs.HR_DAL.Repositories.Abstract;
+﻿using HR_DAL.Repositories.Abstract;
 
-namespace MultipleAPIs.HR_DAL.UnitOfWorks.Abstract
+namespace HR_DAL.UnitOfWork.Abstract
 {
     public interface IUnitOfWork
     {

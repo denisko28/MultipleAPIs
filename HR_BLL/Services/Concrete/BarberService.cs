@@ -1,12 +1,15 @@
-﻿using AutoMapper;
-using MultipleAPIs.HR_BLL.DTO.Requests;
-using MultipleAPIs.HR_BLL.DTO.Responses;
-using MultipleAPIs.HR_DAL.Entities;
-using MultipleAPIs.HR_DAL.Repositories.Abstract;
-using MultipleAPIs.HR_BLL.Services.Abstract;
-using MultipleAPIs.HR_DAL.UnitOfWorks.Abstract;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
+using HR_BLL.DTO.Requests;
+using HR_BLL.DTO.Responses;
+using HR_BLL.Services.Abstract;
+using HR_DAL.Entities;
+using HR_DAL.Repositories.Abstract;
+using HR_DAL.UnitOfWork.Abstract;
 
-namespace MultipleAPIs.HR_BLL.Services.Concrete
+namespace HR_BLL.Services.Concrete
 {
     public class BarberService : IBarberService
     {
@@ -38,25 +41,15 @@ namespace MultipleAPIs.HR_BLL.Services.Concrete
             return results.Select(mapper.Map<Barber, BarberResponse>);
         }
 
-        public async Task<BarberResponse> GetByIdAsync(int Id)
+        public async Task<BarberResponse> GetByIdAsync(int id)
         {
-            var result = await barberRepository.GetByIdAsync(Id);
+            var result = await barberRepository.GetByIdAsync(id);
             return mapper.Map<Barber, BarberResponse>(result);
         }
 
         public async Task<IEnumerable<BarbersAppointmentsResponse>> GetBarbersAppointmentsAsync(BarbersAppointmentsRequest request)
         {
-            //var sql = "SELECT Appointment.Id AS 'AppointmentId', User_.FirstName, User_.LastName, AppointmentStatus.Descript AS 'AppointmentStatus', BeginTime, EndTime " +
-            //    "FROM Appointment " +
-            //    "INNER JOIN Customer ON CustomerId = Customer.Id " +
-            //    "INNER JOIN User_ ON Customer.UserId = User_.Id " +
-            //    "INNER JOIN AppointmentStatus ON Appointment.AppointmentStatusId = AppointmentStatus.Id " +
-            //    "WHERE BarberId = @BarberId AND AppDate >= CONVERT(date, @_Date)";
-            //var values = new { BarberId = request.BarberId, _Date = request._Date };
-            //IEnumerable<BarbersAppointmentsResponse> results = await connection.Connect.QueryAsync<BarbersAppointmentsResponse>(sql, values);
-            //return results;
-            if (request._Date == null)
-                request._Date = "";
+            request._Date ??= "";
 
             var appointments = await appointmentRepository.GetAppointmentsByBarberIdAndDate(request.BarberId, request._Date);
             var responses = new List<BarbersAppointmentsResponse>();
@@ -87,9 +80,9 @@ namespace MultipleAPIs.HR_BLL.Services.Concrete
             return result;
         }
 
-        public async Task DeleteByIdAsync(int Id)
+        public async Task DeleteByIdAsync(int id)
         {
-            await barberRepository.DeleteByIdAsync(Id);
+            await barberRepository.DeleteByIdAsync(id);
             unitOfWork.Commit();
         }
     }

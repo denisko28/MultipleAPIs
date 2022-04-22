@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MultipleAPIs.HR_BLL.DTO.Requests
+namespace HR_BLL.DTO.Requests
 {
     public class DayOffRequest
     {

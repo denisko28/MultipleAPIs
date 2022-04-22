@@ -1,27 +1,13 @@
 ﻿using AutoMapper;
-using MultipleAPIs.HR_DAL.Entities;
-using MultipleAPIs.HR_BLL.DTO.Requests;
-using MultipleAPIs.HR_BLL.DTO.Responses;
-using MultipleAPIs.HR_BLL.Helpers;
+using HR_BLL.DTO.Requests;
+using HR_BLL.DTO.Responses;
+using HR_BLL.Helpers;
+using HR_DAL.Entities;
 
-namespace MultipleAPIs.HR_BLL.Configurations
+namespace HR_BLL.Configurations
 {
     public class AutoMapperProfile : Profile
     {
-        //private void CreateUserMaps()
-        //{
-        //    CreateMap<UserSignUpRequest, User>();
-        //    CreateMap<UserRequest, User>();
-        //    CreateMap<User, UserResponse>()
-        //        .ForMember(
-        //            response => response.FullName,
-        //            options => options.MapFrom(user => $"{user.FirstName} {user.LastName}"))
-        //        .ForMember(
-        //            response => response.Avatar,
-        //            options => options.MapFrom(
-        //                user => !string.IsNullOrWhiteSpace(user.Avatar) ? $"Public/Photos/{user.Avatar}" : null));
-        //}
-
         private void CreateBarberMaps()
         {
             CreateMap<BarberRequest, Barber>();

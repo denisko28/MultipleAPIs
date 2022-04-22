@@ -1,6 +1,6 @@
 ﻿using Dapper.Contrib.Extensions;
 
-namespace MultipleAPIs.HR_DAL.Entities
+namespace HR_DAL.Entities
 {
     public class BaseEntity
     {

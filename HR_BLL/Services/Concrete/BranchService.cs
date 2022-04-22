@@ -2,14 +2,14 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using MultipleAPIs.HR_DAL.UnitOfWorks.Abstract;
-using MultipleAPIs.HR_BLL.DTO.Requests;
-using MultipleAPIs.HR_BLL.DTO.Responses;
-using MultipleAPIs.HR_DAL.Entities;
-using MultipleAPIs.HR_DAL.Repositories.Abstract;
-using MultipleAPIs.HR_BLL.Services.Abstract;
+using HR_BLL.DTO.Requests;
+using HR_BLL.DTO.Responses;
+using HR_BLL.Services.Abstract;
+using HR_DAL.Entities;
+using HR_DAL.Repositories.Abstract;
+using HR_DAL.UnitOfWork.Abstract;
 
-namespace MultipleAPIs.HR_BLL.Services.Concrete
+namespace HR_BLL.Services.Concrete
 {
     public class BranchService : IBranchService
     {
@@ -32,9 +32,9 @@ namespace MultipleAPIs.HR_BLL.Services.Concrete
             return results.Select(mapper.Map<Branch, BranchResponse>);
         }
 
-        public async Task<BranchResponse> GetByIdAsync(int Id)
+        public async Task<BranchResponse> GetByIdAsync(int id)
         {
-            var result = await branchRepository.GetByIdAsync(Id);
+            var result = await branchRepository.GetByIdAsync(id);
             return mapper.Map<Branch, BranchResponse>(result);
         }
 
@@ -54,9 +54,9 @@ namespace MultipleAPIs.HR_BLL.Services.Concrete
             return result;
         }
 
-        public async Task DeleteByIdAsync(int Id)
+        public async Task DeleteByIdAsync(int id)
         {
-            await branchRepository.DeleteByIdAsync(Id);
+            await branchRepository.DeleteByIdAsync(id);
             unitOfWork.Commit();
         }
     }
