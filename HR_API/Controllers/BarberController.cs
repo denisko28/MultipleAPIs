@@ -1,13 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MultipleAPIs.HR_BLL.DTO.Requests;
-using MultipleAPIs.HR_BLL.DTO.Responses;
-using MultipleAPIs.HR_DAL.Exceptions;
-using MultipleAPIs.HR_BLL.Services.Abstract;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Web.Http;
+using HR_BLL.DTO.Requests;
+using HR_BLL.DTO.Responses;
+using HR_BLL.Services.Abstract;
+using HR_DAL.Exceptions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
-namespace MultipleAPIs.HR_API.Controllers
+namespace HR_API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     public class BarberController : ControllerBase
     {
         private readonly IBarberService barberService;
@@ -18,7 +23,7 @@ namespace MultipleAPIs.HR_API.Controllers
         }
 
         // GET: api/Employee
-        [HttpGet]
+        [Microsoft.AspNetCore.Mvc.HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<BarberResponse>>> Get()
@@ -35,7 +40,7 @@ namespace MultipleAPIs.HR_API.Controllers
         }
 
         // GET: api/Employee/5
-        [HttpGet("{id}")]
+        [Microsoft.AspNetCore.Mvc.HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -56,15 +61,15 @@ namespace MultipleAPIs.HR_API.Controllers
             }
         }
 
-        // GET: api/Barber/BarbersAppointments
-        // { body: form-data }
-        [HttpGet("BarbersAppointments")]
+        // GET: api/Barber/BarbersAppointments/?barberId=4&date=2022-02-27
+        [Microsoft.AspNetCore.Mvc.HttpGet("BarbersAppointments")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<BarbersAppointmentsResponse>>> GetBarbersAppointments([FromForm] BarbersAppointmentsRequest request)
+        public async Task<ActionResult<IEnumerable<BarbersAppointmentsResponse>>> GetBarbersAppointments([FromUri] int barberId, [FromUri] string date)
         {
             try
             {
+                var request = new BarbersAppointmentsRequest{ BarberId = barberId, _Date = date };
                 IEnumerable<BarbersAppointmentsResponse> result = await barberService.GetBarbersAppointmentsAsync(request);
                 return Ok(result);
             }
@@ -75,10 +80,10 @@ namespace MultipleAPIs.HR_API.Controllers
         }
 
         // POST: api/Employee
-        [HttpPost]
+        [Microsoft.AspNetCore.Mvc.HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Post([FromBody] BarberRequest request)
+        public async Task<ActionResult> Post([System.Web.Http.FromBody] BarberRequest request)
         {
             try
             {
@@ -92,10 +97,10 @@ namespace MultipleAPIs.HR_API.Controllers
         }
 
         // PUT: api/Employee
-        [HttpPut]
+        [Microsoft.AspNetCore.Mvc.HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Put([FromBody] BarberRequest request)
+        public async Task<ActionResult> Put([System.Web.Http.FromBody] BarberRequest request)
         {
             try
             {
@@ -109,15 +114,15 @@ namespace MultipleAPIs.HR_API.Controllers
         }
 
         // DELETE: api/Employee
-        [HttpDelete("{id}")]
+        [Microsoft.AspNetCore.Mvc.HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Delete(int Id)
+        public async Task<ActionResult> Delete(int id)
         {
             try
             {
-                await barberService.DeleteByIdAsync(Id);
+                await barberService.DeleteByIdAsync(id);
                 return Ok();
             }
             catch (Exception e)
