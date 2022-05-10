@@ -38,11 +38,17 @@ namespace HR_BLL.Configurations
 
         private void CreateEmployeeMaps()
         {
-            CreateMap<EmployeeRequest, Employee>();
+            CreateMap<EmployeeRequest, Employee>()
+                .ForMember(
+                    response => response.EmployeeStatusId,
+                    options => 
+                        options.MapFrom(employeeRequest => EmployeeStatusHelper.GetIntStatus(employeeRequest.EmployeeStatus!))
+                );
             CreateMap<Employee, EmployeeResponse>()
                 .ForMember(
                     response => response.EmployeeStatus,
-                    options => options.MapFrom(employee => EmployeeStatusHelper.GetStringStatus(employee.EmployeeStatusId))
+                    options => 
+                        options.MapFrom(employee => EmployeeStatusHelper.GetStringStatus(employee.EmployeeStatusId))
                 );
         }
 

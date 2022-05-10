@@ -6,6 +6,6 @@
 
         public int EmployeeId { get; set; }
 
-        public int EmployeeDayOffId { get; set; }
+        public int DayOffId { get; set; }
     }
 }
