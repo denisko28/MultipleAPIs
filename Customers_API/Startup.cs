@@ -29,13 +29,15 @@ namespace Customers_API
             services.AddDbContext<BarbershopDbContext>();
 
             services.AddTransient<IAppointmentRepository, AppointmentRepository>();
+            services.AddTransient<IAppointmentServiceRepository, AppointmentServiceRepository>();
             services.AddTransient<IBarberRepository, BarberRepository>();
+            services.AddTransient<ICustomerRepository, CustomerRepository>();
             services.AddTransient<IPossibleTimeRepository, PossibleTimeRepository>();
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             services.AddTransient<IAppointmentService, AppointmentService>();
-            services.AddTransient<ITimePickerService, TimePickerService>();
+            services.AddTransient<ICustomerService, CustomerService>();
 
             var mapperConfig = new MapperConfiguration(mc =>
             {
