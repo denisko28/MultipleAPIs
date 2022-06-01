@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Customers_DAL.Entities
 {
@@ -10,7 +10,9 @@ namespace Customers_DAL.Entities
         }
 
         public int Id { get; set; }
+        
         public string? Descript { get; set; }
+        
         public string? Address { get; set; }
 
         public virtual ICollection<Employee> Employees { get; set; }
