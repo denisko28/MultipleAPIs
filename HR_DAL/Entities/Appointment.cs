@@ -5,18 +5,21 @@ namespace HR_DAL.Entities
 {
     [Table("Appointment")]
 
-    public class Appointment : BaseEntity
+    public class Appointment
     {
-        public int BarberId { get; set; }
-
-        public int CustomerId { get; set; }
-
+        [Key]
+        public int Id { get; set; }
+        
+        public int BarberUserId { get; set; }
+        
+        public int CustomerUserId { get; set; }
+        
         public int AppointmentStatusId { get; set; }
-
+        
         public DateTime AppDate { get; set; }
-
+        
         public TimeSpan BeginTime { get; set; }
-
+        
         public TimeSpan EndTime { get; set; }
     }
 }

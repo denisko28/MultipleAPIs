@@ -5,8 +5,11 @@ namespace HR_DAL.Entities
 {
     [Table("DayOff")]
 
-    public class DayOff : BaseEntity
+    public class DayOff
     {
+        [Key]
+        public int Id { get; set; }
+        
         public DateTime Date_ { get; set; }
     }
 }

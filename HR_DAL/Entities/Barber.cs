@@ -4,10 +4,11 @@ namespace HR_DAL.Entities
 {
     [Table("Barber")]
 
-    public class Barber : BaseEntity
+    public class Barber
     {
-        public int EmployeeId { get; set; }
-
+        [Key]
+        public int EmployeeUserId { get; set; }
+        
         public int ChairNum { get; set; }
     }
 }
