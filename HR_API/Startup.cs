@@ -7,6 +7,8 @@ using HR_BLL.Services.Abstract;
 using HR_BLL.Services.Concrete;
 using HR_DAL.Connection.Abstract;
 using HR_DAL.Connection.Concrete;
+using HR_DAL.MongoRepositories.Abstract;
+using HR_DAL.MongoRepositories.Concrete;
 using HR_DAL.Repositories.Abstract;
 using HR_DAL.Repositories.Concrete;
 using HR_DAL.UnitOfWork.Abstract;
@@ -29,6 +31,8 @@ namespace HR_API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IConnectionFactory, ConnectionFactory>();
+            services.AddSingleton(_ => 
+                new MongoDbContext(Configuration.GetConnectionString("MongoDBConnection")));
 
             services.AddTransient<IAppointmentRepository, AppointmentRepository>();
             services.AddTransient<IBarberRepository, BarberRepository>();
@@ -37,8 +41,9 @@ namespace HR_API
             services.AddTransient<IDayOffRepository, DayOffRepository>();
             services.AddTransient<IEmployeeDayOffRepository, EmployeeDayOffRepository>();
             services.AddTransient<IEmployeeRepository, EmployeeRepository>();
-            services.AddTransient<IEmployeeStatusRepository, EmployeeStatusRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
+            
+            services.AddTransient<IBranchMongoRepository, BranchMongoRepository>();
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
 
@@ -46,9 +51,7 @@ namespace HR_API
             services.AddTransient<IBarberService, BarberService>();
             services.AddTransient<IBranchService, BranchService>();
             services.AddTransient<IDayOffService, DayOffService>();
-            services.AddTransient<IEmployeeDayOffService, EmployeeDayOffService>();
             services.AddTransient<IEmployeeService, EmployeeService>();
-            services.AddTransient<IEmployeeStatusService, EmployeeStatusService>();
 
             var mapperConfig = new MapperConfiguration(mc =>
             {
