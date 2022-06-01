@@ -1,4 +1,5 @@
-﻿using HR_DAL.Repositories.Abstract;
+﻿using HR_DAL.MongoRepositories.Abstract;
+using HR_DAL.Repositories.Abstract;
 
 namespace HR_DAL.UnitOfWork.Abstract
 {
@@ -20,10 +21,6 @@ namespace HR_DAL.UnitOfWork.Abstract
 
         IEmployeeRepository EmployeeRepository { get; }
 
-        IEmployeeStatusRepository EmployeeStatusRepository { get; }
-
-        void Commit();
-
-        void Dispose();
+        IBranchMongoRepository BranchMongoRepository { get; }
     }
 }

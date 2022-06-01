@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
@@ -15,18 +16,19 @@ namespace HR_DAL.Repositories.Concrete
 {
     public abstract class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
-        protected readonly IConnectionFactory Connection;
+        protected readonly IDbConnection Connection;
 
         protected GenericRepository(IConnectionFactory connectionFactory)
         {
-            Connection = connectionFactory;
+            Connection = connectionFactory.GetConnection();
+            Connection.Open();
         }
 
         public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
         {
             const string sql = "EXEC [GetAllProc] @Table_Name";
             var values = new { Table_Name = typeof(TEntity).Name};
-            IEnumerable<TEntity> results = await Connection.Connect.QueryAsync<TEntity>(sql, values);
+            IEnumerable<TEntity> results = await Connection.QueryAsync<TEntity>(sql, values);
             return results;
         }
 
@@ -34,7 +36,7 @@ namespace HR_DAL.Repositories.Concrete
         {
             const string? sql = "EXEC [GetByIdProc] @Table_Name, @Id";
 
-            using (DbCommand command = (DbCommand)Connection.Connect.CreateCommand())
+            await using (DbCommand command = (DbCommand)Connection.CreateCommand())
             {
                 Type modelType = typeof(TEntity);
                 if(Attribute.GetCustomAttribute(modelType, typeof(TableAttribute)) is not TableAttribute myAttribute)
@@ -46,45 +48,82 @@ namespace HR_DAL.Repositories.Concrete
                 command.Parameters.Add(tableName);
                 command.Parameters.Add(id);
 
-                using (var reader = await command.ExecuteReaderAsync())
+                await using (var reader = await command.ExecuteReaderAsync())
                 {
-                    if (reader.HasRows)
-                    {
-                        await reader.ReadAsync();
+                    if (!reader.HasRows) 
+                        throw new EntityNotFoundException(typeof(TEntity).Name, idParam);
+                    
+                    await reader.ReadAsync();
 
-                        var instance = Activator.CreateInstance(modelType) as TEntity;
-                        if (instance == null)
-                            return instance ?? throw new Exception("Entity model doesn't correspond table!");
-                        
-                        PropertyInfo[] modelProps = modelType.GetProperties();
-                        foreach (PropertyInfo srcProp in modelProps)
-                        {
-                            var value = reader[srcProp.Name];
-                            srcProp.SetValue(instance, Convert.ChangeType(value, srcProp.PropertyType));
-                        }
+                    var instance = Activator.CreateInstance(modelType) as TEntity;
+                    if (instance == null)
                         return instance ?? throw new Exception("Entity model doesn't correspond table!");
+                        
+                    PropertyInfo[] modelProps = modelType.GetProperties();
+                    foreach (PropertyInfo srcProp in modelProps)
+                    {
+                        var value = reader[srcProp.Name];
+                        srcProp.SetValue(instance, Convert.ChangeType(value, srcProp.PropertyType));
                     }
-                    else 
-                        throw new EntityNotFoundException(GetEntityNotFoundErrorMessage(idParam));
+                    return instance ?? throw new Exception("Entity model doesn't correspond table!");
                 }
             }
         }
 
+        protected static bool IsNumericType(object o)
+        {   
+            switch (Type.GetTypeCode(o.GetType()))
+            {
+                case TypeCode.Byte:
+                case TypeCode.SByte:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                case TypeCode.Decimal:
+                case TypeCode.Double:
+                case TypeCode.Single:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        
         public virtual async Task<int> InsertAsync(TEntity entity)
         {
-            const string? sql = "EXEC [GetByIdProc] @Table_Name, @Params, @Values";
+            var propInfo = entity.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .FirstOrDefault(x => x.Name.Equals("Id"));
+
+            if(propInfo != null)
+                propInfo.SetValue(entity, 0);
+            
+            const string? sql = "EXEC [InsertProc] @Table_Name, @Params, @Values";
+            var properties = typeof(TEntity).GetProperties()
+                .Select(p=> p).Where(p => p.Name != "Id").ToArray();
+            List<object> objValues = new();
+            foreach (var property in properties)
+            {
+                var temp = property.GetValue(entity, null)!;
+                if (temp.GetType().Name == "DateTime")
+                    temp = ((DateTime) temp).ToString("yyyy-MM-dd");
+                if (!IsNumericType(temp))
+                    temp = "'" + temp + "'";
+                objValues.Add(temp);
+            }
             var values = new {
                 Table_Name = typeof(TEntity).Name,
-                Params = string.Join(", ", typeof(TEntity).GetProperties().Select(a => a.Name)),
-                Values = string.Join(", ", typeof(TEntity).GetEnumValues()),
+                Params = string.Join(", ", properties.Select(a => a.Name)),
+                Values = string.Join(", ", objValues)
             };
-            var added = await Connection.Connect.QuerySingleAsync<int>(sql, values);
+            var added = await Connection.QuerySingleAsync<int>(sql, values);
             return added;
         }
 
         public virtual async Task<bool> UpdateAsync(TEntity entity)
         {
-            var updated = await Connection.Connect.UpdateAsync(entity);
+            var updated = await Connection.UpdateAsync(entity);
             return updated;
         }
 
@@ -94,10 +133,14 @@ namespace HR_DAL.Repositories.Concrete
 
             const string sql = "EXEC [DeleteByIdProc] @Table_Name, @Id";
             var values = new { Table_Name = typeof(TEntity).Name, Id = idParam };
-            await Connection.Connect.ExecuteAsync(sql, values);
+            await Connection.ExecuteAsync(sql, values);
         }
-
-        protected static string GetEntityNotFoundErrorMessage(int id) =>
-            $"{typeof(TEntity).Name} with id {id} not found.";
+        
+        public void Dispose()
+        {
+            Connection.Close();
+            Connection.Dispose();
+            GC.SuppressFinalize(this);
+        }
     }
 }
