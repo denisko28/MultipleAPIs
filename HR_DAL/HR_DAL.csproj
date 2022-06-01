@@ -11,7 +11,16 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+    <PackageReference Include="MongoDB.Bson" Version="2.15.1" />
+    <PackageReference Include="MongoDB.Driver" Version="2.15.1" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Entities\BaseEntity.cs" />
+    <Compile Remove="Repositories\Concrete\EmployeeStatusRepository.cs" />
+    <Compile Remove="Repositories\Abstract\IEmployeeStatusRepository.cs" />
+    <Compile Remove="Entities\EmployeeStatus.cs" />
   </ItemGroup>
 
 </Project>

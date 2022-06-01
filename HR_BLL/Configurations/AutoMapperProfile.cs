@@ -13,11 +13,7 @@ namespace HR_BLL.Configurations
             CreateMap<BarberRequest, Barber>();
             CreateMap<Barber, BarberResponse>();
 
-            CreateMap<Appointment, BarbersAppointmentsResponse>()
-                .ForMember(
-                    response => response.AppointmentId,
-                    options => options.MapFrom(appointment => appointment.Id)
-                )
+            CreateMap<Appointment, BarbersAppointmentResponse>()
                 .ForMember(
                     response => response.AppointmentStatus,
                     options => options.MapFrom(appointment => AppointmentStatusHelper.GetStringStatus(appointment.AppointmentStatusId))
@@ -32,7 +28,18 @@ namespace HR_BLL.Configurations
 
         private void CreateDayOffMaps()
         {
-            CreateMap<DayOffRequest, DayOff>();
+            CreateMap<DayOffRequest, DayOff>()
+                .ForMember(
+                    target => target.Date_,
+                    options => 
+                        options.MapFrom(request => request.Date)
+                );
+            CreateMap<DayOffPostRequest, DayOff>()
+                .ForMember(
+                    target => target.Date_,
+                    options => 
+                        options.MapFrom(request => request.Date)
+                );
             CreateMap<DayOff, DayOffResponse>();
         }
 
@@ -40,7 +47,7 @@ namespace HR_BLL.Configurations
         {
             CreateMap<EmployeeRequest, Employee>()
                 .ForMember(
-                    response => response.EmployeeStatusId,
+                    target => target.EmployeeStatusId,
                     options => 
                         options.MapFrom(employeeRequest => EmployeeStatusHelper.GetIntStatus(employeeRequest.EmployeeStatus!))
                 );
@@ -52,26 +59,12 @@ namespace HR_BLL.Configurations
                 );
         }
 
-        private void CreateEmployeeDayOffMaps()
-        {
-            CreateMap<EmployeeDayOffRequest, EmployeeDayOff>();
-            CreateMap<EmployeeDayOff, EmployeeResponse>();
-        }
-
-        private void CreateEmployeeStatusMaps()
-        {
-            CreateMap<EmployeeStatusRequest, EmployeeStatus>();
-            CreateMap<EmployeeStatus, EmployeeStatusResponse>();
-        }
-
         public AutoMapperProfile()
         {
             CreateBarberMaps();
             CreateBranchMaps();
             CreateDayOffMaps();
             CreateEmployeeMaps();
-            CreateEmployeeDayOffMaps();
-            CreateEmployeeStatusMaps();
         }
     }
 }

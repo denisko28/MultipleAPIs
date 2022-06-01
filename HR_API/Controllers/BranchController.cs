@@ -21,7 +21,7 @@ namespace HR_API.Controllers
             this.branchService = branchService;
         }
 
-        // GET: api/Employee
+        // GET: api/Branch
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -38,7 +38,7 @@ namespace HR_API.Controllers
             }
         }
 
-        // GET: api/Employee/5
+        // GET: api/Branch/5
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -60,7 +60,7 @@ namespace HR_API.Controllers
             }
         }
 
-        // POST: api/Employee
+        // POST: api/Branch
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -77,7 +77,7 @@ namespace HR_API.Controllers
             }
         }
 
-        // PUT: api/Employee
+        // PUT: api/Branch
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -94,7 +94,7 @@ namespace HR_API.Controllers
             }
         }
 
-        // DELETE: api/Employee
+        // DELETE: api/Branch
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -105,6 +105,10 @@ namespace HR_API.Controllers
             {
                 await branchService.DeleteByIdAsync(id);
                 return Ok();
+            }
+            catch (EntityNotFoundException e)
+            {
+                return NotFound(new { e.Message });
             }
             catch (Exception e)
             {

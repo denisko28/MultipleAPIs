@@ -18,4 +18,16 @@
     <ProjectReference Include="..\HR_DAL\HR_DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="DTO\Requests\BarbersAppointmentsRequest.cs" />
+    <Compile Remove="DTO\Requests\EmployeeStatusRequest.cs" />
+    <Compile Remove="DTO\Responses\EmployeeStatusResponse.cs" />
+    <Compile Remove="Services\Concrete\EmployeeStatusService.cs" />
+    <Compile Remove="Services\Abstract\IEmployeeStatusService.cs" />
+    <Compile Remove="DTO\Responses\EmployeeDayOffResponse.cs" />
+    <Compile Remove="DTO\Requests\EmployeeDayOffRequest.cs" />
+    <Compile Remove="Services\Concrete\EmployeeDayOffService.cs" />
+    <Compile Remove="Services\Abstract\IEmployeeDayOffService.cs" />
+  </ItemGroup>
+
 </Project>

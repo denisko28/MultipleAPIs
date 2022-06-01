@@ -25,4 +25,9 @@
     <ProjectReference Include="..\HR_DAL\HR_DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Controllers\EmployeeStatusController.cs" />
+    <Compile Remove="Controllers\EmployeeDayOffController.cs" />
+  </ItemGroup>
+
 </Project>

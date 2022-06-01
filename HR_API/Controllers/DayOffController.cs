@@ -15,13 +15,13 @@ namespace HR_API.Controllers
     public class DayOffController : ControllerBase
     {
         private readonly IDayOffService dayOffService;
-
+        
         public DayOffController(IDayOffService dayOffService)
         {
             this.dayOffService = dayOffService;
         }
 
-        // GET: api/Employee
+        // GET: api/DayOff
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -29,7 +29,7 @@ namespace HR_API.Controllers
         {
             try
             {
-                var results = await dayOffService.GetAllAsync();
+                var results = await dayOffService.GetAllCompleteEntities();
                 return Ok(results);
             }
             catch (Exception e)
@@ -38,8 +38,8 @@ namespace HR_API.Controllers
             }
         }
 
-        // GET: api/Employee/5
-        [HttpGet("{id}")]
+        // GET: api/DayOff/5
+        [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -47,7 +47,7 @@ namespace HR_API.Controllers
         {
             try
             {
-                var result = await dayOffService.GetByIdAsync(id);
+                var result = await dayOffService.GetCompleteEntity(id);
                 return Ok(result);
             }
             catch (EntityNotFoundException e)
@@ -59,12 +59,52 @@ namespace HR_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
             }
         }
+        
+        // GET: api/EmployeeDayOff/GetByEmployee/14
+        [HttpGet("GetByEmployee/{employeeUserId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<IEnumerable<DayOffResponse>>> GetByEmployee(int employeeUserId)
+        {
+            try
+            {
+                var results = await dayOffService.GetDayOffsByEmployee(employeeUserId);
+                return Ok(results);
+            }
+            catch (EntityNotFoundException e)
+            {
+                return NotFound(new { e.Message });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+            }
+        }
+        
+        // GET: api/EmployeeDayOff/GetByDate/2022-03-27
+        [HttpGet("GetByDate/{dateStr}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<IEnumerable<DayOffResponse>>> GetByDate(string dateStr)
+        {
+            try
+            {
+                var date = DateTime.Parse(dateStr);
+                var results = await dayOffService.GetCompleteEntitiesByDate(date);
+                return Ok(results);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+            }
+        }
 
-        // POST: api/Employee
+        // POST: api/DayOff
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Post([FromBody] DayOffRequest request)
+        public async Task<ActionResult> Post([FromBody] DayOffPostRequest request)
         {
             try
             {
@@ -77,7 +117,7 @@ namespace HR_API.Controllers
             }
         }
 
-        // PUT: api/Employee
+        // PUT: api/DayOff
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -94,7 +134,7 @@ namespace HR_API.Controllers
             }
         }
 
-        // DELETE: api/Employee
+        // DELETE: api/DayOff
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -105,6 +145,10 @@ namespace HR_API.Controllers
             {
                 await dayOffService.DeleteByIdAsync(id);
                 return Ok();
+            }
+            catch (EntityNotFoundException e)
+            {
+                return NotFound(new { e.Message });
             }
             catch (Exception e)
             {

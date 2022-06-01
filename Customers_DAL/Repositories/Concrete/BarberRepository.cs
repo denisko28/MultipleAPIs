@@ -16,31 +16,25 @@ namespace Customers_DAL.Repositories.Concrete
 
         public BarberRepository(BarbershopDbContext dBContext)
         {
-            this.dbContext = dBContext;
-            table = this.dbContext.Set<Barber>();
+            dbContext = dBContext;
+            table = dbContext.Set<Barber>();
         }
 
         public async Task<IEnumerable<DayOff>> GetBarbersDayOffs(int barberId)
         {
             var barber = await table
                 .Include(barber => barber.Employee)
-                .ThenInclude(employee => employee!.EmployeeDayOffs)
-                .ThenInclude(employeeDayOffs => employeeDayOffs.DayOff)
-                .SingleOrDefaultAsync(barber => barber.Id == barberId);
+                    .ThenInclude(employee => employee.EmployeeDayOffs)
+                        .ThenInclude(employeeDayOffs => employeeDayOffs.DayOff)
+                .SingleOrDefaultAsync(barber => barber.EmployeeUserId == barberId);
 
             if (barber == null)
-                throw new EntityNotFoundException(GetEntityNotFoundErrorMessage(barberId));
+                throw new EntityNotFoundException(nameof(Barber), barberId);
 
-            if (barber.Employee == null)
-                return new List<DayOff>();
-                
             var dayOffs = barber.Employee.EmployeeDayOffs
                 .Select(employeeDayOffs => employeeDayOffs.DayOff);
             
             return dayOffs!;
         }
-
-        private static string GetEntityNotFoundErrorMessage(int id) =>
-            $"Barber with id {id} not found.";
     }
 }

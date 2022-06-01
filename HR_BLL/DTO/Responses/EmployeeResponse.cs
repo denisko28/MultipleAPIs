@@ -4,8 +4,6 @@ namespace HR_BLL.DTO.Responses
 {
     public class EmployeeResponse
     {
-        public int Id { get; set; }
-
         public int UserId { get; set; }
 
         public int BranchId { get; set; }
@@ -17,5 +15,11 @@ namespace HR_BLL.DTO.Responses
         public string? PassportImgPath { get; set; }
 
         public DateTime Birthday { get; set; }
+        
+        public string? FirstName { get; set; }
+        
+        public string? LastName { get; set; }
+        
+        public string? Avatar { get; set; }
     }
 }

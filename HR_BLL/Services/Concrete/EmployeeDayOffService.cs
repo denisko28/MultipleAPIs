@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -25,6 +26,12 @@ namespace HR_BLL.Services.Concrete
             this.mapper = mapper;
             employeeDayOffRepository = unitOfWork.EmployeeDayOffRepository;
         }
+        
+        public async Task<IEnumerable<EmployeeDayOffResponse>> GetAllCompleteEntities()
+        {
+            var results = await employeeDayOffRepository.GetAllCompleteEntities();
+            return results.Select(mapper.Map<object, EmployeeDayOffResponse>);
+        }
 
         public async Task<IEnumerable<EmployeeDayOffResponse>> GetAllAsync()
         {
@@ -36,6 +43,18 @@ namespace HR_BLL.Services.Concrete
         {
             var result = await employeeDayOffRepository.GetByIdAsync(id);
             return mapper.Map<EmployeeDayOff, EmployeeDayOffResponse>(result);
+        }
+
+        public async Task<IEnumerable<EmployeeDayOffResponse>> GetCompleteEntitiesByEmployee(int employeeUserId)
+        {
+            var results = await employeeDayOffRepository.GetCompleteEntitiesByEmployee(employeeUserId);
+            return results.Select(mapper.Map<object, EmployeeDayOffResponse>);
+        }
+        
+        public async Task<IEnumerable<EmployeeDayOffResponse>> GetCompleteEntitiesByDate(DateTime date)
+        {
+            var results = await employeeDayOffRepository.GetCompleteEntitiesByDate(date);
+            return results.Select(mapper.Map<object, EmployeeDayOffResponse>);
         }
 
         public async Task<int> InsertAsync(EmployeeDayOffRequest request)

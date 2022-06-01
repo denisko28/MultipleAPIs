@@ -7,8 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Customers_BLL\Customers_BLL.csproj"/>
-      <ProjectReference Include="..\Customers_DAL\Customers_DAL.csproj"/>
+      <ProjectReference Include="..\Customers_BLL\Customers_BLL.csproj" />
+      <ProjectReference Include="..\Customers_DAL\Customers_DAL.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.8" />
     </ItemGroup>
 
 </Project>

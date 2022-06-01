@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using HR_BLL.DTO.Requests;
@@ -14,58 +13,82 @@ namespace HR_BLL.Services.Concrete
 {
     public class EmployeeService : IEmployeeService
     {
-        private readonly IUnitOfWork unitOfWork;
-
         private readonly IMapper mapper;
 
         private readonly IEmployeeRepository employeeRepository;
+        
+        private readonly IUserRepository userRepository;
 
         public EmployeeService(IUnitOfWork unitOfWork, IMapper mapper) 
         {
-            this.unitOfWork = unitOfWork;
             this.mapper = mapper;
             employeeRepository = unitOfWork.EmployeeRepository;
+            userRepository = unitOfWork.UserRepository;
         }
 
         public async Task<IEnumerable<EmployeeResponse>> GetAllAsync()
         {
-            var results = await employeeRepository.GetAllAsync();
-            return results.Select(mapper.Map<Employee, EmployeeResponse>);
+            var employees = await employeeRepository.GetAllAsync();
+            var responses = new List<EmployeeResponse>();
+            foreach (var employee in employees)
+            {
+                var response = mapper.Map<Employee, EmployeeResponse>(employee);
+                var user = await userRepository.GetByIdAsync(employee.UserId);
+                response.FirstName = user.FirstName;
+                response.LastName = user.LastName;
+                response.Avatar = user.Avatar;
+                responses.Add(response);
+            }
+
+            return responses;
         }
 
         public async Task<EmployeeResponse> GetByIdAsync(int id)
         {
-            var result = await employeeRepository.GetByIdAsync(id);
-            return mapper.Map<Employee, EmployeeResponse>(result);
+            var employee = await employeeRepository.GetByIdAsync(id);
+            var response = mapper.Map<Employee, EmployeeResponse>(employee);
+            var user = await userRepository.GetByIdAsync(employee.UserId);
+            response.FirstName = user.FirstName;
+            response.LastName = user.LastName;
+            response.Avatar = user.Avatar;
+            return response;
         }
 
         public async Task<IEnumerable<EmployeeResponse>> GetByStatusAsync(string status)
         {
-            int statusCode = EmployeeStatusHelper.GetIntStatus(status);
-            var result = await employeeRepository.GetByStatusIdAsync(statusCode);
-            return result.Select(mapper.Map<Employee, EmployeeResponse>);
+            var statusCode = EmployeeStatusHelper.GetIntStatus(status);
+            var employees = await employeeRepository.GetByStatusIdAsync(statusCode);
+            var responses = new List<EmployeeResponse>();
+            foreach (var employee in employees)
+            {
+                var response = mapper.Map<Employee, EmployeeResponse>(employee);
+                var user = await userRepository.GetByIdAsync(employee.UserId);
+                response.FirstName = user.FirstName;
+                response.LastName = user.LastName;
+                response.Avatar = user.Avatar;
+                responses.Add(response);
+            }
+
+            return responses;
         }
 
         public async Task<int> InsertAsync(EmployeeRequest request)
         {
             var entity = mapper.Map<EmployeeRequest, Employee>(request);
-            var result = await employeeRepository.InsertAsync(entity);
-            unitOfWork.Commit();
-            return result;
+            var insertedId = await employeeRepository.InsertAsync(entity);
+            return insertedId;
         }
 
         public async Task<bool> UpdateAsync(EmployeeRequest request)
         {
             var entity = mapper.Map<EmployeeRequest, Employee>(request);
             var result = await employeeRepository.UpdateAsync(entity);
-            unitOfWork.Commit();
             return result;
         }
 
         public async Task DeleteByIdAsync(int id)
         {
             await employeeRepository.DeleteByIdAsync(id);
-            unitOfWork.Commit();
         }
     }
 }

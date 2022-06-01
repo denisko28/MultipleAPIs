@@ -26,7 +26,7 @@ namespace Customers_DAL.Repositories.Concrete
 
         public async Task<IEnumerable<PossibleTime>> GetAllAvailableAsync()
         {
-          return await table.Where(possibleTime => possibleTime.Active == true).ToListAsync();
+          return await table.Where(possibleTime => possibleTime.Available == true).ToListAsync();
         }
 
         public async Task UpdateAsync(PossibleTime entity)

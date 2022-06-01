@@ -15,10 +15,12 @@
       <Compile Remove="DTO\Requests\BarberRequest.cs" />
       <Compile Remove="DTO\Responses\BarberResponse.cs" />
       <Compile Remove="DTO\Requests\AppointmentsForBarberRequest.cs" />
+      <Compile Remove="Services\Concrete\TimePickerService.cs" />
+      <Compile Remove="Services\Abstract\ITimePickerService.cs" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Customers_DAL\Customers_DAL.csproj"/>
+      <ProjectReference Include="..\Customers_DAL\Customers_DAL.csproj" />
     </ItemGroup>
 
 </Project>

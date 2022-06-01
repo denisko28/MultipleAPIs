@@ -2,7 +2,7 @@ using System;
 
 namespace Customers_BLL.DTO.Responses
 {
-    public class AppointmentResponse
+    public class CustomersAppointmentResponse
     {
         public int Id { get; set; }
         
@@ -12,10 +12,14 @@ namespace Customers_BLL.DTO.Responses
         
         public string? AppointmentStatus { get; set; }
         
+        public string? ChairNum { get; set; }
+        
         public DateTime AppDate { get; set; }
         
         public TimeSpan BeginTime { get; set; }
         
         public TimeSpan EndTime { get; set; }
+        
+        public string? BarberName { get; set; }
     }
 }

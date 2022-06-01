@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using HR_DAL.Entities;
 
 namespace HR_DAL.Repositories.Abstract
 {
-    public interface IAppointmentRepository : IGenericRepository<Appointment>
+    public interface IAppointmentRepository : IDisposable
     {
-        Task<IEnumerable<Appointment>> GetAppointmentsByBarberIdAndDate(int barberId, string date);
+        Task<IEnumerable<Appointment>> GetAppointments(int barberId, string date);
     }
 }

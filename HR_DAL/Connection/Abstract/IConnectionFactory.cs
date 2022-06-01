@@ -3,9 +3,9 @@ using System.Data;
 
 namespace HR_DAL.Connection.Abstract
 {
-    public interface IConnectionFactory : IDisposable
+    public interface IConnectionFactory
     {
-        IDbConnection Connect { get; }
+        IDbConnection GetConnection();
 
         string GetConnectionString();
     }

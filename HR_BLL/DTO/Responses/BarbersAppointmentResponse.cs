@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 
-namespace Customers_BLL.DTO.Responses
+namespace HR_BLL.DTO.Responses
 {
-    public class AppointmentResponse
+    public class BarbersAppointmentResponse
     {
         public int Id { get; set; }
         
@@ -17,5 +17,7 @@ namespace Customers_BLL.DTO.Responses
         public TimeSpan BeginTime { get; set; }
         
         public TimeSpan EndTime { get; set; }
+        
+        public string? CustomerName { get; set; }
     }
 }

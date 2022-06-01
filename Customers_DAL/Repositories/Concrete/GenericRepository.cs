@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Customers_DAL.Repositories.Abstract;
 using Customers_DAL.Exceptions;
@@ -13,8 +15,8 @@ namespace Customers_DAL.Repositories.Concrete
         protected readonly DbSet<TEntity> Table;
         protected GenericRepository(BarbershopDbContext dBContext)
         {
-            this.DbContext = dBContext;
-            Table = this.DbContext.Set<TEntity>();
+            DbContext = dBContext;
+            Table = DbContext.Set<TEntity>();
         }
         public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
         {
@@ -23,14 +25,20 @@ namespace Customers_DAL.Repositories.Concrete
         public virtual async Task<TEntity> GetByIdAsync(int id)
         {
             return await Table.FindAsync(id)
-                ?? throw new EntityNotFoundException(GetEntityNotFoundErrorMessage(id));
+                ?? throw new EntityNotFoundException(typeof(TEntity).Name, id);
         }
 
         public abstract Task<TEntity> GetCompleteEntityAsync(int id);
 
         public virtual async Task InsertAsync(TEntity entity)
         {
-           await Table.AddAsync(entity);
+            var propInfo = entity.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .FirstOrDefault(x => x.Name.Equals("Id"));
+
+            if(propInfo != null)
+                propInfo.SetValue(entity, 0);
+            
+            await Table.AddAsync(entity);
         }
 
         public virtual async Task UpdateAsync(TEntity entity)
@@ -43,8 +51,5 @@ namespace Customers_DAL.Repositories.Concrete
             var entity = await GetByIdAsync(id);
             await Task.Run(() => Table.Remove(entity));
         }
-
-        protected static string GetEntityNotFoundErrorMessage(int id) =>
-            $"{typeof(TEntity).Name} with id {id} not found.";
     }
 }

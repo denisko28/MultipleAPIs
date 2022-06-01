@@ -9,20 +9,9 @@ namespace HR_DAL.Connection.Concrete
 {
     public class ConnectionFactory : IConnectionFactory
     {
-        public IDbConnection Connect {
-            get
-            {
-                DbProviderFactories.RegisterFactory("System.Data.SqlClient", SqlClientFactory.Instance);
-                var dbFactory = DbProviderFactories.GetFactory("System.Data.SqlClient");
-                
-                var connection = dbFactory.CreateConnection();
-                if (connection == null) 
-                    throw new Exception("No connection to the database");
-
-                connection.ConnectionString = GetConnectionString();
-                connection.Open();
-                return connection ?? throw new Exception("No connection to the database");
-            }
+        public IDbConnection GetConnection() 
+        {
+            return new SqlConnection(GetConnectionString());
         }
         
         public string GetConnectionString()
@@ -33,11 +22,6 @@ namespace HR_DAL.Connection.Concrete
                 .Build();
             
             return configuration.GetConnectionString("MSSQLConnection");
-        }
-
-        public void Dispose()
-        {
-
         }
     }
 }

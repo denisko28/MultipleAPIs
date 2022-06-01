@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using Customers_DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace Customers_DAL
 {
-    public class BarbershopDbContext : DbContext
+    public partial class BarbershopDbContext : DbContext
     {
         public BarbershopDbContext()
         {
@@ -24,6 +24,7 @@ namespace Customers_DAL
         public virtual DbSet<DayOff> DayOffs { get; set; } = null!;
         public virtual DbSet<Employee> Employees { get; set; } = null!;
         public virtual DbSet<EmployeeDayOff> EmployeeDayOffs { get; set; } = null!;
+        public virtual DbSet<PossibleTime> PossibleTimes { get; set; } = null!;
         public virtual DbSet<Service> Services { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
 
@@ -47,22 +48,19 @@ namespace Customers_DAL
             {
                 entity.ToTable("Appointment");
 
+                entity.Property(e => e.AppointmentStatusId).HasDefaultValue(1);
+                
                 entity.Property(e => e.AppDate).HasColumnType("date");
 
                 entity.HasOne(d => d.Barber)
                     .WithMany(p => p.Appointments)
-                    .HasForeignKey(d => d.BarberId)
+                    .HasForeignKey(d => d.BarberUserId)
                     .HasConstraintName("FK__Appointme__Barbe__3D5E1FD2");
 
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Appointments)
-                    .HasForeignKey(d => d.CustomerId)
+                    .HasForeignKey(d => d.CustomerUserId)
                     .HasConstraintName("FK__Appointme__Custo__3E52440B");
-            });
-
-            modelBuilder.Entity<PossibleTime>(entity =>
-            {
-                entity.ToTable("PossibleTime");
             });
 
             modelBuilder.Entity<AppointmentService>(entity =>
@@ -82,12 +80,18 @@ namespace Customers_DAL
 
             modelBuilder.Entity<Barber>(entity =>
             {
+                entity.HasKey(e => e.EmployeeUserId)
+                    .HasName("PK_Barber_User");
+
                 entity.ToTable("Barber");
 
+                entity.Property(e => e.EmployeeUserId).ValueGeneratedNever();
+
                 entity.HasOne(d => d.Employee)
-                    .WithMany(p => p.Barbers)
-                    .HasForeignKey(d => d.EmployeeId)
-                    .HasConstraintName("FK__Barber__Employee__31EC6D26");
+                    .WithOne(p => p.Barber)
+                    .HasForeignKey<Barber>(d => d.EmployeeUserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Barber_User");
             });
 
             modelBuilder.Entity<Branch>(entity =>
@@ -101,12 +105,18 @@ namespace Customers_DAL
 
             modelBuilder.Entity<Customer>(entity =>
             {
+                entity.HasKey(e => e.UserId)
+                    .HasName("PK_Customer_User");
+
                 entity.ToTable("Customer");
 
+                entity.Property(e => e.UserId).ValueGeneratedNever();
+
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.Customers)
-                    .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__Customer__UserId__34C8D9D1");
+                    .WithOne(p => p.Customer)
+                    .HasForeignKey<Customer>(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Customer_User");
             });
 
             modelBuilder.Entity<DayOff>(entity =>
@@ -120,13 +130,16 @@ namespace Customers_DAL
 
             modelBuilder.Entity<Employee>(entity =>
             {
+                entity.HasKey(e => e.UserId)
+                    .HasName("PK_Employee_User");
+
                 entity.ToTable("Employee");
+
+                entity.Property(e => e.UserId).ValueGeneratedNever();
 
                 entity.Property(e => e.Address).HasMaxLength(80);
 
                 entity.Property(e => e.Birthday).HasColumnType("date");
-
-                entity.Property(e => e.PassportImgPath).IsUnicode(false);
 
                 entity.HasOne(d => d.Branch)
                     .WithMany(p => p.Employees)
@@ -134,9 +147,10 @@ namespace Customers_DAL
                     .HasConstraintName("FK__Employee__Branch__29572725");
 
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.Employees)
-                    .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__Employee__UserId__286302EC");
+                    .WithOne(p => p.Employee)
+                    .HasForeignKey<Employee>(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Employee_User");
             });
 
             modelBuilder.Entity<EmployeeDayOff>(entity =>
@@ -145,13 +159,23 @@ namespace Customers_DAL
 
                 entity.HasOne(d => d.DayOff)
                     .WithMany(p => p.EmployeeDayOffs)
+                    .OnDelete(DeleteBehavior.ClientCascade)
                     .HasForeignKey(d => d.DayOffId)
                     .HasConstraintName("FK__EmployeeD__DayOf__2F10007B");
 
-                entity.HasOne(d => d.Employee)
+                entity.HasOne(d => d.EmployeeUser)
                     .WithMany(p => p.EmployeeDayOffs)
-                    .HasForeignKey(d => d.EmployeeId)
+                    .OnDelete(DeleteBehavior.ClientCascade)
+                    .HasForeignKey(d => d.EmployeeUserId)
                     .HasConstraintName("FK__EmployeeD__Emplo__2E1BDC42");
+            });
+
+            modelBuilder.Entity<PossibleTime>(entity =>
+            {
+                entity.HasKey(e => e.Time)
+                    .HasName("PK__Possible__8E79CB0049844667");
+
+                entity.ToTable("PossibleTime");
             });
 
             modelBuilder.Entity<Service>(entity =>
@@ -169,19 +193,14 @@ namespace Customers_DAL
             {
                 entity.ToTable("User_");
 
-                entity.Property(e => e.Avatar).IsUnicode(false);
-
                 entity.Property(e => e.FirstName).HasMaxLength(15);
 
                 entity.Property(e => e.LastName).HasMaxLength(15);
             });
 
-            // OnModelCreatingPartial(modelBuilder);
+            //OnModelCreatingPartial(modelBuilder);
         }
 
-        // private void OnModelCreatingPartial(ModelBuilder modelBuilder)
-        // {
-        //     throw new NotImplementedException();
-        // }
+        //partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

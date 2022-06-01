@@ -21,7 +21,7 @@ namespace HR_API.Controllers
             this.employeeDayOffService = employeeDayOffService;
         }
 
-        // GET: api/Employee
+        // GET: api/EmployeeDayOff
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -29,7 +29,7 @@ namespace HR_API.Controllers
         {
             try
             {
-                var results = await employeeDayOffService.GetAllAsync();
+                var results = await employeeDayOffService.GetAllCompleteEntities();
                 return Ok(results);
             }
             catch (Exception e)
@@ -38,7 +38,7 @@ namespace HR_API.Controllers
             }
         }
 
-        // GET: api/Employee/5
+        // GET: api/EmployeeDayOff/5
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -60,7 +60,7 @@ namespace HR_API.Controllers
             }
         }
 
-        // POST: api/Employee
+        // POST: api/EmployeeDayOff
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -77,7 +77,7 @@ namespace HR_API.Controllers
             }
         }
 
-        // PUT: api/Employee
+        // PUT: api/EmployeeDayOff
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -94,7 +94,7 @@ namespace HR_API.Controllers
             }
         }
 
-        // DELETE: api/Employee
+        // DELETE: api/EmployeeDayOff
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -105,6 +105,10 @@ namespace HR_API.Controllers
             {
                 await employeeDayOffService.DeleteByIdAsync(id);
                 return Ok();
+            }
+            catch (EntityNotFoundException e)
+            {
+                return NotFound(new { e.Message });
             }
             catch (Exception e)
             {

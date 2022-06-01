@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 using Dapper;
 using HR_DAL.Connection.Abstract;
@@ -7,17 +8,27 @@ using HR_DAL.Repositories.Abstract;
 
 namespace HR_DAL.Repositories.Concrete
 {
-    public class AppointmentRepository : GenericRepository<Appointment>, IAppointmentRepository
+    public class AppointmentRepository : IAppointmentRepository
     {
-        public AppointmentRepository(IConnectionFactory connectionFactory) : base(connectionFactory)
+        protected readonly IDbConnection Connection;
+
+        public AppointmentRepository(IConnectionFactory connectionFactory)
         {
+            Connection = connectionFactory.GetConnection();
+            Connection.Open();
         }
 
-        public async Task<IEnumerable<Appointment>> GetAppointmentsByBarberIdAndDate(int barberId, string date) 
+        public async Task<IEnumerable<Appointment>> GetAppointments(int barberId, string date) 
         {
-            const string sql = "SELECT * FROM Appointment WHERE BarberId = @BarberId AND AppDate >= CONVERT(date, @_Date)";
-            var values = new { BarberId = barberId, _Date = date };
-            return await Connection.Connect.QueryAsync<Appointment>(sql, values);
+            const string sql = "SELECT * FROM Appointment WHERE BarberUserId = @BarberUserId AND AppDate = CONVERT(date, @_Date)";
+            var values = new { BarberUserId = barberId, _Date = date };
+            return await Connection.QueryAsync<Appointment>(sql, values);
+        }
+        
+        public void Dispose()
+        {
+            Connection.Close();
+            Connection.Dispose();
         }
     }
 }

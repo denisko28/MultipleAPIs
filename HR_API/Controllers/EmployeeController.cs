@@ -64,6 +64,27 @@ namespace HR_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
             }
         }
+        
+        // GET: api/Employee/statusId/2
+        [HttpGet("statusId/{status}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> GetByStatus(string status)
+        {
+            try
+            {
+                IEnumerable<EmployeeResponse> results = await employeeService.GetByStatusAsync(status);
+                return Ok(results);
+            }
+            catch (EntityNotFoundException e)
+            {
+                return NotFound(new { e.Message });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+            }
+        }
 
         // POST: api/Employee
         [HttpPost]
@@ -136,23 +157,6 @@ namespace HR_API.Controllers
             {
                 await employeeService.DeleteByIdAsync(id);
                 return Ok();
-            }
-            catch (Exception e)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
-            }
-        }
-
-        // GET: api/Employee/statusId/2
-        [HttpGet("statusId/{status}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> GetByStatus(string status)
-        {
-            try
-            {
-                IEnumerable<EmployeeResponse> results = await employeeService.GetByStatusAsync(status);
-                return Ok(results);
             }
             catch (Exception e)
             {

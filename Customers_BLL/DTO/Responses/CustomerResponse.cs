@@ -1,10 +1,10 @@
-﻿namespace HR_BLL.DTO.Responses
+namespace Customers_BLL.DTO.Responses
 {
-    public class BarberResponse
+    public class CustomerResponse
     {
-        public int EmployeeUserId { get; set; }
+        public int UserId { get; set; }
         
-        public int ChairNum { get; set; }
+        public int VisitsNum { get; set; }
         
         public string? FirstName { get; set; }
         

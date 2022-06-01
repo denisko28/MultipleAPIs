@@ -13,8 +13,6 @@ namespace HR_BLL.Services.Concrete
 {
     public class BarberService : IBarberService
     {
-        private readonly IUnitOfWork unitOfWork;
-
         private readonly IMapper mapper;
 
         private readonly IBarberRepository barberRepository;
@@ -27,7 +25,6 @@ namespace HR_BLL.Services.Concrete
 
         public BarberService(IUnitOfWork unitOfWork, IMapper mapper) 
         {
-            this.unitOfWork = unitOfWork;
             this.mapper = mapper;
             barberRepository = unitOfWork.BarberRepository;
             appointmentRepository = unitOfWork.AppointmentRepository;
@@ -37,26 +34,40 @@ namespace HR_BLL.Services.Concrete
 
         public async Task<IEnumerable<BarberResponse>> GetAllAsync()
         {
-            var results = await barberRepository.GetAllAsync();
-            return results.Select(mapper.Map<Barber, BarberResponse>);
+            var barbers = await barberRepository.GetAllAsync();
+            var responses = new List<BarberResponse>();
+            foreach (var barber in barbers)
+            {
+                var response = mapper.Map<Barber, BarberResponse>(barber);
+                var user = await userRepository.GetByIdAsync(barber.EmployeeUserId);
+                response.FirstName = user.FirstName;
+                response.LastName = user.LastName;
+                response.Avatar = user.Avatar;
+                responses.Add(response);
+            }
+
+            return responses;
         }
 
         public async Task<BarberResponse> GetByIdAsync(int id)
         {
-            var result = await barberRepository.GetByIdAsync(id);
-            return mapper.Map<Barber, BarberResponse>(result);
+            var barber = await barberRepository.GetByIdAsync(id);
+            var response = mapper.Map<Barber, BarberResponse>(barber);
+            var user = await userRepository.GetByIdAsync(barber.EmployeeUserId);
+            response.FirstName = user.FirstName;
+            response.LastName = user.LastName;
+            response.Avatar = user.Avatar;
+            return response;
         }
 
-        public async Task<IEnumerable<BarbersAppointmentsResponse>> GetBarbersAppointmentsAsync(BarbersAppointmentsRequest request)
+        public async Task<IEnumerable<BarbersAppointmentResponse>> GetBarbersAppointmentsAsync(int barberId, string dateStr)
         {
-            request._Date ??= "";
-
-            var appointments = await appointmentRepository.GetAppointmentsByBarberIdAndDate(request.BarberId, request._Date);
-            var responses = new List<BarbersAppointmentsResponse>();
+            var appointments = await appointmentRepository.GetAppointments(barberId, dateStr);
+            var responses = new List<BarbersAppointmentResponse>();
             foreach (var appointment in appointments)
             {
-                var response = mapper.Map<Appointment, BarbersAppointmentsResponse>(appointment);
-                var customer = await customerRepository.GetByIdAsync(appointment.CustomerId);
+                var response = mapper.Map<Appointment, BarbersAppointmentResponse>(appointment);
+                var customer = await customerRepository.GetByIdAsync(appointment.CustomerUserId);
                 var user = await userRepository.GetByIdAsync(customer.UserId);
                 response.CustomerName = $"{user.FirstName} {user.LastName}";
                 responses.Add(response);
@@ -67,23 +78,20 @@ namespace HR_BLL.Services.Concrete
         public async Task<int> InsertAsync(BarberRequest request)
         {
             var entity = mapper.Map<BarberRequest, Barber>(request);
-            var result = await barberRepository.InsertAsync(entity);
-            unitOfWork.Commit();
-            return result;
+            var insertedId = await barberRepository.InsertAsync(entity);
+            return insertedId;
         }
 
         public async Task<bool> UpdateAsync(BarberRequest request)
         {
             var entity = mapper.Map<BarberRequest, Barber>(request);
             var result = await barberRepository.UpdateAsync(entity);
-            unitOfWork.Commit();
             return result;
         }
 
         public async Task DeleteByIdAsync(int id)
         {
             await barberRepository.DeleteByIdAsync(id);
-            unitOfWork.Commit();
         }
     }
 }

@@ -22,7 +22,7 @@ namespace HR_API.Controllers
             this.barberService = barberService;
         }
 
-        // GET: api/Employee
+        // GET: api/Barber
         [Microsoft.AspNetCore.Mvc.HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -39,7 +39,7 @@ namespace HR_API.Controllers
             }
         }
 
-        // GET: api/Employee/5
+        // GET: api/Barber/5
         [Microsoft.AspNetCore.Mvc.HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -65,12 +65,11 @@ namespace HR_API.Controllers
         [Microsoft.AspNetCore.Mvc.HttpGet("BarbersAppointments")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<BarbersAppointmentsResponse>>> GetBarbersAppointments([FromUri] int barberId, [FromUri] string date)
+        public async Task<ActionResult<IEnumerable<BarbersAppointmentResponse>>> GetBarbersAppointments([FromUri] int barberId, [FromUri] string date)
         {
             try
             {
-                var request = new BarbersAppointmentsRequest{ BarberId = barberId, _Date = date };
-                IEnumerable<BarbersAppointmentsResponse> result = await barberService.GetBarbersAppointmentsAsync(request);
+                IEnumerable<BarbersAppointmentResponse> result = await barberService.GetBarbersAppointmentsAsync(barberId, date);
                 return Ok(result);
             }
             catch (Exception e)
@@ -79,7 +78,7 @@ namespace HR_API.Controllers
             }
         }
 
-        // POST: api/Employee
+        // POST: api/Barber
         [Microsoft.AspNetCore.Mvc.HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -96,7 +95,7 @@ namespace HR_API.Controllers
             }
         }
 
-        // PUT: api/Employee
+        // PUT: api/Barber
         [Microsoft.AspNetCore.Mvc.HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -113,7 +112,7 @@ namespace HR_API.Controllers
             }
         }
 
-        // DELETE: api/Employee
+        // DELETE: api/Barber
         [Microsoft.AspNetCore.Mvc.HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -124,6 +123,10 @@ namespace HR_API.Controllers
             {
                 await barberService.DeleteByIdAsync(id);
                 return Ok();
+            }
+            catch (EntityNotFoundException e)
+            {
+                return NotFound(new { e.Message });
             }
             catch (Exception e)
             {

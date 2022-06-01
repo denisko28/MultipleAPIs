@@ -7,8 +7,10 @@ namespace Customers_DAL.Repositories.Abstract
 {
     public interface IAppointmentRepository : IGenericRepository<Appointment>
     {
-        Task<IEnumerable<Appointment>> GetAppointments(DateTime date, int barberId);
+        Task<IEnumerable<Appointment>> GetByDateAsync(DateTime date);
 
-        Task<IEnumerable<Service>> GetAppointmentServices(int id);
+        Task<IEnumerable<Appointment>> GetByDateAndBarberAsync(DateTime date, int barberId);
+
+        Task<IEnumerable<Service>> GetAppointmentServicesAsync(int id);
     }
 }
