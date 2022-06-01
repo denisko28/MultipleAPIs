@@ -4,7 +4,7 @@ using Customers_DAL.Entities;
 
 namespace Customers_DAL.Repositories.Abstract
 {
-    public interface IAppointmentServiceRepository : IGenericRepository<AppointmentService>
+    public interface IAppointmentServiceRepository
     {
         Task InsertRangeAsync(IEnumerable<AppointmentService> entities);
     }

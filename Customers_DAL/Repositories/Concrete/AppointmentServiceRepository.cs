@@ -7,25 +7,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Customers_DAL.Repositories.Concrete
 {
-    public class AppointmentServiceRepository : GenericRepository<AppointmentService>, IAppointmentServiceRepository
+    public class AppointmentServiceRepository : IAppointmentServiceRepository
     {
-        public AppointmentServiceRepository(BarbershopDbContext dBContext) : base(dBContext)
-        {
-        }
-        
-        public override async Task<AppointmentService> GetCompleteEntityAsync(int id)
-        {
-            var appointmentService = await Table
-                .Include(appService => appService.Appointment)
-                .Include(appService => appService.Service)
-                .SingleOrDefaultAsync(customer => customer.Id == id);
+        private readonly BarbershopDbContext dbContext;
 
-            return appointmentService ?? throw new EntityNotFoundException(GetEntityNotFoundErrorMessage(id));
+        private readonly DbSet<AppointmentService> table;
+        
+        public AppointmentServiceRepository(BarbershopDbContext dbContext)
+        {
+            this.dbContext = dbContext;
+            table = this.dbContext.Set<AppointmentService>();
         }
         
         public async Task InsertRangeAsync(IEnumerable<AppointmentService> entities)
         {
-            await Table.AddRangeAsync(entities);
+            await table.AddRangeAsync(entities);
         }
     }
 }

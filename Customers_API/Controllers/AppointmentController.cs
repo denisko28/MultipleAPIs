@@ -1,4 +1,5 @@
 using System;
+using System.Web.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Customers_BLL.DTO.Requests;
@@ -11,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Customers_API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     public class AppointmentController : ControllerBase
     {
         private readonly IAppointmentService appointmentService;
@@ -21,8 +22,8 @@ namespace Customers_API.Controllers
             this.appointmentService = appointmentService;
         }
 
-        // GET: api/Employee
-        [HttpGet]
+        // GET: api/Appointment
+        [Microsoft.AspNetCore.Mvc.HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<AppointmentResponse>>> Get()
@@ -38,8 +39,8 @@ namespace Customers_API.Controllers
             }
         }
 
-        // GET: api/Employee/5
-        [HttpGet("{id:int}")]
+        // GET: api/Appointment/5
+        [Microsoft.AspNetCore.Mvc.HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -59,12 +60,68 @@ namespace Customers_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
             }
         }
-
-        // POST: api/Employee
-        [HttpPost]
+        
+        // GET: api/Appointment/GetByDate/
+        [Microsoft.AspNetCore.Mvc.HttpGet("GetByDate")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Post([FromBody] AppointmentRequest request)
+        public async Task<ActionResult<IEnumerable<AppointmentResponse>>> Get([FromUri] string date)
+        {
+            try
+            {
+                IEnumerable<AppointmentResponse> results = await appointmentService.GetByDateAsync(date);
+                return Ok(results);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+            }
+        }
+        
+        // GET: api/Appointment/GetServices/4
+        [Microsoft.AspNetCore.Mvc.HttpGet("GetServices/{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<IEnumerable<ServiceResponse>>> GetServices(int id)
+        {
+            try
+            {
+                IEnumerable<ServiceResponse> results = await appointmentService.GetAppointmentServicesAsync(id);
+                return Ok(results);
+            }
+            catch (EntityNotFoundException e)
+            {
+                return NotFound(new { e.Message });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+            }
+        }
+
+        // GET: api/Appointment/GetAvailableTime/?barberId=4&duration=15&date=2022-03-08
+        [Microsoft.AspNetCore.Mvc.HttpGet("GetAvailableTime")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<IEnumerable<TimeResponse>>> GetAvailableTime([FromUri] int barberId, [FromUri] int duration, [FromUri] string date)
+        {
+            try
+            {
+                var result = await appointmentService.GetAvailableTimeAsync(barberId, duration, date);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+            }
+        }
+
+        // POST: api/Appointment
+        [Microsoft.AspNetCore.Mvc.HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> Post([Microsoft.AspNetCore.Mvc.FromBody] AppointmentPostRequest request)
         {
             try
             {
@@ -77,11 +134,11 @@ namespace Customers_API.Controllers
             }
         }
 
-        // PUT: api/Employee
-        [HttpPut]
+        // PUT: api/Appointment
+        [Microsoft.AspNetCore.Mvc.HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Put([FromBody] AppointmentRequest request)
+        public async Task<ActionResult> Put([Microsoft.AspNetCore.Mvc.FromBody] AppointmentRequest request)
         {
             try
             {
@@ -94,8 +151,8 @@ namespace Customers_API.Controllers
             }
         }
 
-        // DELETE: api/Employee
-        [HttpDelete("{id:int}")]
+        // DELETE: api/Appointment
+        [Microsoft.AspNetCore.Mvc.HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -105,6 +162,10 @@ namespace Customers_API.Controllers
             {
                 await appointmentService.DeleteByIdAsync(id);
                 return Ok();
+            }
+            catch (EntityNotFoundException e)
+            {
+                return NotFound(new { e.Message });
             }
             catch (Exception e)
             {
