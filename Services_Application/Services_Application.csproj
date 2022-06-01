@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="11.0.1" />
+      <PackageReference Include="FluentValidation.AspNetCore" Version="11.0.1" />
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.0.1" />
+      <PackageReference Include="MediatR.Contracts" Version="1.0.1" />
+      <PackageReference Include="MongoDB.Driver" Version="2.15.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="MediatR, Version=10.0.0.0, Culture=neutral, PublicKeyToken=bb9a41a5e8aaa7e2">
+        <HintPath>..\..\..\..\..\.nuget\packages\mediatr\10.0.1\lib\netstandard2.1\MediatR.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Services_Domain\Services_Domain.csproj" />
+      <ProjectReference Include="..\Services_Infrastructure\Services_Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Queries\ServiceDiscounts" />
+      <Folder Include="Queries\Services" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Exceptions\DeleteFailureException.cs" />
+    </ItemGroup>
+
+</Project>
