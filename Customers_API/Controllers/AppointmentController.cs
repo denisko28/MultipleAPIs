@@ -1,5 +1,4 @@
 using System;
-using System.Web.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Customers_BLL.DTO.Requests;
@@ -12,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Customers_API.Controllers
 {
     [ApiController]
-    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
+    [Route("api/[controller]")]
     public class AppointmentController : ControllerBase
     {
         private readonly IAppointmentService appointmentService;
@@ -23,7 +22,7 @@ namespace Customers_API.Controllers
         }
 
         // GET: api/Appointment
-        [Microsoft.AspNetCore.Mvc.HttpGet]
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<AppointmentResponse>>> Get()
@@ -40,7 +39,7 @@ namespace Customers_API.Controllers
         }
 
         // GET: api/Appointment/5
-        [Microsoft.AspNetCore.Mvc.HttpGet("{id:int}")]
+        [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -65,7 +64,7 @@ namespace Customers_API.Controllers
         [Microsoft.AspNetCore.Mvc.HttpGet("GetByDate")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<AppointmentResponse>>> Get([FromUri] string date)
+        public async Task<ActionResult<IEnumerable<AppointmentResponse>>> Get([FromQuery] string date)
         {
             try
             {
@@ -79,7 +78,7 @@ namespace Customers_API.Controllers
         }
         
         // GET: api/Appointment/GetServices/4
-        [Microsoft.AspNetCore.Mvc.HttpGet("GetServices/{id:int}")]
+        [HttpGet("GetServices/{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -101,10 +100,10 @@ namespace Customers_API.Controllers
         }
 
         // GET: api/Appointment/GetAvailableTime/?barberId=4&duration=15&date=2022-03-08
-        [Microsoft.AspNetCore.Mvc.HttpGet("GetAvailableTime")]
+        [HttpGet("GetAvailableTime")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<TimeResponse>>> GetAvailableTime([FromUri] int barberId, [FromUri] int duration, [FromUri] string date)
+        public async Task<ActionResult<IEnumerable<TimeResponse>>> GetAvailableTime([FromQuery] int barberId, [FromQuery] int duration, [FromQuery] string date)
         {
             try
             {
@@ -118,10 +117,10 @@ namespace Customers_API.Controllers
         }
 
         // POST: api/Appointment
-        [Microsoft.AspNetCore.Mvc.HttpPost]
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Post([Microsoft.AspNetCore.Mvc.FromBody] AppointmentPostRequest request)
+        public async Task<ActionResult> Post([FromBody] AppointmentPostRequest request)
         {
             try
             {
@@ -135,10 +134,10 @@ namespace Customers_API.Controllers
         }
 
         // PUT: api/Appointment
-        [Microsoft.AspNetCore.Mvc.HttpPut]
+        [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Put([Microsoft.AspNetCore.Mvc.FromBody] AppointmentRequest request)
+        public async Task<ActionResult> Put([FromBody] AppointmentRequest request)
         {
             try
             {
@@ -152,7 +151,7 @@ namespace Customers_API.Controllers
         }
 
         // DELETE: api/Appointment
-        [Microsoft.AspNetCore.Mvc.HttpDelete("{id:int}")]
+        [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

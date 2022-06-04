@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Web.Http;
 using HR_BLL.DTO.Requests;
 using HR_BLL.DTO.Responses;
 using HR_BLL.Services.Abstract;
@@ -12,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HR_API.Controllers
 {
     [ApiController]
-    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
+    [Route("api/[controller]")]
     public class BarberController : ControllerBase
     {
         private readonly IBarberService barberService;
@@ -23,7 +22,7 @@ namespace HR_API.Controllers
         }
 
         // GET: api/Barber
-        [Microsoft.AspNetCore.Mvc.HttpGet]
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<BarberResponse>>> Get()
@@ -40,7 +39,7 @@ namespace HR_API.Controllers
         }
 
         // GET: api/Barber/5
-        [Microsoft.AspNetCore.Mvc.HttpGet("{id:int}")]
+        [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -62,10 +61,10 @@ namespace HR_API.Controllers
         }
 
         // GET: api/Barber/BarbersAppointments/?barberId=4&date=2022-02-27
-        [Microsoft.AspNetCore.Mvc.HttpGet("BarbersAppointments")]
+        [HttpGet("BarbersAppointments")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<BarbersAppointmentResponse>>> GetBarbersAppointments([FromUri] int barberId, [FromUri] string date)
+        public async Task<ActionResult<IEnumerable<BarbersAppointmentResponse>>> GetBarbersAppointments([FromQuery] int barberId, [FromQuery] string date)
         {
             try
             {
@@ -79,10 +78,10 @@ namespace HR_API.Controllers
         }
 
         // POST: api/Barber
-        [Microsoft.AspNetCore.Mvc.HttpPost]
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Post([System.Web.Http.FromBody] BarberRequest request)
+        public async Task<ActionResult> Post([FromQuery] BarberRequest request)
         {
             try
             {
@@ -96,10 +95,10 @@ namespace HR_API.Controllers
         }
 
         // PUT: api/Barber
-        [Microsoft.AspNetCore.Mvc.HttpPut]
+        [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Put([System.Web.Http.FromBody] BarberRequest request)
+        public async Task<ActionResult> Put([FromQuery] BarberRequest request)
         {
             try
             {
@@ -113,7 +112,7 @@ namespace HR_API.Controllers
         }
 
         // DELETE: api/Barber
-        [Microsoft.AspNetCore.Mvc.HttpDelete("{id:int}")]
+        [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
