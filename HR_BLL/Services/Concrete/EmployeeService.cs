@@ -19,11 +19,14 @@ namespace HR_BLL.Services.Concrete
         
         private readonly IUserRepository userRepository;
 
-        public EmployeeService(IUnitOfWork unitOfWork, IMapper mapper) 
+        private readonly IImageService imageService;
+
+        public EmployeeService(IUnitOfWork unitOfWork, IMapper mapper, IImageService imageService) 
         {
             this.mapper = mapper;
             employeeRepository = unitOfWork.EmployeeRepository;
             userRepository = unitOfWork.UserRepository;
+            this.imageService = imageService;
         }
 
         public async Task<IEnumerable<EmployeeResponse>> GetAllAsync()
@@ -84,6 +87,13 @@ namespace HR_BLL.Services.Concrete
             var entity = mapper.Map<EmployeeRequest, Employee>(request);
             var result = await employeeRepository.UpdateAsync(entity);
             return result;
+        }
+        
+        public async Task SetPassportForEmployeeAsync(ImageUploadRequest request)
+        {
+            var employee = await employeeRepository.GetByIdAsync(request.Id);
+            employee.PassportImgPath = await imageService.SaveImageAsync(request.Image);
+            await employeeRepository.UpdateAsync(employee);
         }
 
         public async Task DeleteByIdAsync(int id)

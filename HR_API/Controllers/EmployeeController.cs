@@ -122,18 +122,15 @@ namespace HR_API.Controllers
 
         // PUT: api/Employee/passport
         // { body: form-data }
-        [HttpPut("passport")]
+        [HttpPost("passport")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> PutPassport([FromForm] ImageUploadRequest request)
+        public async Task<ActionResult> AttachPassport([FromForm] ImageUploadRequest request)
         {
             try
             {
-                EmployeeResponse response = await employeeService.GetByIdAsync(request.Id);
-                var employee = mapper.Map<EmployeeResponse, EmployeeRequest>(response);
-                employee.PassportImgPath = await imageService.SaveImageAsync(request.Image);
-                await employeeService.UpdateAsync(employee);
+                await employeeService.SetPassportForEmployeeAsync(request);
                 return Ok();
             }
             catch (EntityNotFoundException e)

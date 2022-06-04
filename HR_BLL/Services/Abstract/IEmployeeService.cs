@@ -17,6 +17,8 @@ namespace HR_BLL.Services.Abstract
 
         Task<bool> UpdateAsync(EmployeeRequest request);
 
+        Task SetPassportForEmployeeAsync(ImageUploadRequest request);
+
         Task DeleteByIdAsync(int id);
     }
 }
