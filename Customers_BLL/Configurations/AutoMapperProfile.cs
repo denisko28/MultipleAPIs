@@ -93,11 +93,17 @@ namespace Customers_BLL.Configurations
             CreateMap<Service, ServiceResponse>();
         }
 
+        private void CreateUserMaps()
+        {
+            CreateMap<User, UserResponse>();
+        }
+
         public AutoMapperProfile()
         {
             CreateAppointmentMaps();
             CreateCustomerMaps();
             CreateServiceMaps();
+            CreateUserMaps();
         }
     }
 }

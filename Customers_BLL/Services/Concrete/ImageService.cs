@@ -1,24 +1,24 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using HR_BLL.Services.Abstract;
+using Customers_BLL.Services.Abstract;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
-namespace HR_BLL.Services.Concrete
+namespace Customers_BLL.Services.Concrete
 {
     public class ImageService : IImageService
     {
-        private readonly IWebHostEnvironment environment;
+        private readonly IHostingEnvironment environment;
 
-        public ImageService(IWebHostEnvironment environment)
+        public ImageService(IHostingEnvironment environment)
         {
             this.environment = environment;
         }
 
         public async Task<string> SaveImageAsync(IFormFile? photo)
         {
-            const string imagesFolderPath = "Public/Images/Passports";
+            const string imagesFolderPath = "Public/Images/Avatars";
 
             if (!Directory.Exists($"{environment.WebRootPath}/{imagesFolderPath}/"))
             {

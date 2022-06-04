@@ -1,9 +1,10 @@
-﻿using HR_DAL.Entities;
+﻿using System.Threading.Tasks;
+using HR_DAL.Entities;
 
 namespace HR_DAL.Repositories.Abstract
 {
-    public interface IUserRepository : IGenericRepository<User>
+    public interface IUserRepository
     {
-
+        Task<User> GetByIdAsync(int id);
     }
 }
