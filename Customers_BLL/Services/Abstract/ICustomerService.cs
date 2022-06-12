@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Customers_BLL.DTO.Requests;
 using Customers_BLL.DTO.Responses;
+using Customers_BLL.Helpers;
 
 namespace Customers_BLL.Services.Abstract
 {
@@ -13,11 +14,11 @@ namespace Customers_BLL.Services.Abstract
       
       Task<CustomerResponse> GetCompleteEntityAsync(int id);
 
-      Task<IEnumerable<CustomersAppointmentResponse>> GetCustomersAppointments(int id);
+      Task<IEnumerable<CustomersAppointmentResponse>> GetCustomersAppointments(int customerId, UserClaimsModel userClaims);
 
       Task InsertAsync(CustomerRequest request);
 
-      Task UpdateAsync(CustomerRequest request);
+      Task UpdateAsync(CustomerRequest request, UserClaimsModel userClaims);
 
       Task DeleteByIdAsync(int id);
     }

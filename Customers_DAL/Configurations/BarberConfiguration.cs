@@ -18,8 +18,8 @@ namespace Customers_DAL.Configurations
 
             builder.HasOne(d => d.Employee)
                 .WithOne(p => p.Barber)
+                .OnDelete(DeleteBehavior.ClientNoAction)
                 .HasForeignKey<Barber>(d => d.EmployeeUserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Barber_User");
             
             new BarbersSeeder().Seed(builder);

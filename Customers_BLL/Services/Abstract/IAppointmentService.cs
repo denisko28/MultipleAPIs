@@ -13,6 +13,10 @@ namespace Customers_BLL.Services.Abstract
 
       Task<IEnumerable<AppointmentResponse>> GetByDateAsync(string dateStr);
 
+      Task<IEnumerable<AppointmentResponse>> GetAllForManager(int userId);
+
+      Task<AppointmentResponse> GetByIdForManager(int appointmentId, int userId);
+
       Task<IEnumerable<ServiceResponse>> GetAppointmentServicesAsync(int appointmentId);
 
       Task<IEnumerable<TimeResponse>> GetAvailableTimeAsync(int barberId, int duration, string dateStr);
@@ -20,6 +24,10 @@ namespace Customers_BLL.Services.Abstract
       Task InsertAsync(AppointmentPostRequest request);
 
       Task UpdateAsync(AppointmentRequest request);
+
+      Task UpdateForManagerAsync(AppointmentRequest request, int userId);
+
+      Task UpdateForBarberAsync(AppointmentRequest request, int userId);
 
       Task DeleteByIdAsync(int id);
     }

@@ -47,7 +47,7 @@ namespace Customers_DAL
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
+            
             modelBuilder.UseCollation("Latin1_General_100_CI_AS_SC_UTF8");
             
             modelBuilder.ApplyConfiguration(new AppointmentConfiguration());

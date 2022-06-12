@@ -7,5 +7,7 @@ namespace Customers_DAL.Repositories.Abstract
     public interface IBarberRepository
     {
         Task<IEnumerable<DayOff>> GetBarbersDayOffs(int barberId);
+        
+        Task InsertAsync(Barber barber);
     }
 }

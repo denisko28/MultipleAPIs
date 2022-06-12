@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using HR_BLL.DTO.Requests;
 using HR_BLL.DTO.Responses;
+using HR_BLL.Helpers;
 using HR_BLL.Services.Abstract;
 using HR_DAL.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,7 +41,7 @@ namespace HR_API.Controllers
         }
 
         // GET: api/Branch/5
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -61,6 +63,7 @@ namespace HR_API.Controllers
         }
 
         // POST: api/Branch
+        [Authorize(Roles = UserRoles.Admin)]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -78,6 +81,7 @@ namespace HR_API.Controllers
         }
 
         // PUT: api/Branch
+        [Authorize(Roles = UserRoles.Admin)]
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -95,6 +99,7 @@ namespace HR_API.Controllers
         }
 
         // DELETE: api/Branch
+        [Authorize(Roles = UserRoles.Admin)]
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

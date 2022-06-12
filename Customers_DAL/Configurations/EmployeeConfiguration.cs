@@ -27,8 +27,8 @@ namespace Customers_DAL.Configurations
 
             builder.HasOne(d => d.User)
                 .WithOne(p => p.Employee)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasForeignKey<Employee>(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Employee_User");
             
             new EmployeesSeeder().Seed(builder);

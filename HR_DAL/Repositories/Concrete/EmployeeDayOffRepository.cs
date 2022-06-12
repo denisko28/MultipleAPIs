@@ -16,7 +16,7 @@ namespace HR_DAL.Repositories.Concrete
 
         public async Task<IEnumerable<object>> GetAllCompleteEntities()
         {
-            const string sql = "SELECT * FROM EmployeeDayOff " + 
+            const string sql = "SELECT DayOff.Id, EmployeeUserId, FirstName, LastName, Date_ FROM EmployeeDayOff " + 
                                "INNER JOIN User_ ON EmployeeUserId = User_.Id " + 
                                "INNER JOIN DayOff ON DayOffId = DayOff.Id";
             
@@ -26,7 +26,7 @@ namespace HR_DAL.Repositories.Concrete
         
         public async Task<object> GetCompleteEntityByDayOff(int dayOffId)
         {
-            const string sql = "SELECT * FROM EmployeeDayOff " + 
+            const string sql = "SELECT DayOff.Id, EmployeeUserId, FirstName, LastName, Date_ FROM EmployeeDayOff " + 
                                "INNER JOIN User_ ON EmployeeUserId = User_.Id " + 
                                "INNER JOIN DayOff ON DayOffId = DayOff.Id " +
                                "WHERE DayOffId = @DayOffId";
@@ -35,10 +35,23 @@ namespace HR_DAL.Repositories.Concrete
             object results = await Connection.QuerySingleAsync<object>(sql, values);
             return results;
         }
-        
+
+        public async Task<IEnumerable<object>> GetCompleteEntitiesByBranchId(int branchId)
+        {
+            const string sql = "SELECT DayOff.Id, EmployeeUserId, FirstName, LastName, Date_ FROM EmployeeDayOff " + 
+                               "INNER JOIN Employee ON EmployeeUserId = Employee.UserId " + 
+                               "INNER JOIN User_ ON EmployeeUserId = User_.Id " + 
+                               "INNER JOIN DayOff ON DayOffId = DayOff.Id " +
+                               "WHERE Employee.BranchId = @BranchId";
+            
+            var values = new { BranchId = branchId };
+            IEnumerable<object> results = await Connection.QueryAsync<object>(sql, values);
+            return results;
+        }
+
         public async Task<IEnumerable<DayOff>> GetDayOffsByEmployee(int employeeUserId)
         {
-            const string sql = "SELECT * FROM EmployeeDayOff " + 
+            const string sql = "SELECT DayOff.Id, EmployeeUserId, FirstName, LastName, Date_ FROM EmployeeDayOff " + 
                                "INNER JOIN DayOff ON DayOffId = DayOff.Id " + 
                                "WHERE EmployeeUserId = @EmployeeId";
             
@@ -49,7 +62,7 @@ namespace HR_DAL.Repositories.Concrete
         
         public async Task<IEnumerable<object>> GetCompleteEntitiesByDate(DateTime date)
         {
-            const string sql = "SELECT * FROM EmployeeDayOff " + 
+            const string sql = "SELECT DayOff.Id, EmployeeUserId, FirstName, LastName, Date_ FROM EmployeeDayOff " + 
                                "INNER JOIN User_ ON EmployeeUserId = User_.Id " + 
                                "INNER JOIN DayOff ON DayOffId = DayOff.Id " + 
                                "WHERE Date_ = CONVERT(date, @_Date)";

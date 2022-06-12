@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using HR_BLL.DTO.Requests;
 using HR_BLL.DTO.Responses;
+using HR_BLL.Exceptions;
+using HR_BLL.Helpers;
 using HR_BLL.Services.Abstract;
 using HR_DAL.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +25,7 @@ namespace HR_API.Controllers
         }
 
         // GET: api/Barber
+        [Authorize]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -39,6 +43,7 @@ namespace HR_API.Controllers
         }
 
         // GET: api/Barber/5
+        [Authorize]
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -61,15 +66,28 @@ namespace HR_API.Controllers
         }
 
         // GET: api/Barber/BarbersAppointments/?barberId=4&date=2022-02-27
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.Manager + "," + UserRoles.Barber)]
         [HttpGet("BarbersAppointments")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<BarbersAppointmentResponse>>> GetBarbersAppointments([FromQuery] int barberId, [FromQuery] string date)
         {
             try
             {
-                IEnumerable<BarbersAppointmentResponse> result = await barberService.GetBarbersAppointmentsAsync(barberId, date);
+                var userClaims = UserClaimsHelper.GetUserClaims(HttpContext);
+                IEnumerable<BarbersAppointmentResponse> result =
+                    await barberService.GetBarbersAppointmentsAsync(barberId, date, userClaims);
                 return Ok(result);
+            }
+            catch (EntityNotFoundException e)
+            {
+                return NotFound(new { e.Message });
+            }
+            catch (ForbiddenAccessException e)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new { e.Message });
             }
             catch (Exception e)
             {
@@ -78,32 +96,39 @@ namespace HR_API.Controllers
         }
 
         // POST: api/Barber
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Post([FromQuery] BarberRequest request)
-        {
-            try
-            {
-                await barberService.InsertAsync(request);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
-            }
-        }
+        // [HttpPost]
+        // [ProducesResponseType(StatusCodes.Status200OK)]
+        // [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        // public async Task<ActionResult> Post([FromQuery] BarberRequest request)
+        // {
+        //     try
+        //     {
+        //         await barberService.InsertAsync(request);
+        //         return Ok();
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+        //     }
+        // }
 
         // PUT: api/Barber
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.Barber)]
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Put([FromQuery] BarberRequest request)
         {
             try
             {
-                await barberService.UpdateAsync(request);
+                var userClaims = UserClaimsHelper.GetUserClaims(HttpContext);
+                await barberService.UpdateAsync(request, userClaims);
                 return Ok();
+            }
+            catch (ForbiddenAccessException e)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new { e.Message });
             }
             catch (Exception e)
             {
@@ -112,6 +137,7 @@ namespace HR_API.Controllers
         }
 
         // DELETE: api/Barber
+        [Authorize(Roles = UserRoles.Admin)]
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

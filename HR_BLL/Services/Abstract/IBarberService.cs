@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using HR_BLL.DTO.Requests;
 using HR_BLL.DTO.Responses;
+using HR_BLL.Helpers;
 
 namespace HR_BLL.Services.Abstract
 {
@@ -11,11 +12,11 @@ namespace HR_BLL.Services.Abstract
 
         Task<BarberResponse> GetByIdAsync(int id);
 
-        Task<IEnumerable<BarbersAppointmentResponse>> GetBarbersAppointmentsAsync(int barberId, string dateStr);
+        Task<IEnumerable<BarbersAppointmentResponse>> GetBarbersAppointmentsAsync(int barberId, string dateStr, UserClaimsModel userClaims);
 
         Task<int> InsertAsync(BarberRequest request);
 
-        Task<bool> UpdateAsync(BarberRequest request);
+        Task<bool> UpdateAsync(BarberRequest request, UserClaimsModel userClaims);
 
         Task DeleteByIdAsync(int id);
     }

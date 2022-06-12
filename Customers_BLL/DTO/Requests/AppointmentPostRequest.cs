@@ -11,7 +11,7 @@ namespace Customers_BLL.DTO.Requests
 
         public int CustomerUserId { get; set; }
 
-        public string? AppointmentStatus { get; set; }
+        public string AppointmentStatus { get; set; } = null!;
 
         public DateTime AppDate { get; set; }
 

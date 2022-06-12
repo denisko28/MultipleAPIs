@@ -8,6 +8,7 @@ using Customers_DAL.Repositories.Abstract;
 using Customers_DAL.UnitOfWork.Abstract;
 using Customers_BLL.DTO.Requests;
 using Customers_BLL.DTO.Responses;
+using Customers_BLL.Exceptions;
 using Customers_BLL.Services.Abstract;
 
 namespace Customers_BLL.Services.Concrete
@@ -26,6 +27,8 @@ namespace Customers_BLL.Services.Concrete
 
         private readonly IBarberRepository barberRepository;
 
+        private readonly IEmployeeRepository employeeRepository;
+
         public AppointmentService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
@@ -34,6 +37,7 @@ namespace Customers_BLL.Services.Concrete
             appointmentServiceRepository = unitOfWork.AppointmentServiceRepository;
             possibleTimeRepository = unitOfWork.PossibleTimeRepository;
             barberRepository = unitOfWork.BarberRepository;
+            employeeRepository = unitOfWork.EmployeeRepository;
         }
 
         public async Task<IEnumerable<AppointmentResponse>> GetAllAsync()
@@ -42,12 +46,30 @@ namespace Customers_BLL.Services.Concrete
             return results.Select(mapper.Map<Appointment, AppointmentResponse>);
         }
         
+        public async Task<IEnumerable<AppointmentResponse>> GetAllForManager(int userId)
+        {
+            var employee = await employeeRepository.GetByIdAsync(userId);
+            var result = await appointmentRepository.GetByBranchAsync(employee.Branch.Id);
+            return result.Select(mapper.Map<Appointment, AppointmentResponse>);
+        }
+        
         public async Task<AppointmentResponse> GetByIdAsync(int id)
         {
             var result = await appointmentRepository.GetByIdAsync(id);
             return mapper.Map<Appointment, AppointmentResponse>(result);
         }
-
+        
+        public async Task<AppointmentResponse> GetByIdForManager(int appointmentId, int userId)
+        {
+            var employee = await employeeRepository.GetByIdAsync(userId);
+            var appointment = await appointmentRepository.GetByIdIncludeEmployeeAsync(appointmentId);
+            
+            if(employee.BranchId != appointment.Barber.Employee.BranchId)
+                throw new ForbiddenAccessException($"You don't have access to the appointment with id: {appointmentId}");
+            
+            return mapper.Map<Appointment, AppointmentResponse>(appointment);
+        }
+        
         public async Task<IEnumerable<AppointmentResponse>> GetByDateAsync(string dateStr)
         {
             var date = DateTime.Parse(dateStr);
@@ -131,6 +153,29 @@ namespace Customers_BLL.Services.Concrete
 
         public async Task UpdateAsync(AppointmentRequest request)
         {
+            var entity = mapper.Map<AppointmentRequest, Appointment>(request);
+            await appointmentRepository.UpdateAsync(entity);
+            await unitOfWork.SaveChangesAsync();
+        }
+        
+        public async Task UpdateForManagerAsync(AppointmentRequest request, int userId)
+        {
+            var manager = await employeeRepository.GetByIdAsync(userId);
+            var appointmentBarber = await appointmentRepository.GetAppointmentBarberAsync(request.Id);
+            if (manager.Branch.Id != appointmentBarber.Employee.BranchId)
+                throw new ForbiddenAccessException($"You don't have access to edit appointment with id: {request.Id}");
+            
+            var entity = mapper.Map<AppointmentRequest, Appointment>(request);
+            await appointmentRepository.UpdateAsync(entity);
+            await unitOfWork.SaveChangesAsync();
+        }
+        
+        public async Task UpdateForBarberAsync(AppointmentRequest request, int userId)
+        {
+            var appointmentBarber = await appointmentRepository.GetAppointmentBarberAsync(request.Id);
+            if (userId != appointmentBarber.EmployeeUserId)
+                throw new ForbiddenAccessException($"You don't have access to edit appointment with id: {request.Id}");
+            
             var entity = mapper.Map<AppointmentRequest, Appointment>(request);
             await appointmentRepository.UpdateAsync(entity);
             await unitOfWork.SaveChangesAsync();

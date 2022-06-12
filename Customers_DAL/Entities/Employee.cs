@@ -12,7 +12,7 @@ namespace Customers_DAL.Entities
 
         public int UserId { get; set; }
         
-        public int? BranchId { get; set; }
+        public int BranchId { get; set; }
         
         public int EmployeeStatusId { get; set; }
         
@@ -22,7 +22,7 @@ namespace Customers_DAL.Entities
         
         public DateTime Birthday { get; set; }
 
-        public virtual Branch? Branch { get; set; }
+        public virtual Branch Branch { get; set; }
         
         public virtual User User { get; set; } = null!;
         

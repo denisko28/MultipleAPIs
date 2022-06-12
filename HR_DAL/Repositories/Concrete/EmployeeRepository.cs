@@ -19,6 +19,13 @@ namespace HR_DAL.Repositories.Concrete
             var values = new { Id = id };
             return await Connection.QuerySingleAsync<Employee>(sql, values);
         }
+        
+        public async Task<IEnumerable<Employee>> GetByBranchId(int branchId)
+        {
+            const string sql = @"SELECT * FROM Employee WHERE BranchId = @BranchId";
+            IEnumerable<Employee> results = await Connection.QueryAsync<Employee>(sql, new { BranchId = branchId });
+            return results;
+        }
 
         public async Task<IEnumerable<Employee>> GetByStatusIdAsync(int statusId)
         {

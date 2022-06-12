@@ -1,10 +1,13 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HR_BLL.Services.Abstract
 {
     public interface IImageService
     {
-        Task<string> SaveImageAsync(IFormFile? photo);
+        Task<FileResult> GetPrivateImageAsync(string path);
+        
+        Task<string> SavePrivateImageAsync(IFormFile? photo, string path);
     }
 }

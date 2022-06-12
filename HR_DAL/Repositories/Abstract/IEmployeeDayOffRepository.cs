@@ -11,6 +11,8 @@ namespace HR_DAL.Repositories.Abstract
 
         Task<object> GetCompleteEntityByDayOff(int dayOffId);
 
+        Task<IEnumerable<object>> GetCompleteEntitiesByBranchId(int branchId);
+
         Task<IEnumerable<DayOff>> GetDayOffsByEmployee(int employeeUserId);
 
         Task<IEnumerable<object>> GetCompleteEntitiesByDate(DateTime date);

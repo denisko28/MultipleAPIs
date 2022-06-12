@@ -17,11 +17,13 @@ namespace Customers_DAL.Configurations
 
             builder.HasOne(d => d.Barber)
                 .WithMany(p => p.Appointments)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasForeignKey(d => d.BarberUserId)
                 .HasConstraintName("FK__Appointme__Barbe__3D5E1FD2");
 
             builder.HasOne(d => d.Customer)
                 .WithMany(p => p.Appointments)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasForeignKey(d => d.CustomerUserId)
                 .HasConstraintName("FK__Appointme__Custo__3E52440B");
             

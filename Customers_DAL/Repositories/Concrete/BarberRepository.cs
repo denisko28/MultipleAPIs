@@ -36,5 +36,10 @@ namespace Customers_DAL.Repositories.Concrete
             
             return dayOffs!;
         }
+
+        public async Task InsertAsync(Barber barber)
+        {
+            await table.AddAsync(barber);
+        }
     }
 }

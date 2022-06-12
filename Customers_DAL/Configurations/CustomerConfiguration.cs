@@ -19,7 +19,7 @@ namespace Customers_DAL.Configurations
             builder.HasOne(d => d.User)
                 .WithOne(p => p.Customer)
                 .HasForeignKey<Customer>(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Customer_User");
             
             new CustomersSeeder().Seed(builder);

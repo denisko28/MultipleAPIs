@@ -24,9 +24,9 @@ namespace Customers_DAL.Entities
         
         public TimeSpan EndTime { get; set; }
         
-        public virtual Barber? Barber { get; set; }
+        public virtual Barber Barber { get; set; }
         
-        public virtual Customer? Customer { get; set; }
+        public virtual Customer Customer { get; set; }
         
         public virtual ICollection<AppointmentService> AppointmentServices { get; set; }
     }

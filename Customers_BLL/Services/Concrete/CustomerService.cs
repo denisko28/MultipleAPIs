@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,7 +8,10 @@ using Customers_DAL.Repositories.Abstract;
 using Customers_DAL.UnitOfWork.Abstract;
 using Customers_BLL.DTO.Requests;
 using Customers_BLL.DTO.Responses;
+using Customers_BLL.Exceptions;
+using Customers_BLL.Helpers;
 using Customers_BLL.Services.Abstract;
+using Customers_DAL.Helpers;
 
 namespace Customers_BLL.Services.Concrete
 {
@@ -47,10 +51,13 @@ namespace Customers_BLL.Services.Concrete
             return mapper.Map<Customer, CustomerResponse>(result);
         }
         
-        public async Task<IEnumerable<CustomersAppointmentResponse>> GetCustomersAppointments(int id)
+        public async Task<IEnumerable<CustomersAppointmentResponse>> GetCustomersAppointments(int customerId, UserClaimsModel userClaims)
         {
-          var result = await customerRepository.GetCustomersAppointments(id);
-          return result.Select(mapper.Map<Appointment, CustomersAppointmentResponse>);
+            if (userClaims.Role != UserRoles.Admin && userClaims.UserId != customerId)
+                throw new ForbiddenAccessException($"You don't have access to appointments of the customer with id: {customerId}");
+                
+            var result = await customerRepository.GetCustomersAppointments(customerId);
+            return result.Select(mapper.Map<Appointment, CustomersAppointmentResponse>);
         }
 
         public async Task InsertAsync(CustomerRequest request)
@@ -60,8 +67,11 @@ namespace Customers_BLL.Services.Concrete
             await unitOfWork.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(CustomerRequest request)
+        public async Task UpdateAsync(CustomerRequest request, UserClaimsModel userClaims)
         {
+            if (userClaims.Role != UserRoles.Admin && userClaims.UserId != request.UserId)
+                throw new ForbiddenAccessException($"You don't have access to edit customer with id: {request.UserId}");
+            
             var entity = mapper.Map<CustomerRequest, Customer>(request);
             await customerRepository.UpdateAsync(entity);
             await unitOfWork.SaveChangesAsync();

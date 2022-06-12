@@ -13,6 +13,7 @@ namespace Customers_DAL.Configurations
 
             builder.HasOne(d => d.Appointment)
                 .WithMany(p => p.AppointmentServices)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasForeignKey(d => d.AppointmentId)
                 .HasConstraintName("FK__Appointme__Appoi__412EB0B6");
 

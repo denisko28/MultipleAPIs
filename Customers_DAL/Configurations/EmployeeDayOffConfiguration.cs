@@ -19,7 +19,7 @@ namespace Customers_DAL.Configurations
 
             builder.HasOne(d => d.EmployeeUser)
                 .WithMany(p => p.EmployeeDayOffs)
-                .OnDelete(DeleteBehavior.ClientCascade)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasForeignKey(d => d.EmployeeUserId)
                 .HasConstraintName("FK__EmployeeD__Emplo__2E1BDC42");
             

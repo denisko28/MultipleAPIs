@@ -6,6 +6,8 @@ namespace HR_DAL.Repositories.Abstract
 {
     public interface IEmployeeRepository : IGenericRepository<Employee>
     {
+        Task<IEnumerable<Employee>> GetByBranchId(int branchId);
+        
         Task<IEnumerable<Employee>> GetByStatusIdAsync(int statusId);
     }
 }

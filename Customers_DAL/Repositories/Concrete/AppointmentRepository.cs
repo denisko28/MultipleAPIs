@@ -22,6 +22,16 @@ namespace Customers_DAL.Repositories.Concrete
             return appointment ?? throw new EntityNotFoundException(nameof(Appointment), id);
         }
         
+        public async Task<Appointment> GetByIdIncludeEmployeeAsync(int appointmentId)
+        {
+            var appointment = await Table
+                .Include(appointment => appointment.Barber)
+                .ThenInclude(barber => barber!.Employee)
+                .SingleOrDefaultAsync(appointment => appointment.Id == appointmentId);
+
+            return appointment ?? throw new EntityNotFoundException(nameof(Appointment), appointmentId);;
+        }
+        
         public override async Task<IEnumerable<Appointment>> GetAllAsync()
         {
             return await Table.ToListAsync();
@@ -52,6 +62,17 @@ namespace Customers_DAL.Repositories.Concrete
 
             return appointments;
         }
+        
+        public async Task<IEnumerable<Appointment>> GetByBranchAsync(int branchId)
+        {
+            var appointments = await Table
+                .Include(appointment => appointment.Barber)
+                    .ThenInclude(barber => barber!.Employee)
+                .Where(appointment => appointment.Barber.Employee.BranchId == branchId)
+                .ToListAsync();
+
+            return appointments;
+        }
 
         public async Task<IEnumerable<Appointment>> GetByDateAndBarberAsync(DateTime date, int barberId)
         {
@@ -73,6 +94,20 @@ namespace Customers_DAL.Repositories.Concrete
                 throw new EntityNotFoundException(nameof(Appointment), id);
 
             return appointment.AppointmentServices.Select(appointmentServices => appointmentServices.Service)!;
+        }
+
+        public async Task<Barber> GetAppointmentBarberAsync(int id)
+        {
+            var appointment = await Table
+                .Include(appointment => appointment.Barber)
+                    .ThenInclude(barber => barber!.Employee)
+                        .ThenInclude(employee => employee.User)
+                .SingleOrDefaultAsync(appointment => appointment.Id == id);
+
+            if(appointment == null)
+                throw new EntityNotFoundException(nameof(Appointment), id);
+
+            return appointment.Barber;
         }
     }
 }

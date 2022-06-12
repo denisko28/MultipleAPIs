@@ -472,7 +472,7 @@ namespace Customers_DAL.Migrations
                     b.Property<DateTime>("Birthday")
                         .HasColumnType("date");
 
-                    b.Property<int?>("BranchId")
+                    b.Property<int>("BranchId")
                         .HasColumnType("int");
 
                     b.Property<int>("EmployeeStatusId")
@@ -1123,10 +1123,12 @@ namespace Customers_DAL.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
@@ -1180,421 +1182,511 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9e025221-038d-4717-83c0-d8435f331e9e",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "254a3ba6-328c-4f52-b975-192b4c07fa3c",
+                            Email = "User1@gmail.com",
+                            EmailConfirmed = true,
                             FirstName = "Петро",
                             LastName = "Василенко",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEK1wTuwdFgb8nfBGdHDGt/C7KBw3KSASYhgUANq09TqOwDqk4Ei6YoZ7XE5mvPtdgA==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER1@GMAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBbZrKmKPbL12IDAut1pjZbCw5HXk4S1Ai5KFIAg5dXWl2AkwQXgMvBQpoFvwRqEgg==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "2b9361f9-27f9-42f3-869d-96078898bafd",
                             TwoFactorEnabled = false,
-                            UserName = "User1"
+                            UserName = "User1@gmail.com"
                         },
                         new
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a2d55f84-c3ed-40de-80da-a62a731056aa",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "f1043c3d-bdb4-4311-94ee-0f3dec3027ce",
+                            Email = "User2@outlook.com",
+                            EmailConfirmed = true,
                             FirstName = "Іван",
                             LastName = "Григоренко",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEKopchMzGJbz+mlvfMcr+envh8TwfklMxMx1uxLeVFl++U5lwCBw4F13V4AJ3ifjEQ==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER2@OUTLOOK.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMQe2IsxZ8fA5U6wU6BPVaYoRVVKCjp06LmUwPNr4iEMLcmGKRyD60gHNdByNoZFuQ==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "0edca097-c3a4-4af2-8bb2-c0561d143461",
                             TwoFactorEnabled = false,
-                            UserName = "User2"
+                            UserName = "User2@outlook.com"
                         },
                         new
                         {
                             Id = 3,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f25d2a68-789a-4ecf-a416-0e8258400f92",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "0489fdbc-a4ca-4037-ba84-846a5eb05cdd",
+                            Email = "User3@gmail.com",
+                            EmailConfirmed = true,
                             FirstName = "Олександр",
                             LastName = "Шевченко",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEBh1GR9sgPZbVvY3Tj2LjVLKW23Jj+bdvRYFxfudwlvi4JOSX/OEbuRjaIIT34F4zw==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER3@GMAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEJynTSiQTrlAH7yOuqww4qDPYJLBgC9w+4N3v28UTTaAwjFnbhmbToWurVyTAEhMw==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "358528c9-f3d6-47e5-a8ac-b5539b9c6483",
                             TwoFactorEnabled = false,
-                            UserName = "User3"
+                            UserName = "User3@gmail.com"
                         },
                         new
                         {
                             Id = 4,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2ab7f4a4-add1-4fb6-870c-ab0f5964a5d5",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "f3ad8ec7-c001-4c3c-b5ae-1f47a3191767",
+                            Email = "User4@outlook.com",
+                            EmailConfirmed = true,
                             FirstName = "Роман",
                             LastName = "Добровольський",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAENlFddZxPtHUOwiuQ4S+KfgrJNePXaY85MKRMwMZSCH5cDEe9xU117mjQjbf8e5SmQ==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER4@OUTLOOK.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEGTo2kocxxbJMO/qTesElla72NfDjyW6ObnhiE+x+xoub2XRkY7G3Ir7T392kWVLPQ==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "514f5a7c-2f63-4718-b73f-d30795c2e0aa",
                             TwoFactorEnabled = false,
-                            UserName = "User4"
+                            UserName = "User4@outlook.com"
                         },
                         new
                         {
                             Id = 5,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6b962620-3359-489b-9978-05abdbf44751",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "bf69e21b-9a07-4dfa-8a63-cfb249625661",
+                            Email = "User5@outlook.com",
+                            EmailConfirmed = true,
                             FirstName = "Степан",
                             LastName = "Петришко",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEGhXCc7T8+oiK5OnQwrRwPOTENYdsmPwF4FskwCuShaYiRFv2idSd76Zinsz4WPhKg==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER5@OUTLOOK.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFQsOKAh652NHpks8yqzZMVVymNSrVlGSrfg+EQnnnzNssr4fhhECKodV77YIjFLtQ==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "cb5a0299-0287-4f0d-8b22-fbd9f38cd73e",
                             TwoFactorEnabled = false,
-                            UserName = "User5"
+                            UserName = "User5@outlook.com"
                         },
                         new
                         {
                             Id = 6,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d8086b37-621e-4f08-aad3-fb38b2e133aa",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "3ec62d7a-dbfa-44fe-9a03-3f6d83e5b7c6",
+                            Email = "User6@gmail.com",
+                            EmailConfirmed = true,
                             FirstName = "Світлана",
                             LastName = "Петришко",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAELgnsD0bKNz45YAU5EAoa4lX7GyNB9rqo8y3+YLZcAxl8pfXZ2g8PE8BX1gizmZBKA==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER6@GMAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMQxu9i6t77iN1M+8N4PtoDca2b1iJ0NV3+DNAA0XET1/lmZFuOdf2gSfSInoNKOoA==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "434fec43-3021-4664-8876-7a1cfaa29b94",
                             TwoFactorEnabled = false,
-                            UserName = "User6"
+                            UserName = "User6@gmail.com"
                         },
                         new
                         {
                             Id = 7,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b1683843-7ead-4294-8795-97d53a317526",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "02a6e7d2-fb96-4ee2-a26c-fee0210d1675",
+                            Email = "User7@yahoo.com",
+                            EmailConfirmed = true,
                             FirstName = "Богдан",
                             LastName = "Ящук",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEJgIJhTFnxIFX8glT6pgIXdRYESA1v42RgzMHnlQRYNTX2N7+6F143yOQElpk3DG0g==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER7@YAHOO.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKaqxjYdmZTGlZVPMKgFpb8hL/rJkv0DQAiawBghZqvC7JOEI14AKMh+anpWxq13Wg==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "bec9bd07-38b9-4165-823a-ee83abe4eac6",
                             TwoFactorEnabled = false,
-                            UserName = "User7"
+                            UserName = "User7@yahoo.com"
                         },
                         new
                         {
                             Id = 8,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "96bb1ee7-99bf-4250-b3a9-33c4c2e26245",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "37ca32fc-7ac4-4bf4-b8e6-c7ddc4ec1daf",
+                            Email = "User8@outlook.com",
+                            EmailConfirmed = true,
                             FirstName = "Валентина",
                             LastName = "Генко",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEF0aMsRDy35lYGscm+8wJrP1BUZqKacpIVQnekTFcbPkv4sKVW3g+DP9zIY5nnyyYw==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER8@OUTLOOK.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDHahBT4kD3YXBk9HBbBU8LyMbzNgQ5oA9mWEGW/G+DubD8hDG+vJNJab1i9cPVhAg==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "748447ad-c224-4567-88a0-556f711bfbd5",
                             TwoFactorEnabled = false,
-                            UserName = "User8"
+                            UserName = "User8@outlook.com"
                         },
                         new
                         {
                             Id = 9,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "97c33319-e442-4139-b337-cd0d428c8493",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "5c1449a0-6b6d-4cc2-bf71-60cb1b56c1c0",
+                            Email = "User9@gmail.com",
+                            EmailConfirmed = true,
                             FirstName = "Андрій",
                             LastName = "Івашко",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEEYRphzAC6eDEjmhluq1KmmXSeenJ1aoW+LTb2sVqNJUHl/S5yth6Z9ExHk//OZpcw==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER9@GMAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAECuavHYHhH00OS+KKmFZZdyBvTpQL019OuPshV8asins1pNi6JjU1BRYsVfnBCJCDw==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "57c9b06c-cbae-47b2-9113-f1e7cd6fa088",
                             TwoFactorEnabled = false,
-                            UserName = "User9"
+                            UserName = "User9@gmail.com"
                         },
                         new
                         {
                             Id = 10,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "484031fa-5fac-4cb5-80d6-f50e57b0ae62",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "75a16fb4-7671-4ee1-b79e-0723698cac39",
+                            Email = "User10@gmail.com",
+                            EmailConfirmed = true,
                             FirstName = "Олександр",
                             LastName = "Ванченко",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEBDJnV+7PTV41tb4/b2VGEGpKRYJf+kStQFaIzF6T73xlYv7HHBHO2ACoQZFNFUuxA==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER10@GMAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKyfsOURp11+iTENVKI2x8zCBGlb/PKYrwsY6o0hssbnkTqGcREe+ed3ZQRdDxVUYg==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "c60941b9-c4d6-4405-bae4-6abb61e9394d",
                             TwoFactorEnabled = false,
-                            UserName = "User10"
+                            UserName = "User10@gmail.com"
                         },
                         new
                         {
                             Id = 11,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c4be1abd-b61b-4a4a-aa84-ee5b1ef35f35",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "49050d5e-140c-4e90-86bf-7e5ddf66f998",
+                            Email = "User11@ukr.net",
+                            EmailConfirmed = true,
                             FirstName = "Володимир",
                             LastName = "Михайлішин",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEL8yw0doJwfY6b7vZAoInqSB6Xzch7iVgFxvKxVr0Pi794pG8dwxkqHavfxcgrYrJw==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER11@UKR.NET",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAmZEl6fnlaCb2osOS/NHvOPD7mX+iRqVDLD0P78Rd+wUiPYlIBhfCEVUxOR2AsnbA==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "5385e731-00ff-41ab-847a-4c92d4581136",
                             TwoFactorEnabled = false,
-                            UserName = "User11"
+                            UserName = "User11@ukr.net"
                         },
                         new
                         {
                             Id = 12,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "20c7b95a-b767-4581-b815-108afb9b2f28",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "3dcb08a6-c2ef-4e8f-a4f7-25167e05cb5a",
+                            Email = "User12@outlook.com",
+                            EmailConfirmed = true,
                             FirstName = "Станіслав",
                             LastName = "Жолудь",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEMj4tZn46Mc2J2B3g4LAEjbovqeCsNQt4vZWczgQ5L30SJHcQQ9cQe9MsYXzWf3YhQ==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER12@OUTLOOK.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDPe8T2Uvx0bbleWjQBEDqBVoy/zPSitbTzb2qc5eGAV/fv/4WYBfwOLUvfVJfW+XQ==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "bec157e2-162d-4aa5-971d-3c2ae19bf6cb",
                             TwoFactorEnabled = false,
-                            UserName = "User12"
+                            UserName = "User12@outlook.com"
                         },
                         new
                         {
                             Id = 13,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9fe94492-816d-49df-a58f-ce6dd914b8ff",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "2ea6a975-e530-40f9-94f5-578070ffe437",
+                            Email = "User13@gmail.com",
+                            EmailConfirmed = true,
                             FirstName = "Микола",
                             LastName = "Лисенко",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEN5bL9Vv8R0rnqOtvPtTrQc29ozilJQYtw0WplVAUZeGl84dcviLj4mHTS/Id2lNUA==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER13@GMAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEA76QuwheAhcSHDx+2HxT06RV0JgrrRRQDLYdu2EJs9I/n/RtBgzG62noR3XlEg1tA==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "c8449f38-e456-4f45-a9db-34de9f85ba96",
                             TwoFactorEnabled = false,
-                            UserName = "User13"
+                            UserName = "User13@gmail.com"
                         },
                         new
                         {
                             Id = 14,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2535c01c-b612-4a50-aab0-7c9932892356",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "a1687716-634f-4ca4-97f7-be95ec59352d",
+                            Email = "User14@outlook.com",
+                            EmailConfirmed = true,
                             FirstName = "Дмитро",
                             LastName = "Жовнірчук",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEJdDWWsvUfKGeWsYc6wL4qqkwRK0TEWwjennG1Vq34z8GU43SWtU6Y6ybSB4Ns9ZJw==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER14@OUTLOOK.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEN3c17+4SxScuBj4h3M1MWMnqMpt4e+vwNVYoYEiux9RRaMqZcf/64T+M7jGd56ABg==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "41be8b95-e833-479f-a08b-416342ccb212",
                             TwoFactorEnabled = false,
-                            UserName = "User14"
+                            UserName = "User14@outlook.com"
                         },
                         new
                         {
                             Id = 15,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5eccffd7-9a94-4db1-89e4-f02621976dad",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "07860f72-d874-4eca-8b89-69d8090f0f7f",
+                            Email = "User15@ukr.net",
+                            EmailConfirmed = true,
                             FirstName = "Валентин",
                             LastName = "Федоренко",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAENF31F27ByfNOD+21WaGWQ5LR8vK3lZD3aGFLvV4AFFJdH2q+c8+5RJvzFTNFB6rSQ==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER15@UKR.NET",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEzhC6D38YVEHYyCqXNGZnO6Z2xbj3WpkfGARnO+cwhLdryTUeKLT7HSQdCg0gZrbg==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "10037f92-4910-4d12-935f-a23d35a0282a",
                             TwoFactorEnabled = false,
-                            UserName = "User15"
+                            UserName = "User15@ukr.net"
                         },
                         new
                         {
                             Id = 16,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3f3dce52-f8a3-47b3-9461-ab87e1e10d52",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "32ddbd64-87b8-41df-ad13-9d3370356089",
+                            Email = "User16@gmail.com",
+                            EmailConfirmed = true,
                             FirstName = "Віталій",
                             LastName = "Свистун",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAELtvX90pPJ4KIUJ1UqVFJue295zISif5doa0kb9Ij4XkVpjKRWFwJ14XuZ/QS3mQkA==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER16@GMAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJ8oWH6CVdfledpq8OdcIBOPDcN0BHs8U20pR78VIeI714V5YqWB4yj5kHiTsUaVEg==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "4cf9928e-7239-4296-a34f-109409f2eada",
                             TwoFactorEnabled = false,
-                            UserName = "User16"
+                            UserName = "User16@gmail.com"
                         },
                         new
                         {
                             Id = 17,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c9b708ad-3c4f-4927-88a3-15162a302c86",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "8d415343-6a6f-4041-9001-278f2442f288",
+                            Email = "User17@gmail.com",
+                            EmailConfirmed = true,
                             FirstName = "Інокентій",
                             LastName = "Фірташ",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEO2yX4fPD9opXKP5RZMnBdUrWEshYgVBnmgCggcAwWSD2GeRogM6XYlMJHGaA11H7w==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER17@GMAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFIsijwNfDiSXQN2JTdyBZ1m1PNHejfBLxYXLg74hMo2uWNQy9/T+vow8WwG2Lx6EQ==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "0d52f050-7639-4d95-aa26-e9f17d3311a3",
                             TwoFactorEnabled = false,
-                            UserName = "User17"
+                            UserName = "User17@gmail.com"
                         },
                         new
                         {
                             Id = 18,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "379c1c16-6cad-46c8-bfbe-251a506139c6",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "b150f8f1-2a5e-4b06-9f4a-8a915ee89cc0",
+                            Email = "User18@gmail.com",
+                            EmailConfirmed = true,
                             FirstName = "Ярослав",
                             LastName = "Татарчук",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEG2bmL4LkwNayLuopXG25MByHxN3uVPuQ9yJba42EIVxqEg/vcAMbZiTeOyay8lz7A==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER18@GMAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFVAB/vW+FcZfkQPr7ZRCGPlbPsMdh3s2bAkW7FN2kKshPh0vVXWqmWh3RiDbNGx6Q==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "24efed93-2052-48ba-b581-fbedd64252c9",
                             TwoFactorEnabled = false,
-                            UserName = "User18"
+                            UserName = "User18@gmail.com"
                         },
                         new
                         {
                             Id = 19,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b83b2c10-bda8-4ecd-8818-f771b6491082",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "52258038-cefc-4865-858f-1b6c9146a4e2",
+                            Email = "User19@ukr.net",
+                            EmailConfirmed = true,
                             FirstName = "Йосиф",
                             LastName = "Дмитренко",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEJ2OD6jKsfPKN8B2eT9bCNDcjbGKkOYasCibjDPQq1RgI4KzZ1F6lEYrUIfUdXm9xA==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER19@UKR.NET",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBhYP254lKhr1ULAEY39VdJ/YqkHJxIkipZ0t01Goku3xNgX83ej9Q212e5QegHzVA==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "4b57b161-d1d1-45a0-bdd6-491f3bf45197",
                             TwoFactorEnabled = false,
-                            UserName = "User19"
+                            UserName = "User19@ukr.net"
                         },
                         new
                         {
                             Id = 20,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c7f8a0ec-fd90-4b0b-a1cb-9d55a2680561",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "5cedde35-38d5-4935-b551-4a6c39020430",
+                            Email = "User20@ukr.net",
+                            EmailConfirmed = true,
                             FirstName = "Констянтин",
                             LastName = "Шарапенко",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAELcxkVFM0JVgcp0hl7gVM1UuYw8tvbO78Cs4QbKaIN3u15mbqKW7jl2iP2q7cD/XAA==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER20@UKR.NET",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOR/NdrYACkVv3imcMlwK9aRQyiZuo48DkdtPQIfR4S3OpeXl/xf7+IjHt6Zs3O6KQ==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "98440750-b45a-40ae-9db1-c22a411ab91e",
                             TwoFactorEnabled = false,
-                            UserName = "User20"
+                            UserName = "User20@ukr.net"
                         },
                         new
                         {
                             Id = 21,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "58b82e1d-429a-4454-b9c6-106019f99d46",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "30a66ea3-cf9e-493c-86a1-a75a3bc8bb29",
+                            Email = "User21@outlook.com",
+                            EmailConfirmed = true,
                             FirstName = "Олег",
                             LastName = "Притула",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEJoSoQslQk3Sd47bMq3t60XP5IgTL6ovCW1tE5RTWCvjxxSzT3lYar2CARPeMCIcHQ==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER21@OUTLOOK.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOK0YYGyrrYVJJoTRtGgh5Iuz7xaBA/uQq/3sMhBaBbMYa8+jeTEkg5HyBR4L7491Q==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "5b093959-189e-48a1-92b4-a8db036fc304",
                             TwoFactorEnabled = false,
-                            UserName = "User21"
+                            UserName = "User21@outlook.com"
                         },
                         new
                         {
                             Id = 22,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "cd2e9080-56b0-44cc-bd3e-cc7dff642067",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "5576b17a-af5e-479d-a7f2-060573d1c7a1",
+                            Email = "User22@gmail.com",
+                            EmailConfirmed = true,
                             FirstName = "Анатолій",
                             LastName = "Назаренко",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEMiPPJ94jjVS8XfwPDbif2bpvyhSduY83q8qB7suv2uYj7pBL9pK3wHX7T/7fgdFog==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER22@GMAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHw7MYAuBHyScRzNfYHbH22iB+Y1yo65O3Dcwu5kcXSOliYgbDIuQ8nj4NtwceUTpQ==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "5453592d-3fb9-4860-aa45-0a36ad0121e5",
                             TwoFactorEnabled = false,
-                            UserName = "User22"
+                            UserName = "User22@gmail.com"
                         },
                         new
                         {
                             Id = 23,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4ade45d3-6c8a-45c1-baec-2ec1cd85e178",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "5dcb8f96-0f71-4504-981b-6c5693d402ff",
+                            Email = "User23@ukr.net",
+                            EmailConfirmed = true,
                             FirstName = "Микола",
                             LastName = "Вакуленко",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEF5AIifmLwlybXqjlJGv8JuGOEwLPXw7mrS5EVEanp3rf9wYEBll5E+aDmiSDU97cQ==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER23@UKR.NET",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKaYLjWhh11XqDxuZHHb/8fnrcFG2Uji4xbT6R+tIO7veKbO4n2EKoccGmLtKYf+QA==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "cdc0abc8-9f8e-405d-bddf-3af5529721e4",
                             TwoFactorEnabled = false,
-                            UserName = "User23"
+                            UserName = "User23@ukr.net"
                         },
                         new
                         {
                             Id = 24,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b9da36f7-663a-4a65-9c68-c0ad64497405",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "ef02c8da-0444-4db8-9af0-4abb857cea33",
+                            Email = "User24@outlook.com",
+                            EmailConfirmed = true,
                             FirstName = "Степан",
                             LastName = "Барабаш",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEBxmXtDLhxQPA5yOGZEPq2GR6EWT7ZuIUU27bMw/whmid2OmHh/k7acOarJ8Ng/DZg==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER24@OUTLOOK.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDMLxOrrguQCrppuUgBEzrCwUXRR6L690n2oN8GSbZ1xyExSiHVs+0QUch48BGAthg==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "92a348ea-0b63-41d7-8ee0-dd2905bcf7c2",
                             TwoFactorEnabled = false,
-                            UserName = "User24"
+                            UserName = "User24@outlook.com"
                         },
                         new
                         {
                             Id = 25,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "1f0f9fdf-7d64-4f9c-bfcb-94632fac235b",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "34ce3a26-418f-44e2-9e99-ca7a6781ead7",
+                            Email = "User25@gmail.com",
+                            EmailConfirmed = true,
                             FirstName = "Денис",
                             LastName = "Ярема",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEEZA9YMgGHrsg1uulVwzFk6QT87j5OaGAtysho2o3Fi81j0qCvjx+Y+7eCnYNX5w7w==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER25@GMAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEdFHhL+gyNo8W8GDHbsTH73/562muLitWQF/qGgh4ACPpu+rVB5pCcgwFpC0bUakg==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "c526db93-a72e-46d5-8019-7746939f7335",
                             TwoFactorEnabled = false,
-                            UserName = "User25"
+                            UserName = "User25@gmail.com"
                         },
                         new
                         {
                             Id = 26,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b477606e-e4e9-4b0a-bc75-af1c927a4edf",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "c9124f09-8599-4fd6-9ab7-db3295c1a8c1",
+                            Email = "User26@ukr.net",
+                            EmailConfirmed = true,
                             FirstName = "Олег",
                             LastName = "Таралевич",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEMrG8J4csgPZNR4dT4GTUObMWuZtnZcXbJ5hbXTxP4n6Fc3bF1v3bwHQmzqDjNdyaA==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER26@UKR.NET",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFZ3Iwti7IpX5+R3WUcje3mG+fP4ylEN97t4ajgzSniMnAhKXqq9ZPbvNTtybqGkig==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "69c51cca-5d56-453e-ab6f-6d4c7f92d214",
                             TwoFactorEnabled = false,
-                            UserName = "User26"
+                            UserName = "User26@ukr.net"
                         },
                         new
                         {
                             Id = 27,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "60b47be1-f9b6-42c1-86b1-ad3e9c5c072a",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "75c422ef-66df-4275-a234-7d0347dff02c",
+                            Email = "User27@gmail.com",
+                            EmailConfirmed = true,
                             FirstName = "Сергій",
                             LastName = "Іващук",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEPGJRrIpsE33+4NZdo7uOtOI8+AoItK3rx3E2oqiKXFMG9XUBhMBiuzhJgF+4/LyKg==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER27@GMAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIGZQUf6X7mihqJkUrl+l4BRgdc30IdktWMGhIpkyn68e4wpJ7G/0gdET3XzlXmT8Q==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "a0499369-3ac3-4f0a-9d08-ce749d4ef05b",
                             TwoFactorEnabled = false,
-                            UserName = "User27"
+                            UserName = "User27@gmail.com"
                         },
                         new
                         {
                             Id = 28,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9facd036-d866-489a-baee-9399a2634135",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "3f7b26f5-52ac-43d0-b49d-ad0f413b229a",
+                            Email = "User28@yahoo.com",
+                            EmailConfirmed = true,
                             FirstName = "Михайло",
                             LastName = "Компанієць",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEG0nVt78gfTGcOvyZTK4ec0O8uoq6DWapv1RUQzQ4llyj+530T83rrKIiuZYR1RbZA==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER28@YAHOO.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOqPBby1EnlrNpChSWFc+8iqPQORZv1wlH/TbwoGpFzy6vLgCkGfyxu36ZWVmZoWUw==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "2ce883a9-5cb5-4df6-a5d6-270bb2b23fa5",
                             TwoFactorEnabled = false,
-                            UserName = "User28"
+                            UserName = "User28@yahoo.com"
                         },
                         new
                         {
                             Id = 29,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a7d030e1-e497-4912-b46c-15e01c5bcb69",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "eeb510ee-6ab1-4f9a-9b3f-570835446ee8",
+                            Email = "User29@outlook.com",
+                            EmailConfirmed = true,
                             FirstName = "Андрій",
                             LastName = "Іващук",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEMOdDoOwEC8J7rqwwzeXv+OrF6M6zrngdEMmRPpD85viBJ+dRi0LkYx6Tqo3tIpXyA==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER29@OUTLOOK.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEN3/SY7fZzLV22PhRjhAO1JT+/NU45IQHfiFAEyDCzW8ttUXxe72AOT8ObUnwXHjug==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "f2a761ef-13a6-448c-b039-e6aa2b4a1dc5",
                             TwoFactorEnabled = false,
-                            UserName = "User29"
+                            UserName = "User29@outlook.com"
                         },
                         new
                         {
                             Id = 30,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "933b54d2-3d94-4c43-abf5-1f71d4526cf6",
-                            EmailConfirmed = false,
+                            ConcurrencyStamp = "de9365f5-1f1b-4fde-9beb-ae877367b3b0",
+                            Email = "User30@gmail.com",
+                            EmailConfirmed = true,
                             FirstName = "Назар",
                             LastName = "Мельник",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEKzZK1dlIduWNluuTmT/mO7TiTcakj7Jb3K0Gu4M1lFsh3nSJLZXI7l9Ep0jQQ56nQ==",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "USER30@GMAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEPMoS5Jyp+Brf4Ki6Rolpqg7JJ9HN3sXzNtu1wOB4OJa/WPwiGtAljC4K+MxiJvVZw==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "73aa9960-54cb-4b11-9363-5d7cae9e0050",
                             TwoFactorEnabled = false,
-                            UserName = "User30"
+                            UserName = "User30@gmail.com"
                         });
                 });
 
@@ -1939,6 +2031,7 @@ namespace Customers_DAL.Migrations
                     b.HasOne("Customers_DAL.Entities.Appointment", "Appointment")
                         .WithMany("AppointmentServices")
                         .HasForeignKey("AppointmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK__Appointme__Appoi__412EB0B6");
 
                     b.HasOne("Customers_DAL.Entities.Service", "Service")
@@ -1956,6 +2049,7 @@ namespace Customers_DAL.Migrations
                     b.HasOne("Customers_DAL.Entities.Employee", "Employee")
                         .WithOne("Barber")
                         .HasForeignKey("Customers_DAL.Entities.Barber", "EmployeeUserId")
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired()
                         .HasConstraintName("FK_Barber_User");
 
@@ -1967,6 +2061,7 @@ namespace Customers_DAL.Migrations
                     b.HasOne("Customers_DAL.Entities.User", "User")
                         .WithOne("Customer")
                         .HasForeignKey("Customers_DAL.Entities.Customer", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Customer_User");
 
@@ -1978,11 +2073,14 @@ namespace Customers_DAL.Migrations
                     b.HasOne("Customers_DAL.Entities.Branch", "Branch")
                         .WithMany("Employees")
                         .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("FK__Employee__Branch__29572725");
 
                     b.HasOne("Customers_DAL.Entities.User", "User")
                         .WithOne("Employee")
                         .HasForeignKey("Customers_DAL.Entities.Employee", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Employee_User");
 
@@ -2002,7 +2100,7 @@ namespace Customers_DAL.Migrations
                     b.HasOne("Customers_DAL.Entities.Employee", "EmployeeUser")
                         .WithMany("EmployeeDayOffs")
                         .HasForeignKey("EmployeeUserId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK__EmployeeD__Emplo__2E1BDC42");
 
                     b.Navigation("DayOff");

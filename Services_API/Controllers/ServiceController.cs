@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Services_Application.Commands;
 using Services_Application.Commands.Services.DeleteService;
 using Services_Application.Commands.Services.InsertService;
 using Services_Application.Commands.Services.UpdateService;
 using Services_Application.DTO.Requests;
 using Services_Application.DTO.Responses;
 using Services_Application.Exceptions;
+using Services_Application.Helpers;
 using Services_Application.Queries.Services.GetAllServices;
 using Services_Application.Queries.Services.GetByIdService;
 
@@ -67,6 +68,7 @@ namespace Services_API.Controllers
         }
         
         // POST: api/ServiceDiscount
+        [Authorize(Roles = UserRoles.Admin)]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -84,6 +86,7 @@ namespace Services_API.Controllers
         }
         
         // PUT: api/ServiceDiscount
+        [Authorize(Roles = UserRoles.Admin)]
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -106,6 +109,7 @@ namespace Services_API.Controllers
         }
         
         // DELETE: api/ServiceDiscount
+        [Authorize(Roles = UserRoles.Admin)]
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

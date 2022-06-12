@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
 using HR_BLL.DTO.Requests;
 using HR_BLL.DTO.Responses;
+using HR_BLL.Exceptions;
+using HR_BLL.Helpers;
 using HR_BLL.Services.Abstract;
 using HR_DAL.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 
 namespace HR_API.Controllers
@@ -16,17 +19,14 @@ namespace HR_API.Controllers
     public class EmployeeController : ControllerBase
     {
         private readonly IEmployeeService employeeService;
-        private readonly IImageService imageService;
-        private readonly IMapper mapper;
 
-        public EmployeeController(IEmployeeService employeeService, IImageService imageService, IMapper mapper)
+        public EmployeeController(IEmployeeService employeeService)
         {
             this.employeeService = employeeService;
-            this.imageService = imageService;
-            this.mapper = mapper;
         }
 
         // GET: api/Employee
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.Barber)]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -42,9 +42,34 @@ namespace HR_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
             }
         }
+        
+        // GET: api/Employee/ForManager
+        [Authorize(Roles = UserRoles.Manager)]
+        [HttpGet("ForManager")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> GetForManager()
+        {
+            try
+            {
+                var userId = UserClaimsHelper.GetUserId(HttpContext);
+                var results = await employeeService.GetAllForManager(userId);
+                return Ok(results);
+            }
+            catch (EntityNotFoundException e)
+            {
+                return NotFound(new { e.Message });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+            }
+        }
 
         // GET: api/Employee/5
-        [HttpGet("{id}")]
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.Barber)]
+        [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -64,8 +89,38 @@ namespace HR_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
             }
         }
+
+        // GET: api/Employee
+        [Authorize(Roles = UserRoles.Manager)]
+        [HttpGet("ForManager/{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<EmployeeResponse>> GetForManager(int id)
+        {
+            try
+            {
+                var userId = UserClaimsHelper.GetUserId(HttpContext);
+                var result = await employeeService.GetByIdForManager(id, userId);
+                return Ok(result);
+            }
+            catch (EntityNotFoundException e)
+            {
+                return NotFound(new { e.Message });
+            }
+            catch (ForbiddenAccessException e)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new { e.Message });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+            }
+        }
         
         // GET: api/Employee/statusId/2
+        [Authorize(Roles = UserRoles.Admin)]
         [HttpGet("statusId/{status}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -85,17 +140,33 @@ namespace HR_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
             }
         }
-
-        // POST: api/Employee
-        [HttpPost]
+        
+        // GET: api/Employee/passport
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.Manager)]
+        [HttpGet("passport/{employeeId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Post([FromBody] EmployeeRequest request)
+        public async Task<ActionResult> GetPassport(int employeeId)
         {
             try
             {
-                await employeeService.InsertAsync(request);
-                return Ok();
+                var userClaims = UserClaimsHelper.GetUserClaims(HttpContext);
+                var result = await employeeService.GetPassportForEmployeeAsync(employeeId, userClaims);
+                return result;
+            }
+            catch (FileNotFoundException e)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, new { e.Message });
+            }
+            catch (EntityNotFoundException e)
+            {
+                return NotFound(new { e.Message });
+            }
+            catch (ForbiddenAccessException e)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new { e.Message });
             }
             catch (Exception e)
             {
@@ -103,16 +174,40 @@ namespace HR_API.Controllers
             }
         }
 
+        // POST: api/Employee
+        // [HttpPost]
+        // [ProducesResponseType(StatusCodes.Status200OK)]
+        // [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        // public async Task<ActionResult> Post([FromBody] EmployeeRequest request)
+        // {
+        //     try
+        //     {
+        //         await employeeService.InsertAsync(request);
+        //         return Ok();
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+        //     }
+        // }
+
         // PUT: api/Employee
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.Manager + "," + UserRoles.Barber)]
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Put([FromBody] EmployeeRequest request)
         {
             try
             {
-                await employeeService.UpdateAsync(request);
+                var userClaims = UserClaimsHelper.GetUserClaims(HttpContext);
+                await employeeService.UpdateAsync(request, userClaims);
                 return Ok();
+            }
+            catch (ForbiddenAccessException e)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new { e.Message });
             }
             catch (Exception e)
             {
@@ -122,20 +217,27 @@ namespace HR_API.Controllers
 
         // PUT: api/Employee/passport
         // { body: form-data }
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.Manager)]
         [HttpPost("passport")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> AttachPassport([FromForm] ImageUploadRequest request)
         {
             try
             {
-                await employeeService.SetPassportForEmployeeAsync(request);
+                var userClaims = UserClaimsHelper.GetUserClaims(HttpContext);
+                await employeeService.SetPassportForEmployeeAsync(request, userClaims);
                 return Ok();
             }
             catch (EntityNotFoundException e)
             {
                 return NotFound(new { e.Message });
+            }
+            catch (ForbiddenAccessException e)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new { e.Message });
             }
             catch (Exception e)
             {
@@ -144,6 +246,7 @@ namespace HR_API.Controllers
         }
 
         // DELETE: api/Employee
+        [Authorize(Roles = UserRoles.Admin)]
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -154,6 +257,10 @@ namespace HR_API.Controllers
             {
                 await employeeService.DeleteByIdAsync(id);
                 return Ok();
+            }
+            catch (EntityNotFoundException e)
+            {
+                return NotFound(new { e.Message });
             }
             catch (Exception e)
             {
