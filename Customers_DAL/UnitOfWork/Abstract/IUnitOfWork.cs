@@ -17,6 +17,8 @@ namespace Customers_DAL.UnitOfWork.Abstract
         
         ICustomerRepository CustomerRepository { get; }
         
+        IEmployeeRepository EmployeeRepository { get; }
+        
         IUserRepository UserRepository { get; }
         
         UserManager<User> UserManager { get; }

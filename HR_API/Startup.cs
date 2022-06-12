@@ -1,3 +1,5 @@
+using System;
+using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.OpenApi.Models;
@@ -13,9 +15,11 @@ using HR_DAL.Repositories.Abstract;
 using HR_DAL.Repositories.Concrete;
 using HR_DAL.UnitOfWork.Abstract;
 using HR_DAL.UnitOfWork.Concrete;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 
 namespace HR_API
 {
@@ -34,6 +38,28 @@ namespace HR_API
             services.AddSingleton(_ => 
                 new MongoDbContext(Configuration.GetConnectionString("MongoDBConnection")));
 
+            // Adding Authentication  
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer( options => 
+            {  
+                options.SaveToken = true;  
+                options.RequireHttpsMetadata = false;  
+                options.TokenValidationParameters = new TokenValidationParameters()  
+                {  
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(Configuration["JWT:Secret"])),
+                    ClockSkew = TimeSpan.Zero, 
+                };  
+            });
+            
             services.AddTransient<IAppointmentRepository, AppointmentRepository>();
             services.AddTransient<IBarberRepository, BarberRepository>();
             services.AddTransient<IBranchRepository, BranchRepository>();

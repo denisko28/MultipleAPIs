@@ -8,22 +8,6 @@ namespace Customers_BLL.Configurations
 {
     public class AutoMapperProfile : Profile
     {
-        // private void CreateBarberMaps()
-        // {
-        //     CreateMap<BarberRequest, Barber>();
-        //     CreateMap<Barber, BarberResponse>();
-        //
-        //     CreateMap<Appointment, BarbersAppointmentsResponse>()
-        //         .ForMember(
-        //             response => response.AppointmentId,
-        //             options => options.MapFrom(appointment => appointment.Id)
-        //         )
-        //         .ForMember(
-        //             response => response.AppointmentStatus,
-        //             options => options.MapFrom(appointment => AppointmentStatusHelper.GetStringStatus(appointment.AppointmentStatusId))
-        //         );
-        // }
-
         private void CreateAppointmentMaps()
         {
             CreateMap<AppointmentRequest, Appointment>()
@@ -70,6 +54,8 @@ namespace Customers_BLL.Configurations
         {
             CreateMap<CustomerRequest, Customer>();
 
+            CreateMap<CustomerRegisterRequest, Customer>();
+
             CreateMap<Customer, CustomerResponse>()
                 .ForMember(
                     response => response.FirstName,
@@ -87,7 +73,17 @@ namespace Customers_BLL.Configurations
                         options.MapFrom(customer => customer.User!.Avatar)
                 );
         }
+
+        private void CreateEmployeeMaps()
+        {
+            CreateMap<EmployeeRegisterRequest, Employee>();
+        }
         
+        private void CreateBarberMaps()
+        {
+            CreateMap<BarberRegisterRequest, Barber>();
+        }
+
         private void CreateServiceMaps()
         {
             CreateMap<Service, ServiceResponse>();
@@ -96,12 +92,35 @@ namespace Customers_BLL.Configurations
         private void CreateUserMaps()
         {
             CreateMap<User, UserResponse>();
+            
+            CreateMap<CustomerRegisterRequest, User>()
+                .ForMember(
+                    user => user.UserName,
+                    options => 
+                        options.MapFrom(user => user.Email)
+                );
+
+            CreateMap<EmployeeRegisterRequest, User>()
+                .ForMember(
+                    user => user.UserName,
+                    options => 
+                        options.MapFrom(user => user.Email)
+                );
+
+            CreateMap<BarberRegisterRequest, User>()
+                .ForMember(
+                    user => user.UserName,
+                    options => 
+                        options.MapFrom(user => user.Email)
+                );
         }
 
         public AutoMapperProfile()
         {
             CreateAppointmentMaps();
             CreateCustomerMaps();
+            CreateEmployeeMaps();
+            CreateBarberMaps();
             CreateServiceMaps();
             CreateUserMaps();
         }

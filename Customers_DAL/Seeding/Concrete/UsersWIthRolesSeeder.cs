@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Customers_DAL.Entities;
@@ -15,9 +16,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 1,
-                    UserName = "User1",
+                    UserName = "User1@gmail.com",
                     FirstName = "Петро",
-                    LastName = "Василенко"
+                    LastName = "Василенко",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password1",
                 UserRoles.Admin
@@ -26,9 +30,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 2,
-                    UserName = "User2",
+                    UserName = "User2@outlook.com",
                     FirstName = "Іван",
-                    LastName = "Григоренко"
+                    LastName = "Григоренко",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password2",
                 UserRoles.Manager
@@ -37,9 +44,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 3,
-                    UserName = "User3",
+                    UserName = "User3@gmail.com",
                     FirstName = "Олександр",
                     LastName = "Шевченко",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password3",
                 UserRoles.Barber
@@ -48,9 +58,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 4,
-                    UserName = "User4",
+                    UserName = "User4@outlook.com",
                     FirstName = "Роман",
-                    LastName = "Добровольський"
+                    LastName = "Добровольський",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password4",
                 UserRoles.Barber
@@ -59,9 +72,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 5,
-                    UserName = "User5",
+                    UserName = "User5@outlook.com",
                     FirstName = "Степан",
-                    LastName = "Петришко"
+                    LastName = "Петришко",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password5",
                 UserRoles.Barber
@@ -70,9 +86,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 6,
-                    UserName = "User6",
+                    UserName = "User6@gmail.com",
                     FirstName = "Світлана",
                     LastName = "Петришко",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password6",
                 UserRoles.Barber
@@ -81,9 +100,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 7,
-                    UserName = "User7",
+                    UserName = "User7@yahoo.com",
                     FirstName = "Богдан",
-                    LastName = "Ящук"
+                    LastName = "Ящук",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password7",
                 UserRoles.Manager
@@ -92,9 +114,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 8,
-                    UserName = "User8",
+                    UserName = "User8@outlook.com",
                     FirstName = "Валентина",
                     LastName = "Генко",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password8",
                 UserRoles.Barber
@@ -103,9 +128,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 9,
-                    UserName = "User9",
+                    UserName = "User9@gmail.com",
                     FirstName = "Андрій",
-                    LastName = "Івашко"
+                    LastName = "Івашко",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password9",
                 UserRoles.Barber
@@ -114,9 +142,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 10,
-                    UserName = "User10",
+                    UserName = "User10@gmail.com",
                     FirstName = "Олександр",
-                    LastName = "Ванченко"
+                    LastName = "Ванченко",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password10",
                 UserRoles.Barber
@@ -125,9 +156,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 11,
-                    UserName = "User11",
+                    UserName = "User11@ukr.net",
                     FirstName = "Володимир",
-                    LastName = "Михайлішин"
+                    LastName = "Михайлішин",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password11",
                 UserRoles.Manager
@@ -136,9 +170,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 12,
-                    UserName = "User12",
+                    UserName = "User12@outlook.com",
                     FirstName = "Станіслав",
-                    LastName = "Жолудь"
+                    LastName = "Жолудь",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password12",
                 UserRoles.Barber
@@ -147,9 +184,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 13,
-                    UserName = "User13",
+                    UserName = "User13@gmail.com",
                     FirstName = "Микола",
-                    LastName = "Лисенко"
+                    LastName = "Лисенко",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password13",
                 UserRoles.Barber
@@ -158,9 +198,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 14,
-                    UserName = "User14",
+                    UserName = "User14@outlook.com",
                     FirstName = "Дмитро",
-                    LastName = "Жовнірчук"
+                    LastName = "Жовнірчук",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password14",
                 UserRoles.Barber
@@ -169,9 +212,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 15,
-                    UserName = "User15",
+                    UserName = "User15@ukr.net",
                     FirstName = "Валентин",
-                    LastName = "Федоренко"
+                    LastName = "Федоренко",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password15",
                 UserRoles.Barber
@@ -181,9 +227,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 16,
-                    UserName = "User16",
+                    UserName = "User16@gmail.com",
                     FirstName = "Віталій",
-                    LastName = "Свистун"
+                    LastName = "Свистун",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password16",
                 UserRoles.Customer
@@ -192,9 +241,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 17,
-                    UserName = "User17",
+                    UserName = "User17@gmail.com",
                     FirstName = "Інокентій",
-                    LastName = "Фірташ"
+                    LastName = "Фірташ",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password17",
                 UserRoles.Customer
@@ -203,9 +255,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 18,
-                    UserName = "User18",
+                    UserName = "User18@gmail.com",
                     FirstName = "Ярослав",
-                    LastName = "Татарчук"
+                    LastName = "Татарчук",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password18",
                 UserRoles.Customer
@@ -214,9 +269,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 19,
-                    UserName = "User19",
+                    UserName = "User19@ukr.net",
                     FirstName = "Йосиф",
-                    LastName = "Дмитренко"
+                    LastName = "Дмитренко",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password19",
                 UserRoles.Customer
@@ -225,9 +283,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 20,
-                    UserName = "User20",
+                    UserName = "User20@ukr.net",
                     FirstName = "Констянтин",
-                    LastName = "Шарапенко"
+                    LastName = "Шарапенко",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password20",
                 UserRoles.Customer
@@ -236,9 +297,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 21,
-                    UserName = "User21",
+                    UserName = "User21@outlook.com",
                     FirstName = "Олег",
-                    LastName = "Притула"
+                    LastName = "Притула",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password21",
                 UserRoles.Customer
@@ -247,9 +311,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 22,
-                    UserName = "User22",
+                    UserName = "User22@gmail.com",
                     FirstName = "Анатолій",
-                    LastName = "Назаренко"
+                    LastName = "Назаренко",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password22",
                 UserRoles.Customer
@@ -258,9 +325,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 23,
-                    UserName = "User23",
+                    UserName = "User23@ukr.net",
                     FirstName = "Микола",
-                    LastName = "Вакуленко"
+                    LastName = "Вакуленко",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password23",
                 UserRoles.Customer
@@ -269,9 +339,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 24,
-                    UserName = "User24",
+                    UserName = "User24@outlook.com",
                     FirstName = "Степан",
-                    LastName = "Барабаш"
+                    LastName = "Барабаш",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password24",
                 UserRoles.Customer
@@ -280,9 +353,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 25,
-                    UserName = "User25",
+                    UserName = "User25@gmail.com",
                     FirstName = "Денис",
-                    LastName = "Ярема"
+                    LastName = "Ярема",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password25",
                 UserRoles.Customer
@@ -291,9 +367,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 26,
-                    UserName = "User26",
+                    UserName = "User26@ukr.net",
                     FirstName = "Олег",
-                    LastName = "Таралевич"
+                    LastName = "Таралевич",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password26",
                 UserRoles.Customer
@@ -302,9 +381,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 27,
-                    UserName = "User27",
+                    UserName = "User27@gmail.com",
                     FirstName = "Сергій",
-                    LastName = "Іващук"
+                    LastName = "Іващук",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password27",
                 UserRoles.Customer
@@ -313,9 +395,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 28,
-                    UserName = "User28",
+                    UserName = "User28@yahoo.com",
                     FirstName = "Михайло",
-                    LastName = "Компанієць"
+                    LastName = "Компанієць",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password28",
                 UserRoles.Customer
@@ -324,9 +409,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 29,
-                    UserName = "User29",
+                    UserName = "User29@outlook.com",
                     FirstName = "Андрій",
-                    LastName = "Іващук"
+                    LastName = "Іващук",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password29",
                 UserRoles.Customer
@@ -335,9 +423,12 @@ namespace Customers_DAL.Seeding.Concrete
                 new User
                 {
                     Id = 30,
-                    UserName = "User30",
+                    UserName = "User30@gmail.com",
                     FirstName = "Назар",
-                    LastName = "Мельник"
+                    LastName = "Мельник",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 },
                 "User%password30",
                 UserRoles.Customer
@@ -403,6 +494,8 @@ namespace Customers_DAL.Seeding.Concrete
             {
                 var roleId = roles.Select(_ => _).FirstOrDefault(role => role.Name == roleName)!.Id;
                 userRoles.Add(new IdentityUserRole<int>{ RoleId = roleId, UserId = user.Id});
+                user.Email = user.UserName;
+                user.NormalizedEmail = user.UserName.ToUpper();
             }
             
             builder.Entity<IdentityUserRole<int>>().HasData(userRoles);

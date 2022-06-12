@@ -1,6 +1,9 @@
+using System;
 using System.Text;
 using AutoMapper;
 using Customers_BLL.Configurations;
+using Customers_BLL.Factories.Abstract;
+using Customers_BLL.Factories.Concrete;
 using Customers_BLL.Services.Abstract;
 using Customers_BLL.Services.Concrete;
 using Customers_DAL;
@@ -37,7 +40,17 @@ namespace Customers_API
             // For Identity  
             services.AddIdentity<User, IdentityRole<int>>()  
                 .AddEntityFrameworkStores<BarbershopDbContext>()  
-                .AddDefaultTokenProviders();  
+                .AddDefaultTokenProviders();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                
+                options.User.RequireUniqueEmail = true;
+                options.User.AllowedUserNameCharacters =
+                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+            });
             
             // Adding Authentication  
             services.AddAuthentication(options =>
@@ -51,16 +64,19 @@ namespace Customers_API
                 options.RequireHttpsMetadata = false;  
                 options.TokenValidationParameters = new TokenValidationParameters()  
                 {  
-                    ValidateIssuer = true,  
-                    ValidateAudience = true,  
-                    ValidAudience = Configuration["JWT:ValidAudience"],  
-                    ValidIssuer = Configuration["JWT:ValidIssuer"],  
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))  
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(Configuration["JWT:Secret"])),
+                    ClockSkew = TimeSpan.Zero, 
                 };  
-            });  
+            });
 
             services.AddTransient<IAppointmentRepository, AppointmentRepository>();
             services.AddTransient<IAppointmentServiceRepository, AppointmentServiceRepository>();
+            services.AddTransient<IEmployeeRepository, EmployeeRepository>();
             services.AddTransient<IBarberRepository, BarberRepository>();
             services.AddTransient<ICustomerRepository, CustomerRepository>();
             services.AddTransient<IPossibleTimeRepository, PossibleTimeRepository>();
@@ -71,15 +87,22 @@ namespace Customers_API
             services.AddTransient<IAppointmentService, AppointmentService>();
             services.AddTransient<ICustomerService, CustomerService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IIdentityService, IdentityService>();
             services.AddTransient<IImageService, ImageService>();
 
-            var mapperConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new AutoMapperProfile());
-            });
+            var mapperConfig = new MapperConfiguration(mc => 
+                mc.AddProfile(new AutoMapperProfile()));
 
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
+
+            services.AddTransient<JwtTokenConfiguration>();
+            services.AddTransient<IJwtSecurityTokenFactory, JwtSecurityTokenFactory>();
+
+            services.AddHttpContextAccessor();
+            
+            services.AddSingleton<EmailConfiguration>();
+            services.AddScoped<IEmailSender, EmailSender>();
 
             services.AddRazorPages();
 
