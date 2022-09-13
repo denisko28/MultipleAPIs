@@ -72,11 +72,11 @@ namespace Services_API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Post([FromBody] ServiceDiscountRequest request)
+        public async Task<ActionResult> Post([FromBody] ServiceDiscountPostRequest request)
         {
             try
             {
-                await mediator.Send(new InsertServiceDiscountCommand(){ ServiceDiscountRequest = request });
+                await mediator.Send(new InsertServiceDiscountCommand(){ ServiceDiscountPostRequest = request });
                 return Ok();
             }
             catch (Exception e)

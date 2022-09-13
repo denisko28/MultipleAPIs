@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using HR_BLL.DTO.Requests;
@@ -96,6 +97,19 @@ namespace HR_BLL.Services.Concrete
                 response.CustomerName = $"{user.FirstName} {user.LastName}";
                 responses.Add(response);
             }
+            return responses;
+        }
+        
+        public async Task<IEnumerable<BarberResponse>> GetByBranchIdAsync(int branchId)
+        {
+            var barbers = await barberRepository.GetByBranchIdAsync(branchId);
+            var responses = new List<BarberResponse>();
+            foreach (var barber in barbers)
+            {
+                var extendedBarber = await ExtendBarber(barber);
+                responses.Add(extendedBarber);
+            }
+
             return responses;
         }
 

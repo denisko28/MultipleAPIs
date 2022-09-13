@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Dapper;
 using HR_DAL.Connection.Abstract;
 using HR_DAL.Entities;
@@ -33,5 +34,14 @@ namespace HR_DAL.Repositories.Concrete
         //    IEnumerable<BarbersAppointmentsResponse> results = await connection.Connect.QueryAsync<BarbersAppointmentsResponse>(sql, values);
         //    return results;
         //}
+
+        public async Task<IEnumerable<Barber>> GetByBranchIdAsync(int branchId)
+        {
+            const string sql = "SELECT * FROM Barber " + 
+                               "INNER JOIN Employee ON EmployeeUserId=UserId " +
+                               "WHERE BranchId=@BranchId";
+            var values = new { BranchId = branchId };
+            return await Connection.QueryAsync<Barber>(sql, values);
+        }
     }
 }

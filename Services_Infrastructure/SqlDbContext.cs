@@ -33,37 +33,6 @@ namespace Services_Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.UseCollation("Latin1_General_100_CI_AS_SC_UTF8");
-
-            modelBuilder.Entity<Service>(entity =>
-            {
-                entity.ToTable("Service_");
-
-                entity.Property(e => e.Name)
-                    .HasMaxLength(30)
-                    .HasColumnName("Name_");
-
-                entity.Property(e => e.Price).HasColumnType("decimal(6, 2)");
-            });
-
-            modelBuilder.Entity<ServiceDiscount>(entity =>
-            {
-                entity.ToTable("ServiceDiscount");
-
-                entity.HasOne(d => d.Service)
-                    .WithMany(p => p.ServiceDiscounts)
-                    .HasForeignKey(d => d.ServiceId)
-                    .HasConstraintName("FK__ServiceDi__Servi__398D8EEE");
-                
-                entity.HasOne(d => d.Branch)
-                    .WithMany(p => p.ServiceDiscounts)
-                    .HasForeignKey(d => d.BranchId)
-                    .HasConstraintName("FK__ServiceDi__Branc__3A81B327");
-            });
-
-            //OnModelCreatingPartial(modelBuilder);
         }
-
-        //partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

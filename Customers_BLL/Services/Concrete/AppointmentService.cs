@@ -138,6 +138,7 @@ namespace Customers_BLL.Services.Concrete
         public async Task InsertAsync(AppointmentPostRequest request)
         {
             var entity = mapper.Map<AppointmentPostRequest, Appointment>(request);
+            entity.AppointmentStatusId = 0;
             await appointmentRepository.InsertAsync(entity);
             await unitOfWork.SaveChangesAsync();
 

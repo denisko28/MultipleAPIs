@@ -17,7 +17,7 @@ namespace HR_BLL.Services.Abstract
 
         Task<EmployeeResponse> GetByIdForManager(int id, int userId);
 
-        Task<IEnumerable<EmployeeResponse>> GetByStatusAsync(string status);
+        Task<IEnumerable<EmployeeResponse>> GetByStatusAsync(int statusCode);
 
         Task<FileResult> GetPassportForEmployeeAsync(int employeeId, UserClaimsModel userClaims);
 

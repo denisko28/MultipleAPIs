@@ -9,9 +9,9 @@ namespace Customers_BLL.Services.Concrete
 {
     public class ImageService : IImageService
     {
-        private readonly IHostingEnvironment environment;
+        private readonly IWebHostEnvironment environment;
 
-        public ImageService(IHostingEnvironment environment)
+        public ImageService(IWebHostEnvironment environment)
         {
             this.environment = environment;
         }
@@ -32,7 +32,7 @@ namespace Customers_BLL.Services.Concrete
             await photo?.CopyToAsync(fileStream)!;
             await fileStream.FlushAsync();
 
-            return newFileName;
+            return $"{imagesFolderPath}/{newFileName}";
         }
     }
 }

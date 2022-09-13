@@ -32,7 +32,8 @@ namespace Services_Application.Commands.ServiceDiscounts.InsertServiceDiscount
 
         public async Task<Unit> Handle(InsertServiceDiscountCommand request, CancellationToken cancellationToken)
         {
-            var entity = mapper.Map<ServiceDiscountRequest, ServiceDiscount>(request.ServiceDiscountRequest);
+            var entity = 
+                mapper.Map<ServiceDiscountPostRequest, ServiceDiscount>(request.ServiceDiscountPostRequest);
             entity.Id = 0;
 
             await table.AddAsync(entity, cancellationToken);

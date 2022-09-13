@@ -60,6 +60,7 @@ namespace Customers_DAL
             modelBuilder.ApplyConfiguration(new EmployeeDayOffConfiguration());
             modelBuilder.ApplyConfiguration(new PossibleTimeConfiguration());
             modelBuilder.ApplyConfiguration(new ServiceConfiguration());
+            modelBuilder.ApplyConfiguration(new ServiceDiscountConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             
             UsersWithRolesSeeder.Seed(modelBuilder);

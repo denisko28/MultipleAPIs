@@ -67,7 +67,7 @@ namespace HR_API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Post([FromBody] BranchRequest request)
+        public async Task<ActionResult> Post([FromBody] BranchPostRequest request)
         {
             try
             {

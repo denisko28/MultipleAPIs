@@ -14,6 +14,8 @@ namespace HR_BLL.Services.Abstract
 
         Task<IEnumerable<BarbersAppointmentResponse>> GetBarbersAppointmentsAsync(int barberId, string dateStr, UserClaimsModel userClaims);
 
+        Task<IEnumerable<BarberResponse>> GetByBranchIdAsync(int branchId);
+        
         Task<int> InsertAsync(BarberRequest request);
 
         Task<bool> UpdateAsync(BarberRequest request, UserClaimsModel userClaims);

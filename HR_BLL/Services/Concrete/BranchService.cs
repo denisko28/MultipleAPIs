@@ -39,9 +39,9 @@ namespace HR_BLL.Services.Concrete
             return mapper.Map<Branch, BranchResponse>(result);
         }
 
-        public async Task<int> InsertAsync(BranchRequest request)
+        public async Task<int> InsertAsync(BranchPostRequest request)
         {
-            var entity = mapper.Map<BranchRequest, Branch>(request);
+            var entity = mapper.Map<BranchPostRequest, Branch>(request);
             var insertedId = await branchRepository.InsertAsync(entity);
             
             entity.Id = insertedId;

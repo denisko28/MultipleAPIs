@@ -90,9 +90,8 @@ namespace HR_BLL.Services.Concrete
             return extendedEmployee;
         }
 
-        public async Task<IEnumerable<EmployeeResponse>> GetByStatusAsync(string status)
+        public async Task<IEnumerable<EmployeeResponse>> GetByStatusAsync(int statusCode)
         {
-            var statusCode = EmployeeStatusHelper.GetIntStatus(status);
             var employees = await employeeRepository.GetByStatusIdAsync(statusCode);
             var responses = new List<EmployeeResponse>();
             foreach (var employee in employees)

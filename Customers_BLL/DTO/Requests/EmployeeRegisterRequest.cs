@@ -6,7 +6,7 @@ namespace Customers_BLL.DTO.Requests
     {
         public int BranchId { get; set; }
 
-        public string EmployeeStatus { get; set; } = null!;
+        public int EmployeeStatusId { get; set; }
         
         public string Address { get; set; } = null!;
         

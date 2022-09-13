@@ -10,7 +10,7 @@ namespace Customers_BLL.DTO.Responses
         
         public int? CustomerUserId { get; set; }
         
-        public string? AppointmentStatus { get; set; }
+        public int AppointmentStatusId { get; set; }
         
         public DateTime AppDate { get; set; }
         

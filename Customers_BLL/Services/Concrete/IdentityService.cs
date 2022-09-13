@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Customers_DAL.Entities;
@@ -19,6 +20,7 @@ using Customers_DAL.Repositories.Abstract;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Customers_BLL.Services.Concrete
@@ -182,11 +184,10 @@ namespace Customers_BLL.Services.Concrete
                        ?? throw new EntityNotFoundException(nameof(User), email);
 
             var resetToken = await userManager.GeneratePasswordResetTokenAsync(user);
-            var callbackUrl = generator.GetUriByAction(
-                accessor.HttpContext,
-                action: "ResetPassword",
-                controller: "Identity",
-                values: new { userId = user.Id, confirmToken = resetToken} );
+            var encodedToken = Encoding.UTF8.GetBytes(resetToken);
+            var validToken = WebEncoders.Base64UrlEncode(encodedToken);
+            
+            var callbackUrl = $"http://localhost:3000/resetPass?userId={user.Id}&confirmToken={validToken}";
             
             var emails = new List<string> { user.Email };
             var message = new MessageModel {
@@ -205,7 +206,10 @@ namespace Customers_BLL.Services.Concrete
             var user = await userManager.Users.FirstOrDefaultAsync(u => u.Id == request.UserId)
                        ?? throw new EntityNotFoundException(nameof(User), request.UserId);
             
-            var result = await userManager.ResetPasswordAsync(user, request.Token, request.NewPassword);
+            var decodedToken = WebEncoders.Base64UrlDecode(request.Token);
+            string normalToken = Encoding.UTF8.GetString(decodedToken);
+            
+            var result = await userManager.ResetPasswordAsync(user, normalToken, request.NewPassword);
 
             if (!result.Succeeded)
                 throw new Exception("Something went wrong!");

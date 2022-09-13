@@ -11,7 +11,7 @@ namespace HR_BLL.Services.Abstract
 
         Task<BranchResponse> GetByIdAsync(int id);
 
-        Task<int> InsertAsync(BranchRequest request);
+        Task<int> InsertAsync(BranchPostRequest request);
 
         Task<bool> UpdateAsync(BranchRequest request);
 

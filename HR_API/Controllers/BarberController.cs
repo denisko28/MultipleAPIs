@@ -94,6 +94,23 @@ namespace HR_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
             }
         }
+        
+        // GET: api/Barber/Branch/2
+        [HttpGet("Branch/{branchId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<IEnumerable<BarberResponse>>> GetByBranchId(int branchId)
+        {
+            try
+            {
+                var result = await barberService.GetByBranchIdAsync(branchId);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+            }
+        }
 
         // POST: api/Barber
         // [HttpPost]

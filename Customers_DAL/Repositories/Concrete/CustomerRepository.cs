@@ -43,8 +43,12 @@ namespace Customers_DAL.Repositories.Concrete
             var customerWithAppointments = await Table
                 .Include(customer => customer.Appointments)
                     .ThenInclude(appointment => appointment.Barber)
-                        .ThenInclude(barber => barber!.Employee)
+                        .ThenInclude(barber => barber.Employee)
                             .ThenInclude(employee => employee.User)
+                .Include(customer => customer.Appointments)
+                    .ThenInclude(appointment => appointment.Barber)
+                        .ThenInclude(barber => barber.Employee)
+                            .ThenInclude(employee => employee.Branch)
                 .Include(customer => customer.Appointments)
                     .ThenInclude(appointment => appointment.AppointmentServices)
                 .SingleOrDefaultAsync(customer => customer.UserId == id);

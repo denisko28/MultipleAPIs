@@ -11,8 +11,8 @@
     "Customers_API": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
-      "launchUrl": "api/appointment",
+      "launchBrowser": false,
+      "launchUrl": "",
       "applicationUrl": "https://localhost:7158;http://localhost:5135",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

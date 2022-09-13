@@ -4,6 +4,7 @@ using AutoMapper;
 using Customers_BLL.Configurations;
 using Customers_BLL.Factories.Abstract;
 using Customers_BLL.Factories.Concrete;
+using Customers_BLL.Filters;
 using Customers_BLL.Services.Abstract;
 using Customers_BLL.Services.Concrete;
 using Customers_DAL;
@@ -12,6 +13,7 @@ using Customers_DAL.Repositories.Abstract;
 using Customers_DAL.Repositories.Concrete;
 using Customers_DAL.UnitOfWork.Abstract;
 using Customers_DAL.UnitOfWork.Concrete;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -79,6 +81,7 @@ namespace Customers_API
             services.AddTransient<IEmployeeRepository, EmployeeRepository>();
             services.AddTransient<IBarberRepository, BarberRepository>();
             services.AddTransient<ICustomerRepository, CustomerRepository>();
+            services.AddTransient<IServiceRepository, ServiceRepository>();
             services.AddTransient<IPossibleTimeRepository, PossibleTimeRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
 
@@ -106,10 +109,14 @@ namespace Customers_API
 
             services.AddRazorPages();
 
-            services.AddMvc(options =>
-                    {
-                        options.EnableEndpointRouting = false;
-                    });
+            services
+                .AddMvc(options =>
+                {
+                    options.EnableEndpointRouting = false;
+                    options.Filters.Add<ValidationFilter>();
+                })
+                .AddFluentValidation(options => 
+                    options.RegisterValidatorsFromAssemblyContaining<ValidationFilter>());
 
             services.AddControllers();
         }
@@ -126,6 +133,12 @@ namespace Customers_API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(options => options
+                .WithOrigins("http://localhost:3000")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials());
 
             app.UseStaticFiles();
 

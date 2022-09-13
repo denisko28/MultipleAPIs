@@ -21,6 +21,8 @@ namespace Customers_DAL.UnitOfWork.Concrete
         public ICustomerRepository CustomerRepository { get; }
         
         public IEmployeeRepository EmployeeRepository { get; }
+        
+        public IServiceRepository ServiceRepository { get; }
 
         public IUserRepository UserRepository { get; }
         
@@ -31,7 +33,7 @@ namespace Customers_DAL.UnitOfWork.Concrete
         public UnitOfWork(BarbershopDbContext barbershopDbContext, IAppointmentRepository appointmentRepository,
           IPossibleTimeRepository possibleTimeRepository, IBarberRepository barberRepository,
           ICustomerRepository customerRepository, IAppointmentServiceRepository appointmentServiceRepository,
-          IUserRepository userRepository, UserManager<User> userManager, SignInManager<User> signInManager, IEmployeeRepository employeeRepository)
+          IUserRepository userRepository, UserManager<User> userManager, SignInManager<User> signInManager, IEmployeeRepository employeeRepository, IServiceRepository serviceRepository)
         {
             this.barbershopDbContext = barbershopDbContext;
             AppointmentRepository = appointmentRepository;
@@ -40,6 +42,7 @@ namespace Customers_DAL.UnitOfWork.Concrete
             BarberRepository = barberRepository;
             CustomerRepository = customerRepository;
             EmployeeRepository = employeeRepository;
+            ServiceRepository = serviceRepository;
             UserRepository = userRepository;
             UserManager = userManager;
             SignInManager = signInManager;

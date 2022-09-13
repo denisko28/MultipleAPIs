@@ -297,6 +297,7 @@ namespace Customers_DAL.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasMaxLength(80)
                         .HasColumnType("nvarchar(80)");
 
@@ -1007,15 +1008,16 @@ namespace Customers_DAL.Migrations
                     b.Property<bool?>("Available")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("Duration")
+                    b.Property<int>("Duration")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)")
                         .HasColumnName("Name_");
 
-                    b.Property<decimal?>("Price")
+                    b.Property<decimal>("Price")
                         .HasColumnType("decimal(6,2)");
 
                     b.HasKey("Id");
@@ -1094,6 +1096,48 @@ namespace Customers_DAL.Migrations
                             Duration = 75,
                             Name = "Чистка лиця",
                             Price = 400m
+                        });
+                });
+
+            modelBuilder.Entity("Customers_DAL.Entities.ServiceDiscount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("BranchId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DiscountSize")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ServiceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BranchId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("ServiceDiscount", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BranchId = 2,
+                            DiscountSize = 20,
+                            ServiceId = 5
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BranchId = 1,
+                            DiscountSize = 15,
+                            ServiceId = 3
                         });
                 });
 
@@ -1182,16 +1226,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "254a3ba6-328c-4f52-b975-192b4c07fa3c",
+                            ConcurrencyStamp = "069dd3d3-fbf8-46ba-8c17-5540dfe8768e",
                             Email = "User1@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Петро",
                             LastName = "Василенко",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER1@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBbZrKmKPbL12IDAut1pjZbCw5HXk4S1Ai5KFIAg5dXWl2AkwQXgMvBQpoFvwRqEgg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEH9ROpp3D2goNVX6SAFLkMGpWko60fknLamIxPcEmow4Fs4lx0PsfHY+8fyce4PHXA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2b9361f9-27f9-42f3-869d-96078898bafd",
+                            SecurityStamp = "18b2b2a1-9d9e-4b4c-bee6-8f6df433888d",
                             TwoFactorEnabled = false,
                             UserName = "User1@gmail.com"
                         },
@@ -1199,16 +1243,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f1043c3d-bdb4-4311-94ee-0f3dec3027ce",
+                            ConcurrencyStamp = "b55bcf3f-9097-439b-b87d-ea183cdc20dd",
                             Email = "User2@outlook.com",
                             EmailConfirmed = true,
                             FirstName = "Іван",
                             LastName = "Григоренко",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER2@OUTLOOK.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMQe2IsxZ8fA5U6wU6BPVaYoRVVKCjp06LmUwPNr4iEMLcmGKRyD60gHNdByNoZFuQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEVIDvlWO3Nqb3kyN+t0QHrwEAhGhpzPsMXQToe5sOwqt2mo237Htj3gKPl1yeBiqw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "0edca097-c3a4-4af2-8bb2-c0561d143461",
+                            SecurityStamp = "36fe507e-13fe-4b10-90ce-8e04f475c104",
                             TwoFactorEnabled = false,
                             UserName = "User2@outlook.com"
                         },
@@ -1216,16 +1260,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 3,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0489fdbc-a4ca-4037-ba84-846a5eb05cdd",
+                            ConcurrencyStamp = "9573a927-fa5c-4803-acd4-518f42f8825f",
                             Email = "User3@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Олександр",
                             LastName = "Шевченко",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER3@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEJynTSiQTrlAH7yOuqww4qDPYJLBgC9w+4N3v28UTTaAwjFnbhmbToWurVyTAEhMw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOafbCN5XN5Twd+k/6klStbllQVvVl5m/kSYesay246WYZd1fGbdZkIbzkDG5yBIdg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "358528c9-f3d6-47e5-a8ac-b5539b9c6483",
+                            SecurityStamp = "f5062e28-4584-4f2d-9b36-2e2129516686",
                             TwoFactorEnabled = false,
                             UserName = "User3@gmail.com"
                         },
@@ -1233,16 +1277,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 4,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f3ad8ec7-c001-4c3c-b5ae-1f47a3191767",
+                            ConcurrencyStamp = "a892395f-e8fe-4681-ab7c-4d69dcbaeb88",
                             Email = "User4@outlook.com",
                             EmailConfirmed = true,
                             FirstName = "Роман",
                             LastName = "Добровольський",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER4@OUTLOOK.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEGTo2kocxxbJMO/qTesElla72NfDjyW6ObnhiE+x+xoub2XRkY7G3Ir7T392kWVLPQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKHcX3SWwiBWOKOSQOK1qnLm63ykF8o8L3QHkNB9dLQMPv2+NNihAsNHyWSZg/PGEQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "514f5a7c-2f63-4718-b73f-d30795c2e0aa",
+                            SecurityStamp = "1f3270c8-2a7e-4364-971d-2636e5a2ea60",
                             TwoFactorEnabled = false,
                             UserName = "User4@outlook.com"
                         },
@@ -1250,16 +1294,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 5,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "bf69e21b-9a07-4dfa-8a63-cfb249625661",
+                            ConcurrencyStamp = "e21d803c-5292-46a9-bff2-0bc66e4177cb",
                             Email = "User5@outlook.com",
                             EmailConfirmed = true,
                             FirstName = "Степан",
                             LastName = "Петришко",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER5@OUTLOOK.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEFQsOKAh652NHpks8yqzZMVVymNSrVlGSrfg+EQnnnzNssr4fhhECKodV77YIjFLtQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAELA+pdilhsoT80O34JDlpUK/DjLKlnW/sn3+adn6HW/wMTdv9/H/lF8QOchTxEVL6Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "cb5a0299-0287-4f0d-8b22-fbd9f38cd73e",
+                            SecurityStamp = "21070178-878b-4792-90e8-f1349b145126",
                             TwoFactorEnabled = false,
                             UserName = "User5@outlook.com"
                         },
@@ -1267,16 +1311,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 6,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3ec62d7a-dbfa-44fe-9a03-3f6d83e5b7c6",
+                            ConcurrencyStamp = "47c52fd2-534c-4eb6-9c9d-50c1e6b129e4",
                             Email = "User6@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Світлана",
                             LastName = "Петришко",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER6@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMQxu9i6t77iN1M+8N4PtoDca2b1iJ0NV3+DNAA0XET1/lmZFuOdf2gSfSInoNKOoA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEL/J5djNmMuuTFId4TNcsVrmRpoI6BGsLT/F61Mis0HmqZibD35XN3MYfHRpSn9K9A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "434fec43-3021-4664-8876-7a1cfaa29b94",
+                            SecurityStamp = "8d396c55-6844-444b-9d12-b979cfd25c2d",
                             TwoFactorEnabled = false,
                             UserName = "User6@gmail.com"
                         },
@@ -1284,16 +1328,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 7,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "02a6e7d2-fb96-4ee2-a26c-fee0210d1675",
+                            ConcurrencyStamp = "d6a618fd-e275-4bc8-8a00-6cd380251606",
                             Email = "User7@yahoo.com",
                             EmailConfirmed = true,
                             FirstName = "Богдан",
                             LastName = "Ящук",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER7@YAHOO.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEKaqxjYdmZTGlZVPMKgFpb8hL/rJkv0DQAiawBghZqvC7JOEI14AKMh+anpWxq13Wg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIAJRvjfpTJ13W7C4anuhtb5QEZP7UFdOhUOFwDwwimN1fXm9x06r4iEVWNBd1MYCg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "bec9bd07-38b9-4165-823a-ee83abe4eac6",
+                            SecurityStamp = "68625d70-46c6-4eb8-9f93-a492e35f801f",
                             TwoFactorEnabled = false,
                             UserName = "User7@yahoo.com"
                         },
@@ -1301,16 +1345,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 8,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "37ca32fc-7ac4-4bf4-b8e6-c7ddc4ec1daf",
+                            ConcurrencyStamp = "849a722e-4636-4204-9832-17b4d307f484",
                             Email = "User8@outlook.com",
                             EmailConfirmed = true,
                             FirstName = "Валентина",
                             LastName = "Генко",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER8@OUTLOOK.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDHahBT4kD3YXBk9HBbBU8LyMbzNgQ5oA9mWEGW/G+DubD8hDG+vJNJab1i9cPVhAg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFcTckuoMvk0f2Dk9Ft/JeSvaDT2vzmMGlWfG005Kpkkr9tCXuPPNJpQ/3WkrIHjag==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "748447ad-c224-4567-88a0-556f711bfbd5",
+                            SecurityStamp = "8666accd-3572-4547-8ea0-4005d55acf5a",
                             TwoFactorEnabled = false,
                             UserName = "User8@outlook.com"
                         },
@@ -1318,16 +1362,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 9,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5c1449a0-6b6d-4cc2-bf71-60cb1b56c1c0",
+                            ConcurrencyStamp = "e5adf899-9b37-4353-9f2a-c43abd9c0c35",
                             Email = "User9@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Андрій",
                             LastName = "Івашко",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER9@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAECuavHYHhH00OS+KKmFZZdyBvTpQL019OuPshV8asins1pNi6JjU1BRYsVfnBCJCDw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAIGaOs/mQFwcZVDIFpWqUCU3XdEgtCJlavjidePc1VBAqDTNfxtBV7IZvXtkJYDWQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "57c9b06c-cbae-47b2-9113-f1e7cd6fa088",
+                            SecurityStamp = "0c26e48e-b83e-477c-9b7e-1fd295b4817f",
                             TwoFactorEnabled = false,
                             UserName = "User9@gmail.com"
                         },
@@ -1335,16 +1379,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 10,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "75a16fb4-7671-4ee1-b79e-0723698cac39",
+                            ConcurrencyStamp = "6638fb90-1b32-40d4-80a8-67eb56d93698",
                             Email = "User10@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Олександр",
                             LastName = "Ванченко",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER10@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEKyfsOURp11+iTENVKI2x8zCBGlb/PKYrwsY6o0hssbnkTqGcREe+ed3ZQRdDxVUYg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAE6WzWnxtYADAIaOH3bn16a2I4rrYuboQpBoF4nx9xuTsSftcoPQ/EGZHF6CD3RBw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c60941b9-c4d6-4405-bae4-6abb61e9394d",
+                            SecurityStamp = "5fe1fbee-4374-4574-ac04-ec4a7841ded8",
                             TwoFactorEnabled = false,
                             UserName = "User10@gmail.com"
                         },
@@ -1352,16 +1396,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 11,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "49050d5e-140c-4e90-86bf-7e5ddf66f998",
+                            ConcurrencyStamp = "cda4e09d-b163-4ea1-85f0-536638463af1",
                             Email = "User11@ukr.net",
                             EmailConfirmed = true,
                             FirstName = "Володимир",
                             LastName = "Михайлішин",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER11@UKR.NET",
-                            PasswordHash = "AQAAAAEAACcQAAAAEAmZEl6fnlaCb2osOS/NHvOPD7mX+iRqVDLD0P78Rd+wUiPYlIBhfCEVUxOR2AsnbA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOA4n1wNJA9EP825vkAeQq0o49aNy7KP4oESzubMHsoKWS82G6ZOFZ3L9wQvdhnBSw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5385e731-00ff-41ab-847a-4c92d4581136",
+                            SecurityStamp = "310db1a0-e6a3-4e22-97fb-0169b2a4753e",
                             TwoFactorEnabled = false,
                             UserName = "User11@ukr.net"
                         },
@@ -1369,16 +1413,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 12,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3dcb08a6-c2ef-4e8f-a4f7-25167e05cb5a",
+                            ConcurrencyStamp = "aab862dc-b572-4519-8b8d-8b6a359c6df1",
                             Email = "User12@outlook.com",
                             EmailConfirmed = true,
                             FirstName = "Станіслав",
                             LastName = "Жолудь",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER12@OUTLOOK.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDPe8T2Uvx0bbleWjQBEDqBVoy/zPSitbTzb2qc5eGAV/fv/4WYBfwOLUvfVJfW+XQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEC5DQ6ko9WBaA6YTrJ/DtSQiLJDvRfZXpTcxITq51arikBMgKNLOcfZeVcJ+3wSfhg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "bec157e2-162d-4aa5-971d-3c2ae19bf6cb",
+                            SecurityStamp = "db2bf284-5554-4ac8-ad81-671e0616b186",
                             TwoFactorEnabled = false,
                             UserName = "User12@outlook.com"
                         },
@@ -1386,16 +1430,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 13,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2ea6a975-e530-40f9-94f5-578070ffe437",
+                            ConcurrencyStamp = "df086a8c-18f6-4ed9-8f65-98faea0072f6",
                             Email = "User13@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Микола",
                             LastName = "Лисенко",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER13@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEA76QuwheAhcSHDx+2HxT06RV0JgrrRRQDLYdu2EJs9I/n/RtBgzG62noR3XlEg1tA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJcDXc6A6JhkbXl+XwAYeO/WVnj3Jy4ZJNqnffRWn1Pht6l8/DM7ja7IOySBmrZcGg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c8449f38-e456-4f45-a9db-34de9f85ba96",
+                            SecurityStamp = "d364bacd-c1aa-4812-b495-4d6d111c0ae8",
                             TwoFactorEnabled = false,
                             UserName = "User13@gmail.com"
                         },
@@ -1403,16 +1447,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 14,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a1687716-634f-4ca4-97f7-be95ec59352d",
+                            ConcurrencyStamp = "75173821-00ff-4503-b225-0a30af2992cc",
                             Email = "User14@outlook.com",
                             EmailConfirmed = true,
                             FirstName = "Дмитро",
                             LastName = "Жовнірчук",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER14@OUTLOOK.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEN3c17+4SxScuBj4h3M1MWMnqMpt4e+vwNVYoYEiux9RRaMqZcf/64T+M7jGd56ABg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDpJy9wBxgez8YT2HlIELGSPp16I+v+EwS4SrHwbXuwP92vhm6A32KxmHROpDt4Cxw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "41be8b95-e833-479f-a08b-416342ccb212",
+                            SecurityStamp = "d0a0badf-9366-467e-8d77-1dd45a6a1a0a",
                             TwoFactorEnabled = false,
                             UserName = "User14@outlook.com"
                         },
@@ -1420,16 +1464,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 15,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "07860f72-d874-4eca-8b89-69d8090f0f7f",
+                            ConcurrencyStamp = "fea15ab9-14a4-48d3-aea9-9cfa1d6a3171",
                             Email = "User15@ukr.net",
                             EmailConfirmed = true,
                             FirstName = "Валентин",
                             LastName = "Федоренко",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER15@UKR.NET",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEzhC6D38YVEHYyCqXNGZnO6Z2xbj3WpkfGARnO+cwhLdryTUeKLT7HSQdCg0gZrbg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDjOLXf5LGcl3Q2pisVDOMdDh2TQV+wZr8jwYCkNby3Ipi0oq5JPfjRkdqzP3QyVGw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "10037f92-4910-4d12-935f-a23d35a0282a",
+                            SecurityStamp = "895b4b96-49ee-48ad-ad24-9768b21962f4",
                             TwoFactorEnabled = false,
                             UserName = "User15@ukr.net"
                         },
@@ -1437,16 +1481,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 16,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "32ddbd64-87b8-41df-ad13-9d3370356089",
+                            ConcurrencyStamp = "2d0fa954-2f45-4ecc-8143-80367cd82afc",
                             Email = "User16@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Віталій",
                             LastName = "Свистун",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER16@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJ8oWH6CVdfledpq8OdcIBOPDcN0BHs8U20pR78VIeI714V5YqWB4yj5kHiTsUaVEg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEE+kDEQ74qv2/gl+/q12SClGxBa5tfY7dairzOUIGsR0KYOPNEMTqCr2noD3ICgeNw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "4cf9928e-7239-4296-a34f-109409f2eada",
+                            SecurityStamp = "8b97a0e7-8b23-4913-96c5-714b9ee344d5",
                             TwoFactorEnabled = false,
                             UserName = "User16@gmail.com"
                         },
@@ -1454,16 +1498,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 17,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8d415343-6a6f-4041-9001-278f2442f288",
+                            ConcurrencyStamp = "d7aca1ad-d551-4573-a94c-a0313d57cac1",
                             Email = "User17@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Інокентій",
                             LastName = "Фірташ",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER17@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEFIsijwNfDiSXQN2JTdyBZ1m1PNHejfBLxYXLg74hMo2uWNQy9/T+vow8WwG2Lx6EQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEN8WDMFh0tfFPuJuUvwC9VQ3jLV58nQiT08av8YnD88n604e5Z06/JvjTI44zMdwag==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "0d52f050-7639-4d95-aa26-e9f17d3311a3",
+                            SecurityStamp = "770aa13a-6a1c-4443-858f-582fbfc83d16",
                             TwoFactorEnabled = false,
                             UserName = "User17@gmail.com"
                         },
@@ -1471,16 +1515,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 18,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b150f8f1-2a5e-4b06-9f4a-8a915ee89cc0",
+                            ConcurrencyStamp = "e71bec2f-4145-4f08-a189-2ed69ad3df2d",
                             Email = "User18@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Ярослав",
                             LastName = "Татарчук",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER18@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEFVAB/vW+FcZfkQPr7ZRCGPlbPsMdh3s2bAkW7FN2kKshPh0vVXWqmWh3RiDbNGx6Q==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEE/tvJik+9A1YbkrVCQr9yanjX6gQaqmKAlnptkX316fSe82OKfAc6UzZrAcjY2O1A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "24efed93-2052-48ba-b581-fbedd64252c9",
+                            SecurityStamp = "519bfbcd-9792-423a-84e4-11b97b082812",
                             TwoFactorEnabled = false,
                             UserName = "User18@gmail.com"
                         },
@@ -1488,16 +1532,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 19,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "52258038-cefc-4865-858f-1b6c9146a4e2",
+                            ConcurrencyStamp = "abb525c3-6ca8-4dac-aec6-bb3e4e437d6d",
                             Email = "User19@ukr.net",
                             EmailConfirmed = true,
                             FirstName = "Йосиф",
                             LastName = "Дмитренко",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER19@UKR.NET",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBhYP254lKhr1ULAEY39VdJ/YqkHJxIkipZ0t01Goku3xNgX83ej9Q212e5QegHzVA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEItDbeJj0q9LdYf9KREbccrbxrFEb2yjUI934uF+qmU3R0oZ7ODOds94TCw9oyPREA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "4b57b161-d1d1-45a0-bdd6-491f3bf45197",
+                            SecurityStamp = "6d1404bc-e201-494a-b83e-4fae0113599a",
                             TwoFactorEnabled = false,
                             UserName = "User19@ukr.net"
                         },
@@ -1505,16 +1549,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 20,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5cedde35-38d5-4935-b551-4a6c39020430",
+                            ConcurrencyStamp = "9fc932d1-f105-4755-bd33-ff6f983a0e5e",
                             Email = "User20@ukr.net",
                             EmailConfirmed = true,
                             FirstName = "Констянтин",
                             LastName = "Шарапенко",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER20@UKR.NET",
-                            PasswordHash = "AQAAAAEAACcQAAAAEOR/NdrYACkVv3imcMlwK9aRQyiZuo48DkdtPQIfR4S3OpeXl/xf7+IjHt6Zs3O6KQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEN+Mhiwfsu89JC+dmKekWyIzCMc4M0rGlYf/Pn7M9wvXMtU7VjYIcJL8KpH854cSwg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "98440750-b45a-40ae-9db1-c22a411ab91e",
+                            SecurityStamp = "69e3b1b0-17c8-4c2c-8aeb-8b7b8edc03f2",
                             TwoFactorEnabled = false,
                             UserName = "User20@ukr.net"
                         },
@@ -1522,16 +1566,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 21,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "30a66ea3-cf9e-493c-86a1-a75a3bc8bb29",
+                            ConcurrencyStamp = "ac59922c-a81a-4f4b-a112-633ef999a72d",
                             Email = "User21@outlook.com",
                             EmailConfirmed = true,
                             FirstName = "Олег",
                             LastName = "Притула",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER21@OUTLOOK.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEOK0YYGyrrYVJJoTRtGgh5Iuz7xaBA/uQq/3sMhBaBbMYa8+jeTEkg5HyBR4L7491Q==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAN8dRF7VLMdyBTNyJg7dMV2AkFRut5YIEbZRt1o2+yxiBn3vcJmGeHP11NSqpNrHQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5b093959-189e-48a1-92b4-a8db036fc304",
+                            SecurityStamp = "cb5fffd2-2261-4fcb-953c-780a7ce11c6f",
                             TwoFactorEnabled = false,
                             UserName = "User21@outlook.com"
                         },
@@ -1539,16 +1583,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 22,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5576b17a-af5e-479d-a7f2-060573d1c7a1",
+                            ConcurrencyStamp = "08b867f5-1380-42e9-93d0-1dedd4ed55e5",
                             Email = "User22@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Анатолій",
                             LastName = "Назаренко",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER22@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEHw7MYAuBHyScRzNfYHbH22iB+Y1yo65O3Dcwu5kcXSOliYgbDIuQ8nj4NtwceUTpQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOTskItVqCnynM+gYQh+SQS9vv5TGvXZ0eLRS49TQUo7sry9fZvntulnIxVOZxg0rw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5453592d-3fb9-4860-aa45-0a36ad0121e5",
+                            SecurityStamp = "d034b441-a914-46f9-83f1-530e06404350",
                             TwoFactorEnabled = false,
                             UserName = "User22@gmail.com"
                         },
@@ -1556,16 +1600,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 23,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5dcb8f96-0f71-4504-981b-6c5693d402ff",
+                            ConcurrencyStamp = "269125e9-da6e-413e-a2c8-2a7f929f35cf",
                             Email = "User23@ukr.net",
                             EmailConfirmed = true,
                             FirstName = "Микола",
                             LastName = "Вакуленко",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER23@UKR.NET",
-                            PasswordHash = "AQAAAAEAACcQAAAAEKaYLjWhh11XqDxuZHHb/8fnrcFG2Uji4xbT6R+tIO7veKbO4n2EKoccGmLtKYf+QA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAvxZ0kSnIo9yhE6yCc1Dhg7qHshP+XPGH+Gpu/+AOGMgGYPCQvv2m0Y20LpCMpv+Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "cdc0abc8-9f8e-405d-bddf-3af5529721e4",
+                            SecurityStamp = "7ea89d5a-66bc-4638-b37c-ee9123c41ff1",
                             TwoFactorEnabled = false,
                             UserName = "User23@ukr.net"
                         },
@@ -1573,16 +1617,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 24,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ef02c8da-0444-4db8-9af0-4abb857cea33",
+                            ConcurrencyStamp = "ab28009c-296f-414a-8de0-01d63573c829",
                             Email = "User24@outlook.com",
                             EmailConfirmed = true,
                             FirstName = "Степан",
                             LastName = "Барабаш",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER24@OUTLOOK.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDMLxOrrguQCrppuUgBEzrCwUXRR6L690n2oN8GSbZ1xyExSiHVs+0QUch48BGAthg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAECj9GkFuw0kqqAyHW7yuOyhXvrHusUMSXuGeVeQ3VGuNLubh9xoAllUaoDAnYSyojg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "92a348ea-0b63-41d7-8ee0-dd2905bcf7c2",
+                            SecurityStamp = "8d6a3d32-56ab-4639-83d2-b5b94241c7d4",
                             TwoFactorEnabled = false,
                             UserName = "User24@outlook.com"
                         },
@@ -1590,16 +1634,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 25,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "34ce3a26-418f-44e2-9e99-ca7a6781ead7",
+                            ConcurrencyStamp = "fa7704f9-de86-4015-8ba7-b2492388cbcf",
                             Email = "User25@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Денис",
                             LastName = "Ярема",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER25@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEdFHhL+gyNo8W8GDHbsTH73/562muLitWQF/qGgh4ACPpu+rVB5pCcgwFpC0bUakg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEH+mLXWywkvxO5T7Uk99Uy8fOD8s8Q1sqUKXTAvZ4AMrmLcxeMOabXrzDzXLrzVlUw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c526db93-a72e-46d5-8019-7746939f7335",
+                            SecurityStamp = "e1117280-91ec-4bdc-9ba9-9a14f3b45360",
                             TwoFactorEnabled = false,
                             UserName = "User25@gmail.com"
                         },
@@ -1607,16 +1651,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 26,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c9124f09-8599-4fd6-9ab7-db3295c1a8c1",
+                            ConcurrencyStamp = "a6a342a8-cc1b-4aef-80fc-bc599c44e342",
                             Email = "User26@ukr.net",
                             EmailConfirmed = true,
                             FirstName = "Олег",
                             LastName = "Таралевич",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER26@UKR.NET",
-                            PasswordHash = "AQAAAAEAACcQAAAAEFZ3Iwti7IpX5+R3WUcje3mG+fP4ylEN97t4ajgzSniMnAhKXqq9ZPbvNTtybqGkig==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMOc8OfkMBuSI4D2j2TG7TKDbrO8dBwY97BrQQGBRrv/hefDOQuItFrJREmsO7YgsQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "69c51cca-5d56-453e-ab6f-6d4c7f92d214",
+                            SecurityStamp = "365f1048-4488-4091-98f4-add803b7e88f",
                             TwoFactorEnabled = false,
                             UserName = "User26@ukr.net"
                         },
@@ -1624,16 +1668,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 27,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "75c422ef-66df-4275-a234-7d0347dff02c",
+                            ConcurrencyStamp = "da35d8b4-1764-462c-b070-0b0077562ef8",
                             Email = "User27@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Сергій",
                             LastName = "Іващук",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER27@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEIGZQUf6X7mihqJkUrl+l4BRgdc30IdktWMGhIpkyn68e4wpJ7G/0gdET3XzlXmT8Q==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIQbZxFLgsLXLaeySPAUp+lWE38gQpO7ynjsXBly6RX8EcUbggB5sFO4/ny/AmDPMA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a0499369-3ac3-4f0a-9d08-ce749d4ef05b",
+                            SecurityStamp = "5c222ec6-3585-4600-bccb-705638631f8c",
                             TwoFactorEnabled = false,
                             UserName = "User27@gmail.com"
                         },
@@ -1641,16 +1685,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 28,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3f7b26f5-52ac-43d0-b49d-ad0f413b229a",
+                            ConcurrencyStamp = "c66632eb-94cd-4057-aed2-94d0b17223bb",
                             Email = "User28@yahoo.com",
                             EmailConfirmed = true,
                             FirstName = "Михайло",
                             LastName = "Компанієць",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER28@YAHOO.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEOqPBby1EnlrNpChSWFc+8iqPQORZv1wlH/TbwoGpFzy6vLgCkGfyxu36ZWVmZoWUw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBOk0fF59rjolqT7P4IrpVW2Sd0O+D/JSOXMMOrz59juEprYh42VvFnkP/6zHqGsMg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2ce883a9-5cb5-4df6-a5d6-270bb2b23fa5",
+                            SecurityStamp = "ed0fd00b-1a9a-41f5-a34e-895040af9d63",
                             TwoFactorEnabled = false,
                             UserName = "User28@yahoo.com"
                         },
@@ -1658,16 +1702,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 29,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "eeb510ee-6ab1-4f9a-9b3f-570835446ee8",
+                            ConcurrencyStamp = "6392b824-a6f6-48c9-ac81-005e7682291d",
                             Email = "User29@outlook.com",
                             EmailConfirmed = true,
                             FirstName = "Андрій",
                             LastName = "Іващук",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER29@OUTLOOK.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEN3/SY7fZzLV22PhRjhAO1JT+/NU45IQHfiFAEyDCzW8ttUXxe72AOT8ObUnwXHjug==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOCD+sEDK5YARjsXCxaDW77IuVLjrfjdV1UITHvuL0ZPnI5tGCqUeVYealfMR3tEAg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f2a761ef-13a6-448c-b039-e6aa2b4a1dc5",
+                            SecurityStamp = "0d2d0ca6-44be-4d79-a1bf-76e2ee3edf53",
                             TwoFactorEnabled = false,
                             UserName = "User29@outlook.com"
                         },
@@ -1675,16 +1719,16 @@ namespace Customers_DAL.Migrations
                         {
                             Id = 30,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "de9365f5-1f1b-4fde-9beb-ae877367b3b0",
+                            ConcurrencyStamp = "0b516f39-62a1-44c6-8595-9d13af40e895",
                             Email = "User30@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Назар",
                             LastName = "Мельник",
                             LockoutEnabled = true,
                             NormalizedEmail = "USER30@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEPMoS5Jyp+Brf4Ki6Rolpqg7JJ9HN3sXzNtu1wOB4OJa/WPwiGtAljC4K+MxiJvVZw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOuOkemeHK4wEpNT8Io1H3O9NGLdryV0kQQVVrg96uSer34OClCXLqEt4ZbaIA2WXA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "73aa9960-54cb-4b11-9363-5d7cae9e0050",
+                            SecurityStamp = "b1f16915-3fd5-4d1a-8f1b-6e5b0b174d48",
                             TwoFactorEnabled = false,
                             UserName = "User30@gmail.com"
                         });
@@ -2108,6 +2152,27 @@ namespace Customers_DAL.Migrations
                     b.Navigation("EmployeeUser");
                 });
 
+            modelBuilder.Entity("Customers_DAL.Entities.ServiceDiscount", b =>
+                {
+                    b.HasOne("Customers_DAL.Entities.Branch", "Branch")
+                        .WithMany("ServiceDiscounts")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK__ServiceDi__Branc__3A81B327");
+
+                    b.HasOne("Customers_DAL.Entities.Service", "Service")
+                        .WithMany("ServiceDiscounts")
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK__ServiceDi__Servi__398D8EEE");
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("Service");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
@@ -2172,6 +2237,8 @@ namespace Customers_DAL.Migrations
             modelBuilder.Entity("Customers_DAL.Entities.Branch", b =>
                 {
                     b.Navigation("Employees");
+
+                    b.Navigation("ServiceDiscounts");
                 });
 
             modelBuilder.Entity("Customers_DAL.Entities.Customer", b =>
@@ -2195,6 +2262,8 @@ namespace Customers_DAL.Migrations
             modelBuilder.Entity("Customers_DAL.Entities.Service", b =>
                 {
                     b.Navigation("AppointmentServices");
+
+                    b.Navigation("ServiceDiscounts");
                 });
 
             modelBuilder.Entity("Customers_DAL.Entities.User", b =>

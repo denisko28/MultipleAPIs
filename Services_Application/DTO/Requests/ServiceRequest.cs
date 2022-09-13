@@ -4,11 +4,11 @@ namespace Services_Application.DTO.Requests
     {
         public int Id { get; set; }
         
-        public string? Name { get; set; }
+        public string Name { get; set; } = null!;
         
-        public int? Duration { get; set; }
+        public int Duration { get; set; }
         
-        public decimal? Price { get; set; }
+        public decimal Price { get; set; }
         
         public bool? Available { get; set; }
     }

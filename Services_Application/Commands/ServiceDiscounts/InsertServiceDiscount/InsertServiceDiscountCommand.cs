@@ -5,6 +5,6 @@ namespace Services_Application.Commands.ServiceDiscounts.InsertServiceDiscount
 {
     public class InsertServiceDiscountCommand: IRequest
     {
-        public ServiceDiscountRequest ServiceDiscountRequest { get; set; }
+        public ServiceDiscountPostRequest ServiceDiscountPostRequest { get; set; }
     }
 }

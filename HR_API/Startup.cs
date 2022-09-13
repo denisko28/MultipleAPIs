@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.OpenApi.Models;
 using AutoMapper;
+using FluentValidation.AspNetCore;
 using HR_BLL.Configurations;
+using HR_BLL.Filters;
 using HR_BLL.Services.Abstract;
 using HR_BLL.Services.Concrete;
 using HR_DAL.Connection.Abstract;
@@ -89,10 +91,14 @@ namespace HR_API
 
             services.AddRazorPages();
 
-            services.AddMvc(options =>
-                    {
-                        options.EnableEndpointRouting = false;
-                    });
+            services
+                .AddMvc(options =>
+                {
+                    options.EnableEndpointRouting = false;
+                    options.Filters.Add<ValidationFilter>();
+                })
+                .AddFluentValidation(options => 
+                    options.RegisterValidatorsFromAssemblyContaining<ValidationFilter>());
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -121,6 +127,12 @@ namespace HR_API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            
+            app.UseCors(options => options
+                .WithOrigins("http://localhost:3000")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials());
 
             app.UseStaticFiles();
 

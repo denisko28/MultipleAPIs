@@ -6,20 +6,20 @@ namespace Customers_BLL.DTO.Responses
     {
         public int Id { get; set; }
         
-        public int? BarberUserId { get; set; }
+        public int BarberUserId { get; set; }
         
-        public int? CustomerUserId { get; set; }
-        
-        public string? AppointmentStatus { get; set; }
-        
-        public string? ChairNum { get; set; }
-        
+        public int AppointmentStatusId { get; set; }
+
         public DateTime AppDate { get; set; }
         
         public TimeSpan BeginTime { get; set; }
         
         public TimeSpan EndTime { get; set; }
+
+        public string BarberName { get; set; } = null!;
+
+        public string? Avatar { get; set; }
         
-        public string? BarberName { get; set; }
+        public string BranchAddress { get; set; } = null!;
     }
 }

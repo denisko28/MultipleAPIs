@@ -121,14 +121,14 @@ namespace HR_API.Controllers
         
         // GET: api/Employee/statusId/2
         [Authorize(Roles = UserRoles.Admin)]
-        [HttpGet("statusId/{status}")]
+        [HttpGet("statusId/{statusCode:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> GetByStatus(string status)
+        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> GetByStatus(int statusCode)
         {
             try
             {
-                IEnumerable<EmployeeResponse> results = await employeeService.GetByStatusAsync(status);
+                IEnumerable<EmployeeResponse> results = await employeeService.GetByStatusAsync(statusCode);
                 return Ok(results);
             }
             catch (EntityNotFoundException e)

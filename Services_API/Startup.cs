@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using AutoMapper;
+using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Services_Application.Configurations;
+using Services_Application.Filters;
 using Services_Application.Queries.Services.GetByIdService;
 using Services_Infrastructure;
 
@@ -65,10 +67,14 @@ namespace Services_API
 
             services.AddRazorPages();
 
-            services.AddMvc(options =>
-                    {
-                        options.EnableEndpointRouting = false;
-                    });
+            services
+                .AddMvc(options =>
+                {
+                    options.EnableEndpointRouting = false;
+                    options.Filters.Add<ValidationFilter>();
+                })
+                .AddFluentValidation(options => 
+                    options.RegisterValidatorsFromAssemblyContaining<ValidationFilter>());
 
             services.AddControllers();
         }
@@ -85,6 +91,12 @@ namespace Services_API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            
+            app.UseCors(options => options
+                .WithOrigins("http://localhost:3000")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials());
 
             app.UseStaticFiles();
 

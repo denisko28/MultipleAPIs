@@ -1,7 +1,6 @@
 using AutoMapper;
 using Customers_BLL.DTO.Requests;
 using Customers_BLL.DTO.Responses;
-using Customers_BLL.Helpers;
 using Customers_DAL.Entities;
 
 namespace Customers_BLL.Configurations
@@ -10,43 +9,28 @@ namespace Customers_BLL.Configurations
     {
         private void CreateAppointmentMaps()
         {
-            CreateMap<AppointmentRequest, Appointment>()
-                .ForMember(
-                    target => target.AppointmentStatusId,
-                    options =>
-                        options.MapFrom(appResponse => AppointmentStatusHelper.GetIntStatus(appResponse.AppointmentStatus!))
-                );
-            
-            CreateMap<AppointmentPostRequest, Appointment>()
-                .ForMember(
-                    target => target.AppointmentStatusId,
-                    options =>
-                        options.MapFrom(appResponse => AppointmentStatusHelper.GetIntStatus(appResponse.AppointmentStatus!))
-                );
-            
-            CreateMap<Appointment, AppointmentResponse>()
-                .ForMember(
-                    response => response.AppointmentStatus,
-                    options => 
-                        options.MapFrom(appointment => AppointmentStatusHelper.GetStringStatus(appointment.AppointmentStatusId))
-                );
+            CreateMap<AppointmentRequest, Appointment>();
+
+            CreateMap<AppointmentPostRequest, Appointment>();
+
+            CreateMap<Appointment, AppointmentResponse>();
 
             CreateMap<Appointment, CustomersAppointmentResponse>()
                 .ForMember(
-                    response => response.ChairNum,
-                    options => 
-                        options.MapFrom(appointment => appointment.Barber!.ChairNum)
+                    response => response.Avatar,
+                    options =>
+                        options.MapFrom(appointment => appointment.Barber.Employee.User.Avatar)
+                )
+                .ForMember(
+                    response => response.BranchAddress,
+                    options =>
+                        options.MapFrom(appointment => appointment.Barber.Employee.Branch.Address)
                 )
                 .ForMember(
                     response => response.BarberName,
-                    options => 
-                        options.MapFrom(appointment => appointment.Barber!.Employee!.User!.FirstName +
+                    options =>
+                        options.MapFrom(appointment => appointment.Barber.Employee.User.FirstName +
                                                        " " + appointment.Barber.Employee.User.LastName)
-                )
-                .ForMember(
-                response => response.AppointmentStatus,
-                options => 
-                    options.MapFrom(appointment => AppointmentStatusHelper.GetStringStatus(appointment.AppointmentStatusId))
                 );
         }
 
@@ -60,17 +44,17 @@ namespace Customers_BLL.Configurations
                 .ForMember(
                     response => response.FirstName,
                     options => 
-                        options.MapFrom(customer => customer.User!.FirstName)
+                        options.MapFrom(customer => customer.User.FirstName)
                 )
                 .ForMember(
                     response => response.LastName,
                     options => 
-                        options.MapFrom(customer => customer.User!.LastName)
+                        options.MapFrom(customer => customer.User.LastName)
                 )
                 .ForMember(
                     response => response.Avatar,
                     options => 
-                        options.MapFrom(customer => customer.User!.Avatar)
+                        options.MapFrom(customer => customer.User.Avatar)
                 );
         }
 

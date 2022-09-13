@@ -11,14 +11,16 @@ namespace Customers_DAL.Entities
 
         public int Id { get; set; }
         
-        public string? Name { get; set; }
+        public string Name { get; set; }
         
-        public int? Duration { get; set; }
+        public int Duration { get; set; }
         
-        public decimal? Price { get; set; }
+        public decimal Price { get; set; }
         
         public bool? Available { get; set; }
 
         public virtual ICollection<AppointmentService> AppointmentServices { get; set; }
+        
+        public virtual ICollection<ServiceDiscount> ServiceDiscounts { get; set; }
     }
 }

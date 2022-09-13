@@ -13,8 +13,10 @@ namespace Customers_DAL.Entities
         
         public string? Descript { get; set; }
         
-        public string? Address { get; set; }
+        public string Address { get; set; }
 
         public virtual ICollection<Employee> Employees { get; set; }
+        
+        public virtual ICollection<ServiceDiscount> ServiceDiscounts { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Customers_BLL.DTO.Requests;
 using Customers_BLL.DTO.Responses;
 using Customers_BLL.Exceptions;
+using Customers_BLL.Helpers;
 using Customers_BLL.Services.Abstract;
 using Customers_DAL.Exceptions;
 using Customers_DAL.Helpers;
@@ -172,6 +173,25 @@ namespace Customers_API.Controllers
             catch (EntityNotFoundException e)
             {
                 return NotFound(new {e.Message});
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+            }
+        }
+        
+        // POST: api/Identity/Me
+        [Authorize]
+        [HttpGet("Me")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<UserClaimsModel> ResetPasswordAsync()
+        {
+            try
+            {
+                var result = UserClaimsHelper.GetUserClaims(HttpContext);;
+                return Ok(result);
             }
             catch (Exception e)
             {
