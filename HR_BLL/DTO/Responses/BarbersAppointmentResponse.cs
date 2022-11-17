@@ -5,9 +5,7 @@ namespace HR_BLL.DTO.Responses
     public class BarbersAppointmentResponse
     {
         public int Id { get; set; }
-        
-        public int? BarberUserId { get; set; }
-        
+
         public int? CustomerUserId { get; set; }
         
         public string? AppointmentStatus { get; set; }

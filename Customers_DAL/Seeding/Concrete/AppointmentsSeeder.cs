@@ -16,6 +16,7 @@ namespace Customers_DAL.Seeding.Concrete
                 BarberUserId = 4,
                 CustomerUserId = 19,
                 AppointmentStatusId = 3,
+                BranchId = 1,
                 AppDate = DateTime.Parse("2022-02-27"),
                 BeginTime = TimeSpan.Parse("12:00:00"),
                 EndTime = TimeSpan.Parse("13:00:00")
@@ -26,6 +27,7 @@ namespace Customers_DAL.Seeding.Concrete
                 BarberUserId = 9,
                 CustomerUserId = 16,
                 AppointmentStatusId = 2,
+                BranchId = 2,
                 AppDate = DateTime.Parse("2022-03-01"),
                 BeginTime = TimeSpan.Parse("16:00:00"),
                 EndTime = TimeSpan.Parse("17:30:00")
@@ -36,6 +38,7 @@ namespace Customers_DAL.Seeding.Concrete
                 BarberUserId = 3,
                 CustomerUserId = 18,
                 AppointmentStatusId = 2,
+                BranchId = 1,
                 AppDate = DateTime.Parse("2022-03-01"),
                 BeginTime = TimeSpan.Parse("17:00:00"),
                 EndTime = TimeSpan.Parse("18:30:00")
@@ -46,6 +49,7 @@ namespace Customers_DAL.Seeding.Concrete
                 BarberUserId = 6,
                 CustomerUserId = 22,
                 AppointmentStatusId = 1,
+                BranchId = 1,
                 AppDate = DateTime.Parse("2022-03-08"),
                 BeginTime = TimeSpan.Parse("13:30:00"),
                 EndTime = TimeSpan.Parse("15:15:00")
@@ -56,6 +60,7 @@ namespace Customers_DAL.Seeding.Concrete
                 BarberUserId = 8,
                 CustomerUserId = 17,
                 AppointmentStatusId = 2,
+                BranchId = 2,
                 AppDate = DateTime.Parse("2022-03-12"),
                 BeginTime = TimeSpan.Parse("16:15:00"),
                 EndTime = TimeSpan.Parse("17:15:00")
@@ -66,6 +71,7 @@ namespace Customers_DAL.Seeding.Concrete
                 BarberUserId = 5,
                 CustomerUserId = 21,
                 AppointmentStatusId = 1,
+                BranchId = 1,
                 AppDate = DateTime.Parse("2022-03-10"),
                 BeginTime = TimeSpan.Parse("10:00:00"),
                 EndTime = TimeSpan.Parse("10:15:00")
@@ -76,6 +82,7 @@ namespace Customers_DAL.Seeding.Concrete
                 BarberUserId = 6,
                 CustomerUserId = 23,
                 AppointmentStatusId = 2,
+                BranchId = 1,
                 AppDate = DateTime.Parse("2022-03-15"),
                 BeginTime = TimeSpan.Parse("15:00:00"),
                 EndTime = TimeSpan.Parse("15:45:00")

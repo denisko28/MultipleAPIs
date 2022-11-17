@@ -1,5 +1,6 @@
 using AutoMapper;
-using Services_Application.Commands;
+using Common.Events.BranchEvents;
+using Common.Events.ServiceEvents;
 using Services_Application.DTO.Requests;
 using Services_Application.DTO.Responses;
 using Services_Domain.Entities;
@@ -29,6 +30,8 @@ namespace Services_Application.Configurations
         {
             CreateMap<ServiceRequest, Service>();
             
+            CreateMap<ServicePostRequest, Service>();
+            
             CreateMap<Service, ServiceResponse>();
         }
         
@@ -37,6 +40,19 @@ namespace Services_Application.Configurations
             CreateMap<ServiceDiscountRequest, ServiceDiscount>();
             
             CreateMap<ServiceDiscount, ServiceDiscountResponse>();
+
+            CreateMap<Service, ServiceInsertedEvent>();
+            
+            CreateMap<Service, ServiceUpdatedEvent>();
+        }
+
+        private void CreateBranchMaps()
+        {
+            CreateMap<BranchRequest, Branch>();
+
+            CreateMap<BranchInsertedEvent, BranchRequest>();
+            
+            CreateMap<BranchUpdatedEvent, BranchRequest>();
         }
 
         public AutoMapperProfile()
@@ -44,6 +60,7 @@ namespace Services_Application.Configurations
             //CreateAppointmentMaps();
             CreateServiceMaps();
             CreateServiceDiscountMaps();
+            CreateBranchMaps();
         }
     }
 }

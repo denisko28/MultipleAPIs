@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using HR_BLL.DTO.Requests;
 using HR_BLL.DTO.Responses;
 using HR_BLL.Exceptions;
-using HR_BLL.Helpers;
 using HR_BLL.Services.Abstract;
 using HR_DAL.Entities;
 using HR_DAL.Repositories.Abstract;
 using HR_DAL.UnitOfWork.Abstract;
+using IdentityServer.Helpers;
 
 namespace HR_BLL.Services.Concrete
 {
@@ -18,30 +19,22 @@ namespace HR_BLL.Services.Concrete
         private readonly IMapper mapper;
 
         private readonly IBarberRepository barberRepository;
-
-        private readonly IAppointmentRepository appointmentRepository;
-
-        private readonly IEmployeeRepository employeeRepository;
         
-        private readonly ICustomerRepository customerRepository;
-
-        private readonly IUserRepository userRepository;
+        private readonly IEmployeeRepository employeeRepository;
 
         public BarberService(IUnitOfWork unitOfWork, IMapper mapper) 
         {
             this.mapper = mapper;
             barberRepository = unitOfWork.BarberRepository;
-            appointmentRepository = unitOfWork.AppointmentRepository;
             employeeRepository = unitOfWork.EmployeeRepository;
-            customerRepository = unitOfWork.CustomerRepository;
-            userRepository = unitOfWork.UserRepository;
         }
 
         private async Task<BarberResponse> ExtendBarber(Barber barber)
         {
             var response = mapper.Map<Barber, BarberResponse>(barber);
             var employee = await employeeRepository.GetByIdAsync(barber.EmployeeUserId);
-            var user = await userRepository.GetByIdAsync(barber.EmployeeUserId);
+            var user = new User();
+            throw new NotImplementedException("Implement getting User by id using gRPC");
             response.BranchId = employee.BranchId;
             response.FirstName = user.FirstName;
             response.LastName = user.LastName;
@@ -71,32 +64,20 @@ namespace HR_BLL.Services.Concrete
 
         public async Task<IEnumerable<BarbersAppointmentResponse>> GetBarbersAppointmentsAsync(int barberId, string dateStr, UserClaimsModel userClaims)
         {
-            var exception = new ForbiddenAccessException(
-                $"You don't have access to appointments of the barber with id: {barberId}");
-            switch (userClaims.Role)
-            {
-                case UserRoles.Manager:
-                {
-                    var manager = await employeeRepository.GetByIdAsync(userClaims.UserId);
-                    var barber = await employeeRepository.GetByIdAsync(userClaims.UserId);
-                    if (manager.BranchId != barber.BranchId)
-                        throw exception;
-                    break;
-                }
-                case UserRoles.Barber when userClaims.UserId != barberId:
-                    throw exception;
-            }
-
-            var appointments = await appointmentRepository.GetAppointments(barberId, dateStr);
+            throw new NotImplementedException("Implement using gRPC");
+            var appointments = new List<Appointment>(); // Request appointments from CustomersAPI using gRPC
+            var customerIds = appointments.Select(appointment => appointment.CustomerUserId);
+            var users = new List<User>(); // Request users with customerIds from IdentityAPI using gRPC
             var responses = new List<BarbersAppointmentResponse>();
-            foreach (var appointment in appointments)
+            for (var index = 0; index < appointments.Count(); index++)
             {
+                var appointment = appointments[index];
+                var relatedUser = users[index];
                 var response = mapper.Map<Appointment, BarbersAppointmentResponse>(appointment);
-                var customer = await customerRepository.GetByIdAsync(appointment.CustomerUserId);
-                var user = await userRepository.GetByIdAsync(customer.UserId);
-                response.CustomerName = $"{user.FirstName} {user.LastName}";
+                response.CustomerName = $"{relatedUser.FirstName} {relatedUser.LastName}";
                 responses.Add(response);
             }
+
             return responses;
         }
         

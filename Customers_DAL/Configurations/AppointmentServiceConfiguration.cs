@@ -17,11 +17,6 @@ namespace Customers_DAL.Configurations
                 .HasForeignKey(d => d.AppointmentId)
                 .HasConstraintName("FK__Appointme__Appoi__412EB0B6");
 
-            builder.HasOne(d => d.Service)
-                .WithMany(p => p.AppointmentServices)
-                .HasForeignKey(d => d.ServiceId)
-                .HasConstraintName("FK__Appointme__Servi__4222D4EF");
-            
             new AppointmentServicesSeeder().Seed(builder);
         }
     }

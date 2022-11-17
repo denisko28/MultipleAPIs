@@ -5,11 +5,11 @@ using AutoMapper;
 using HR_BLL.DTO.Requests;
 using HR_BLL.DTO.Responses;
 using HR_BLL.Exceptions;
-using HR_BLL.Helpers;
 using HR_BLL.Services.Abstract;
 using HR_DAL.Entities;
 using HR_DAL.Repositories.Abstract;
 using HR_DAL.UnitOfWork.Abstract;
+using IdentityServer.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HR_BLL.Services.Concrete
@@ -19,8 +19,6 @@ namespace HR_BLL.Services.Concrete
         private readonly IMapper mapper;
 
         private readonly IEmployeeRepository employeeRepository;
-        
-        private readonly IUserRepository userRepository;
 
         private readonly IImageService imageService;
         
@@ -28,14 +26,14 @@ namespace HR_BLL.Services.Concrete
         {
             this.mapper = mapper;
             employeeRepository = unitOfWork.EmployeeRepository;
-            userRepository = unitOfWork.UserRepository;
             this.imageService = imageService;
         }
 
         private async Task<EmployeeResponse> ExtendEmployee(Employee employee)
         {
             var response = mapper.Map<Employee, EmployeeResponse>(employee);
-            var user = await userRepository.GetByIdAsync(employee.UserId);
+            var user = new User();
+            throw new NotImplementedException("Implement getting User by id using gRPC");
             response.FirstName = user.FirstName;
             response.LastName = user.LastName;
             response.Avatar = user.Avatar;

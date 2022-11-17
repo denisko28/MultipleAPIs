@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using IdentityServer.Helpers;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -11,7 +12,6 @@ using Services_Application.Commands.ServiceDiscounts.UpdateServiceDiscount;
 using Services_Application.DTO.Requests;
 using Services_Application.DTO.Responses;
 using Services_Application.Exceptions;
-using Services_Application.Helpers;
 using Services_Application.Queries.ServiceDiscounts.GetAllServiceDiscounts;
 using Services_Application.Queries.ServiceDiscounts.GetByIdServiceDiscount;
 

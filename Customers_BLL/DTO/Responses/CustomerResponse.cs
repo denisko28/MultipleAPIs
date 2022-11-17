@@ -5,11 +5,5 @@ namespace Customers_BLL.DTO.Responses
         public int UserId { get; set; }
         
         public int VisitsNum { get; set; }
-        
-        public string? FirstName { get; set; }
-        
-        public string? LastName { get; set; }
-        
-        public string? Avatar { get; set; }
     }
 }

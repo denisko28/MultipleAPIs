@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Customers_DAL.Entities;
 using Customers_DAL.Exceptions;
 using Customers_DAL.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace Customers_DAL.Repositories.Concrete
 {
@@ -22,36 +18,9 @@ namespace Customers_DAL.Repositories.Concrete
             return appointment ?? throw new EntityNotFoundException(nameof(Appointment), id);
         }
         
-        public async Task<Appointment> GetByIdIncludeEmployeeAsync(int appointmentId)
-        {
-            var appointment = await Table
-                .Include(appointment => appointment.Barber)
-                .ThenInclude(barber => barber!.Employee)
-                .SingleOrDefaultAsync(appointment => appointment.Id == appointmentId);
-
-            return appointment ?? throw new EntityNotFoundException(nameof(Appointment), appointmentId);;
-        }
-        
         public override async Task<IEnumerable<Appointment>> GetAllAsync()
         {
             return await Table.ToListAsync();
-        }
-
-        public override async Task<Appointment> GetCompleteEntityAsync(int id)
-        {
-            var appointment = await Table
-                .Include(appointment => appointment.Barber)
-                    .ThenInclude(barber => barber!.Employee)
-                        .ThenInclude(employee => employee.User)
-                .Include(appointment => appointment.Barber)
-                    .ThenInclude(barber => barber!.Employee)
-                        .ThenInclude(employee => employee.Branch)
-                .Include(appointment => appointment.Customer)
-                        .ThenInclude(employee => employee!.User)
-                .Include(appointment => appointment.AppointmentServices)
-                .SingleOrDefaultAsync(appointment => appointment.Id == id);
-
-            return appointment ?? throw new EntityNotFoundException(nameof(Appointment), id);
         }
         
         public async Task<IEnumerable<Appointment>> GetByDateAsync(DateTime date)
@@ -66,9 +35,7 @@ namespace Customers_DAL.Repositories.Concrete
         public async Task<IEnumerable<Appointment>> GetByBranchAsync(int branchId)
         {
             var appointments = await Table
-                .Include(appointment => appointment.Barber)
-                    .ThenInclude(barber => barber!.Employee)
-                .Where(appointment => appointment.Barber.Employee.BranchId == branchId)
+                .Where(appointment => appointment.BranchId == branchId)
                 .ToListAsync();
 
             return appointments;
@@ -82,7 +49,16 @@ namespace Customers_DAL.Repositories.Concrete
 
             return appointments;
         }
+        
+        public async Task<IEnumerable<Appointment>> GetBarbersAppointmentsAsync(int barberId)
+        {
+            var appointments = await Table
+                .Where(appointment => appointment.BarberUserId == barberId)
+                .ToListAsync();
 
+            return appointments;
+        }
+        
         public async Task<IEnumerable<Service>> GetAppointmentServicesAsync(int id)
         {
             var appointment = await Table
@@ -94,20 +70,6 @@ namespace Customers_DAL.Repositories.Concrete
                 throw new EntityNotFoundException(nameof(Appointment), id);
 
             return appointment.AppointmentServices.Select(appointmentServices => appointmentServices.Service)!;
-        }
-
-        public async Task<Barber> GetAppointmentBarberAsync(int id)
-        {
-            var appointment = await Table
-                .Include(appointment => appointment.Barber)
-                    .ThenInclude(barber => barber!.Employee)
-                        .ThenInclude(employee => employee.User)
-                .SingleOrDefaultAsync(appointment => appointment.Id == id);
-
-            if(appointment == null)
-                throw new EntityNotFoundException(nameof(Appointment), id);
-
-            return appointment.Barber;
         }
     }
 }

@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "GrpcAggregator.Protos";
+
+service Appointments {
+  rpc GetAll (GetAllAppointmentsRequest) returns (AppointmentsResponse);
+  rpc GetById (GetAppointmentByIdRequest) returns (AppointmentResponse);
+  rpc GetByDateAndBarber (GetByDateAndBarberRequest) returns (AppointmentsResponse);
+  rpc GetBarbersAppointments (GetBarbersAppointmentsRequest) returns (AppointmentsResponse);
+}
+
+message GetAllAppointmentsRequest { }
+
+message GetAppointmentByIdRequest {
+  int32 id = 1;
+}
+
+message AppointmentResponse {
+  int32 id = 1;
+  int32 barberUserId = 2;
+  int32 customerUserId = 3;
+  int32 appointmentStatusId = 4;
+  int32 branchId = 5;
+  google.protobuf.Timestamp appDate = 6;
+  google.protobuf.Duration beginTime = 7;
+  google.protobuf.Duration endTime = 8;
+}
+
+message AppointmentsResponse {
+  repeated AppointmentResponse data = 1;
+}
+
+message GetByDateAndBarberRequest {
+  google.protobuf.Timestamp date = 1;
+  int32 barberId = 2;
+}
+
+message GetBarbersAppointmentsRequest {
+  int32 barberId = 1;
+}

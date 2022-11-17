@@ -1,4 +1,3 @@
-using System;
 using Dapper.Contrib.Extensions;
 
 namespace HR_DAL.Entities

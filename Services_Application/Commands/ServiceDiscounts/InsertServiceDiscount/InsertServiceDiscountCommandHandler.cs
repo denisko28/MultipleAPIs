@@ -1,8 +1,5 @@
-using System.Threading;
-using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using Services_Application.DTO.Requests;
 using Services_Domain.Entities;
@@ -12,34 +9,29 @@ namespace Services_Application.Commands.ServiceDiscounts.InsertServiceDiscount
 {
     public class InsertServiceDiscountCommandHandler: IRequestHandler<InsertServiceDiscountCommand>
     {
-        private readonly SqlDbContext sqlDbContext;
+        private readonly IMongoCollection<ServiceDiscount> _collection;
         
-        private readonly IMongoCollection<ServiceDiscount> collection;
+        private readonly IMongoCollection<Counters> _countersCollection;
         
-        private readonly DbSet<ServiceDiscount> table;
-        
-        private readonly IMapper mapper;
+        private readonly IMapper _mapper;
 
-        public InsertServiceDiscountCommandHandler(MongoDbContext mongoDbContext, SqlDbContext sqlDbContext, IMapper mapper)
+        public InsertServiceDiscountCommandHandler(MongoDbContext mongoDbContext, IMapper mapper)
         {
-            collection = mongoDbContext.Collection<ServiceDiscount>();
-
-            this.sqlDbContext = sqlDbContext;
-            table = this.sqlDbContext.Set<ServiceDiscount>();
-            
-            this.mapper = mapper;
+            _collection = mongoDbContext.Collection<ServiceDiscount>();
+            _countersCollection = mongoDbContext.Collection<Counters>();
+            _mapper = mapper;
         }
 
         public async Task<Unit> Handle(InsertServiceDiscountCommand request, CancellationToken cancellationToken)
         {
             var entity = 
-                mapper.Map<ServiceDiscountPostRequest, ServiceDiscount>(request.ServiceDiscountPostRequest);
-            entity.Id = 0;
+                _mapper.Map<ServiceDiscountPostRequest, ServiceDiscount>(request.ServiceDiscountPostRequest);
+            var filter = Builders<Counters>.Filter.Eq(a => a.Id, "serviceDiscountId");
+            var update = Builders<Counters>.Update.Inc(a => a.SequenceValue, 1);
+            var sequence = _countersCollection.FindOneAndUpdate(filter, update, cancellationToken: cancellationToken);
+            entity.Id = sequence.SequenceValue + 1;
 
-            await table.AddAsync(entity, cancellationToken);
-            await sqlDbContext.SaveChangesAsync(cancellationToken);
-
-            await collection.InsertOneAsync(entity, cancellationToken: cancellationToken);
+            await _collection.InsertOneAsync(entity, cancellationToken: cancellationToken);
             
             return Unit.Value;
         }

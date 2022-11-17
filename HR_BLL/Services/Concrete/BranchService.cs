@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Common.Events.BranchEvents;
 using HR_BLL.DTO.Requests;
 using HR_BLL.DTO.Responses;
 using HR_BLL.Services.Abstract;
 using HR_DAL.Entities;
-using HR_DAL.MongoRepositories.Abstract;
 using HR_DAL.Repositories.Abstract;
 using HR_DAL.UnitOfWork.Abstract;
+using MassTransit;
 
 namespace HR_BLL.Services.Concrete
 {
@@ -17,14 +19,14 @@ namespace HR_BLL.Services.Concrete
         private readonly IMapper mapper;
 
         private readonly IBranchRepository branchRepository;
+        
+        private readonly IPublishEndpoint publishEndpoint;
 
-        private readonly IBranchMongoRepository branchMongoRepository;
-
-        public BranchService(IUnitOfWork unitOfWork, IMapper mapper) 
+        public BranchService(IUnitOfWork unitOfWork, IMapper mapper, IPublishEndpoint publishEndpoint) 
         {
             this.mapper = mapper;
             branchRepository = unitOfWork.BranchRepository;
-            branchMongoRepository = unitOfWork.BranchMongoRepository;
+            this.publishEndpoint = publishEndpoint;
         }
 
         public async Task<IEnumerable<BranchResponse>> GetAllAsync()
@@ -44,8 +46,10 @@ namespace HR_BLL.Services.Concrete
             var entity = mapper.Map<BranchPostRequest, Branch>(request);
             var insertedId = await branchRepository.InsertAsync(entity);
             
-            entity.Id = insertedId;
-            await branchMongoRepository.InsertAsync(entity);
+            // send checkout event to rabbitmq
+            var eventMessage = mapper.Map<BranchInsertedEvent>(entity);
+            eventMessage.Id = insertedId;
+            await publishEndpoint.Publish(eventMessage);
             
             return insertedId;
         }
@@ -55,7 +59,8 @@ namespace HR_BLL.Services.Concrete
             var entity = mapper.Map<BranchRequest, Branch>(request);
             var result = await branchRepository.UpdateAsync(entity);
             
-            await branchMongoRepository.UpdateAsync(entity);
+            var eventMessage = mapper.Map<BranchUpdatedEvent>(entity);
+            await publishEndpoint.Publish(eventMessage);
             
             return result;
         }
@@ -64,7 +69,7 @@ namespace HR_BLL.Services.Concrete
         {
             await branchRepository.DeleteByIdAsync(id);
             
-            await branchMongoRepository.DeleteByIdAsync(id);
+            await publishEndpoint.Publish(new BranchDeletedEvent{Id = id});
         }
     }
 }

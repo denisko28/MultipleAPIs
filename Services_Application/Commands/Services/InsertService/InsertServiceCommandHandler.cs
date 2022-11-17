@@ -1,8 +1,7 @@
-using System.Threading;
-using System.Threading.Tasks;
 using AutoMapper;
+using Common.Events.ServiceEvents;
+using MassTransit;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using Services_Application.DTO.Requests;
 using Services_Domain.Entities;
@@ -10,35 +9,36 @@ using Services_Infrastructure;
 
 namespace Services_Application.Commands.Services.InsertService
 {
-    public class InsertServiceCommandHandler: IRequestHandler<InsertServiceCommand>
+    public class InsertServiceCommandHandler : IRequestHandler<InsertServiceCommand>
     {
-        private readonly SqlDbContext sqlDbContext;
-        
-        private readonly IMongoCollection<Service> collection;
-        
-        private readonly DbSet<Service> table;
-        
-        private readonly IMapper mapper;
+        private readonly IMongoCollection<Service> _collection;
 
-        public InsertServiceCommandHandler(MongoDbContext mongoDbContext, SqlDbContext sqlDbContext, IMapper mapper)
+        private readonly IMongoCollection<Counters> _countersCollection;
+        
+        private readonly IPublishEndpoint _publishEndpoint;
+
+        private readonly IMapper _mapper;
+
+        public InsertServiceCommandHandler(MongoDbContext mongoDbContext, IMapper mapper, IPublishEndpoint publishEndpoint)
         {
-            collection = mongoDbContext.Collection<Service>();
-
-            this.sqlDbContext = sqlDbContext;
-            table = this.sqlDbContext.Set<Service>();
-            
-            this.mapper = mapper;
+            _collection = mongoDbContext.Collection<Service>();
+            _countersCollection = mongoDbContext.Collection<Counters>();
+            _publishEndpoint = publishEndpoint;
+            _mapper = mapper;
         }
 
         public async Task<Unit> Handle(InsertServiceCommand request, CancellationToken cancellationToken)
         {
-            var entity = mapper.Map<ServiceRequest, Service>(request.ServiceRequest);
-            entity.Id = 0;
+            var entity = _mapper.Map<ServicePostRequest, Service>(request.ServiceRequest);
+            var filter = Builders<Counters>.Filter.Eq(a => a.Id, "serviceId");
+            var update = Builders<Counters>.Update.Inc(a => a.SequenceValue, 1);
+            var sequence = _countersCollection.FindOneAndUpdate(filter, update, cancellationToken: cancellationToken);
+            entity.Id = sequence.SequenceValue + 1;
 
-            await table.AddAsync(entity, cancellationToken);
-            await sqlDbContext.SaveChangesAsync(cancellationToken);
-
-            await collection.InsertOneAsync(entity, cancellationToken: cancellationToken);
+            await _collection.InsertOneAsync(entity, cancellationToken: cancellationToken);
+            
+            var eventMessage = _mapper.Map<ServiceInsertedEvent>(entity);
+            await _publishEndpoint.Publish(eventMessage, cancellationToken);
             
             return Unit.Value;
         }

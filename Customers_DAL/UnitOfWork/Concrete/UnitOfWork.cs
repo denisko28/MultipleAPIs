@@ -1,14 +1,11 @@
-using System.Threading.Tasks;
-using Customers_DAL.Entities;
 using Customers_DAL.Repositories.Abstract;
 using Customers_DAL.UnitOfWork.Abstract;
-using Microsoft.AspNetCore.Identity;
 
 namespace Customers_DAL.UnitOfWork.Concrete
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly BarbershopDbContext barbershopDbContext;
+        private readonly BarbershopDbContext _barbershopDbContext;
 
         public IAppointmentRepository AppointmentRepository { get; }
 
@@ -16,41 +13,29 @@ namespace Customers_DAL.UnitOfWork.Concrete
 
         public IPossibleTimeRepository PossibleTimeRepository { get; }
 
-        public IBarberRepository BarberRepository { get; }
-        
         public ICustomerRepository CustomerRepository { get; }
         
-        public IEmployeeRepository EmployeeRepository { get; }
+        public IBranchRepository BranchRepository { get; }
         
         public IServiceRepository ServiceRepository { get; }
 
-        public IUserRepository UserRepository { get; }
-        
-        public UserManager<User> UserManager { get; }
-
-        public SignInManager<User> SignInManager { get; }
-
         public UnitOfWork(BarbershopDbContext barbershopDbContext, IAppointmentRepository appointmentRepository,
-          IPossibleTimeRepository possibleTimeRepository, IBarberRepository barberRepository,
-          ICustomerRepository customerRepository, IAppointmentServiceRepository appointmentServiceRepository,
-          IUserRepository userRepository, UserManager<User> userManager, SignInManager<User> signInManager, IEmployeeRepository employeeRepository, IServiceRepository serviceRepository)
+            IPossibleTimeRepository possibleTimeRepository,
+            ICustomerRepository customerRepository, IAppointmentServiceRepository appointmentServiceRepository,
+            IBranchRepository branchRepository, IServiceRepository serviceRepository)
         {
-            this.barbershopDbContext = barbershopDbContext;
+            this._barbershopDbContext = barbershopDbContext;
             AppointmentRepository = appointmentRepository;
             AppointmentServiceRepository = appointmentServiceRepository;
             PossibleTimeRepository = possibleTimeRepository;
-            BarberRepository = barberRepository;
             CustomerRepository = customerRepository;
-            EmployeeRepository = employeeRepository;
+            BranchRepository = branchRepository;
             ServiceRepository = serviceRepository;
-            UserRepository = userRepository;
-            UserManager = userManager;
-            SignInManager = signInManager;
         }
 
         public async Task SaveChangesAsync()
         {
-            await barbershopDbContext.SaveChangesAsync();
+            await _barbershopDbContext.SaveChangesAsync();
         }
     }
 }

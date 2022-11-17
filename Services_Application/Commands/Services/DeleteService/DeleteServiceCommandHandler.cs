@@ -1,7 +1,6 @@
-using System.Threading;
-using System.Threading.Tasks;
+using Common.Events.ServiceEvents;
+using MassTransit;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using Services_Application.Exceptions;
 using Services_Domain.Entities;
@@ -11,32 +10,27 @@ namespace Services_Application.Commands.Services.DeleteService
 {
     public class DeleteServiceCommandHandler: IRequestHandler<DeleteServiceCommand>
     {
-        private readonly SqlDbContext sqlDbContext;
-        
-        private readonly IMongoCollection<Service> collection;
-        
-        private readonly DbSet<Service> table;
+        private readonly IMongoCollection<Service> _collection;
 
-        public DeleteServiceCommandHandler(MongoDbContext mongoDbContext, SqlDbContext sqlDbContext)
+        private readonly IPublishEndpoint _publishEndpoint;
+
+        public DeleteServiceCommandHandler(MongoDbContext mongoDbContext, IPublishEndpoint publishEndpoint)
         {
-            collection = mongoDbContext.Collection<Service>();
-
-            this.sqlDbContext = sqlDbContext;
-            table = this.sqlDbContext.Set<Service>();
+            _collection = mongoDbContext.Collection<Service>();
+            _publishEndpoint = publishEndpoint;
         }
 
         public async Task<Unit> Handle(DeleteServiceCommand request, CancellationToken cancellationToken)
         {
             var filter = Builders<Service>.Filter.Eq(c => c.Id, request.Id);
-            var entity = await collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
+            var entity = await _collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
             
             if (entity == null)
                 throw new EntityNotFoundException(nameof(Service), request.Id);
 
-            await Task.Run(() => table.Remove(entity), cancellationToken);
-            await sqlDbContext.SaveChangesAsync(cancellationToken);
-
-            await collection.DeleteOneAsync(filter, cancellationToken);
+            await _collection.DeleteOneAsync(filter, cancellationToken);
+            
+            await _publishEndpoint.Publish(new ServiceDeletedEvent{ Id = request.Id }, cancellationToken);
             
             return Unit.Value;
         }

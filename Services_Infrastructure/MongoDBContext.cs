@@ -10,13 +10,13 @@ namespace Services_Infrastructure
 {
     public class MongoDbContext
     {
-        private readonly IMongoDatabase database;
+        public readonly IMongoDatabase Database;
 
         public MongoDbContext(string mongoUrl)
         {
             InitDbSettings();
             MapClasses();
-            database = InitDbInstance(mongoUrl);
+            Database = InitDbInstance(mongoUrl);
         }
 
         private static IMongoDatabase InitDbInstance(string mongoUrl)
@@ -34,6 +34,12 @@ namespace Services_Infrastructure
 
         private static void MapClasses()
         {
+            BsonClassMap.RegisterClassMap<Counters>(cm =>
+            {
+                cm.AutoMap();
+                cm.GetMemberMap(m => m.SequenceValue).SetElementName("sequence_value");
+                cm.SetIgnoreExtraElements(true);
+            });
             BsonClassMap.RegisterClassMap<Service>(cm =>
             {
                 cm.AutoMap();
@@ -52,7 +58,7 @@ namespace Services_Infrastructure
 
         public IMongoCollection<TEntity> Collection<TEntity>() where TEntity: class
         {
-            return database.GetCollection<TEntity>(typeof(TEntity).Name);
+            return Database.GetCollection<TEntity>(typeof(TEntity).Name);
         }
     }
 }

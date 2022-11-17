@@ -9,7 +9,10 @@
     <ItemGroup>
       <PackageReference Include="AutoMapper" Version="11.0.1" />
       <PackageReference Include="FluentValidation.AspNetCore" Version="11.0.1" />
-      <PackageReference Include="MediatR" Version="10.0.1" />
+      <PackageReference Include="MassTransit" Version="8.0.7" />
+      <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
+      <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.7" />
+      <PackageReference Include="MediatR" Version="11.0.0" />
       <PackageReference Include="MediatR.Contracts" Version="1.0.1" />
       <PackageReference Include="MongoDB.Driver" Version="2.15.1" />
     </ItemGroup>
@@ -21,6 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Common\Common.csproj" />
       <ProjectReference Include="..\Services_Domain\Services_Domain.csproj" />
       <ProjectReference Include="..\Services_Infrastructure\Services_Infrastructure.csproj" />
     </ItemGroup>

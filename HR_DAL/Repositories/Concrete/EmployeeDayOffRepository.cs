@@ -51,7 +51,7 @@ namespace HR_DAL.Repositories.Concrete
 
         public async Task<IEnumerable<DayOff>> GetDayOffsByEmployee(int employeeUserId)
         {
-            const string sql = "SELECT DayOff.Id, EmployeeUserId, FirstName, LastName, Date_ FROM EmployeeDayOff " + 
+            const string sql = "SELECT DayOff.Id AS Id, Date_  FROM EmployeeDayOff " + 
                                "INNER JOIN DayOff ON DayOffId = DayOff.Id " + 
                                "WHERE EmployeeUserId = @EmployeeId";
             

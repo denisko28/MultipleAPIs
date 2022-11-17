@@ -4,11 +4,6 @@ namespace Customers_DAL.Entities
 {
     public class Service
     {
-        public Service()
-        {
-            AppointmentServices = new HashSet<AppointmentService>();
-        }
-
         public int Id { get; set; }
         
         public string Name { get; set; }
@@ -18,9 +13,5 @@ namespace Customers_DAL.Entities
         public decimal Price { get; set; }
         
         public bool? Available { get; set; }
-
-        public virtual ICollection<AppointmentService> AppointmentServices { get; set; }
-        
-        public virtual ICollection<ServiceDiscount> ServiceDiscounts { get; set; }
     }
 }

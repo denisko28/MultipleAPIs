@@ -1,27 +1,24 @@
 using System;
 using System.Text;
 using AutoMapper;
+using Common;
 using Customers_BLL.Configurations;
-using Customers_BLL.Factories.Abstract;
-using Customers_BLL.Factories.Concrete;
+using Customers_BLL.EventBusConsumers;
+using Customers_BLL.EventBusConsumers.BranchConsumers;
+using Customers_BLL.EventBusConsumers.ServiceConsumers;
 using Customers_BLL.Filters;
+using Customers_BLL.Grpc;
 using Customers_BLL.Services.Abstract;
 using Customers_BLL.Services.Concrete;
 using Customers_DAL;
-using Customers_DAL.Entities;
 using Customers_DAL.Repositories.Abstract;
 using Customers_DAL.Repositories.Concrete;
 using Customers_DAL.UnitOfWork.Abstract;
 using Customers_DAL.UnitOfWork.Concrete;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using MassTransit;
 using Microsoft.IdentityModel.Tokens;
+using RabbitMQ.Client;
 using AppointmentService = Customers_BLL.Services.Concrete.AppointmentService;
 
 namespace Customers_API
@@ -37,75 +34,105 @@ namespace Customers_API
         // Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddGrpc();
+            services.AddGrpcReflection();
+            
             services.AddDbContext<BarbershopDbContext>();
-            
-            // For Identity  
-            services.AddIdentity<User, IdentityRole<int>>()  
-                .AddEntityFrameworkStores<BarbershopDbContext>()  
-                .AddDefaultTokenProviders();
 
-            services.Configure<IdentityOptions>(options =>
-            {
-                options.Password.RequireUppercase = false;
-                options.Password.RequireNonAlphanumeric = false;
-                
-                options.User.RequireUniqueEmail = true;
-                options.User.AllowedUserNameCharacters =
-                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-            });
-            
             // Adding Authentication  
-            services.AddAuthentication(options =>
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    options.Authority = "https://localhost:7065";
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false
+                    };
+                });
+
+            // // Adding Authentication  
+            // services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+            //     .AddIdentityServerAuthentication(options =>
+            //     {
+            //         options.Authority = "https://localhost:7065";
+            //         options.ApiName = "customerAPI";
+            //         options.LegacyAudienceValidation = false;
+            //     });
+
+            // MassTransit-RabbitMQ Configuration
+            services.AddMassTransit(config =>
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer( options => 
-            {  
-                options.SaveToken = true;  
-                options.RequireHttpsMetadata = false;  
-                options.TokenValidationParameters = new TokenValidationParameters()  
-                {  
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(Configuration["JWT:Secret"])),
-                    ClockSkew = TimeSpan.Zero, 
-                };  
+                config.AddConsumer<BranchInsertedConsumer>();
+                config.AddConsumer<BranchUpdatedConsumer>();
+                config.AddConsumer<BranchDeletedConsumer>();
+                
+                config.AddConsumer<ServiceInsertedConsumer>();
+                config.AddConsumer<ServiceUpdatedConsumer>();
+                config.AddConsumer<ServiceDeletedConsumer>();
+
+                config.UsingRabbitMq((ctx, cfg) =>
+                {
+                    cfg.Host("localhost", "/", h =>
+                    {
+                        h.Password(Configuration["EventBusSettings:Password"]);
+                        h.Username(Configuration["EventBusSettings:Username"]);
+                    });
+                    cfg.ReceiveEndpoint(EventBusConstants.BranchForCustomersQueue, c =>
+                    {
+                        // turns off default fanout settings
+                        c.ConfigureConsumeTopology = false;
+
+                        // a replicated queue to provide high availability and data safety. available in RMQ 3.8+
+                        c.SetQuorumQueue();
+
+                        c.ConfigureConsumer<BranchInsertedConsumer>(ctx);
+                        c.ConfigureConsumer<BranchUpdatedConsumer>(ctx);
+                        c.ConfigureConsumer<BranchDeletedConsumer>(ctx);
+                        c.Bind(EventBusConstants.TopicExchange, e =>
+                        {
+                            e.RoutingKey = "branch.*";
+                            e.ExchangeType = ExchangeType.Topic;
+                        });
+                    });
+                    cfg.ReceiveEndpoint(EventBusConstants.ServiceForCustomersQueue, c =>
+                    {
+                        // turns off default fanout settings
+                        c.ConfigureConsumeTopology = false;
+
+                        // a replicated queue to provide high availability and data safety. available in RMQ 3.8+
+                        c.SetQuorumQueue();
+
+                        c.ConfigureConsumer<ServiceInsertedConsumer>(ctx);
+                        c.ConfigureConsumer<ServiceUpdatedConsumer>(ctx);
+                        c.ConfigureConsumer<ServiceDeletedConsumer>(ctx);
+                        c.Bind(EventBusConstants.TopicExchange, e =>
+                        {
+                            e.RoutingKey = "service.*";
+                            e.ExchangeType = ExchangeType.Topic;
+                        });
+                    });
+                });
             });
 
             services.AddTransient<IAppointmentRepository, AppointmentRepository>();
             services.AddTransient<IAppointmentServiceRepository, AppointmentServiceRepository>();
-            services.AddTransient<IEmployeeRepository, EmployeeRepository>();
-            services.AddTransient<IBarberRepository, BarberRepository>();
             services.AddTransient<ICustomerRepository, CustomerRepository>();
-            services.AddTransient<IServiceRepository, ServiceRepository>();
             services.AddTransient<IPossibleTimeRepository, PossibleTimeRepository>();
-            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IBranchRepository, BranchRepository>();
+            services.AddTransient<IServiceRepository, ServiceRepository>();
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             services.AddTransient<IAppointmentService, AppointmentService>();
             services.AddTransient<ICustomerService, CustomerService>();
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IIdentityService, IdentityService>();
-            services.AddTransient<IImageService, ImageService>();
 
-            var mapperConfig = new MapperConfiguration(mc => 
+            var mapperConfig = new MapperConfiguration(mc =>
                 mc.AddProfile(new AutoMapperProfile()));
 
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
 
-            services.AddTransient<JwtTokenConfiguration>();
-            services.AddTransient<IJwtSecurityTokenFactory, JwtSecurityTokenFactory>();
-
             services.AddHttpContextAccessor();
-            
-            services.AddSingleton<EmailConfiguration>();
-            services.AddScoped<IEmailSender, EmailSender>();
 
             services.AddRazorPages();
 
@@ -115,7 +142,7 @@ namespace Customers_API
                     options.EnableEndpointRouting = false;
                     options.Filters.Add<ValidationFilter>();
                 })
-                .AddFluentValidation(options => 
+                .AddFluentValidation(options =>
                     options.RegisterValidatorsFromAssemblyContaining<ValidationFilter>());
 
             services.AddControllers();
@@ -130,24 +157,25 @@ namespace Customers_API
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
-
             app.UseRouting();
 
-            app.UseCors(options => options
-                .WithOrigins("http://localhost:3000")
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials());
+            // app.UseCors(options => options
+            //     .WithOrigins("http://localhost:5010")
+            //     .AllowAnyHeader()
+            //     .AllowAnyMethod()
+            //     .AllowCredentials());
 
             app.UseStaticFiles();
 
             app.UseAuthentication();
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapGrpcReflectionService();
+                endpoints.MapGrpcService<PossibleTimeService>();
+                endpoints.MapGrpcService<CustomersService>();
+                endpoints.MapGrpcService<AppointmentsService>();
                 endpoints.MapControllers();
             });
         }

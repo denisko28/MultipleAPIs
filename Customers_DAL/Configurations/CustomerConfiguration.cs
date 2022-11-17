@@ -16,12 +16,6 @@ namespace Customers_DAL.Configurations
 
             builder.Property(e => e.UserId).ValueGeneratedNever();
 
-            builder.HasOne(d => d.User)
-                .WithOne(p => p.Customer)
-                .HasForeignKey<Customer>(d => d.UserId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_Customer_User");
-            
             new CustomersSeeder().Seed(builder);
         }
     }

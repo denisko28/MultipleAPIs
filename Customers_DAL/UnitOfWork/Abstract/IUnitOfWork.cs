@@ -1,7 +1,4 @@
-using System.Threading.Tasks;
-using Customers_DAL.Entities;
 using Customers_DAL.Repositories.Abstract;
-using Microsoft.AspNetCore.Identity;
 
 namespace Customers_DAL.UnitOfWork.Abstract
 {
@@ -13,19 +10,11 @@ namespace Customers_DAL.UnitOfWork.Abstract
 
         IPossibleTimeRepository PossibleTimeRepository { get; }
         
-        IBarberRepository BarberRepository { get; }
-        
         ICustomerRepository CustomerRepository { get; }
         
-        IEmployeeRepository EmployeeRepository { get; }
+        IBranchRepository BranchRepository { get; }
         
         IServiceRepository ServiceRepository { get; }
-        
-        IUserRepository UserRepository { get; }
-        
-        UserManager<User> UserManager { get; }
-
-        SignInManager<User> SignInManager { get; }
 
         Task SaveChangesAsync();
     }

@@ -28,8 +28,6 @@ namespace Customers_DAL.Repositories.Concrete
                 ?? throw new EntityNotFoundException(typeof(TEntity).Name, id);
         }
 
-        public abstract Task<TEntity> GetCompleteEntityAsync(int id);
-
         public virtual async Task InsertAsync(TEntity entity)
         {
             var propInfo = entity.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)

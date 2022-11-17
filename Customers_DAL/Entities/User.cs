@@ -1,17 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿namespace Customers_DAL.Entities;
 
-namespace Customers_DAL.Entities
+public class User
 {
-    public class User : IdentityUser<int>
-    {
-        public string FirstName { get; set; } = null!;
+    public int Id { get; set; }
 
-        public string LastName { get; set; } = null!;
-        
-        public string? Avatar { get; set; }
+    public string Email { get; set; }
 
-        public virtual Customer Customer { get; set; } = null!;
-        
-        public virtual Employee Employee { get; set; } = null!;
-    }
+    public string FirstName { get; set; } = null!;
+
+    public string LastName { get; set; } = null!;
+    
+    public string? Avatar { get; set; }
 }

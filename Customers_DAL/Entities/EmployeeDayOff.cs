@@ -7,9 +7,5 @@
         public int? EmployeeUserId { get; set; }
         
         public int? DayOffId { get; set; }
-
-        public virtual DayOff? DayOff { get; set; }
-        
-        public virtual Employee? EmployeeUser { get; set; }
     }
 }

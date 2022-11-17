@@ -7,8 +7,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="AutoMapper" Version="11.0.1" />
+      <PackageReference Include="AutoMapper" Version="12.0.0" />
       <PackageReference Include="FluentValidation.AspNetCore" Version="11.0.3" />
+      <PackageReference Include="Google.Protobuf" Version="3.21.9" />
+      <PackageReference Include="Grpc.AspNetCore.Server" Version="2.49.0" />
+      <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.49.0" />
+      <PackageReference Include="Grpc.Tools" Version="2.50.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="MassTransit" Version="8.0.7" />
+      <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
+      <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.7" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
       <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
     </ItemGroup>
@@ -23,7 +33,36 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Common\Common.csproj" />
       <ProjectReference Include="..\Customers_DAL\Customers_DAL.csproj" />
+      <ProjectReference Include="..\IdentityServer\IdentityServer.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <Protobuf Include="Protos\appointments.proto">
+            <GrpcServices>Server</GrpcServices>
+            <Access>Public</Access>
+            <ProtoCompile>True</ProtoCompile>
+            <CompileOutputs>True</CompileOutputs>
+            <OutputDir>obj\Debug/net6.0/</OutputDir>
+            <Generator>MSBuild:Compile</Generator>
+        </Protobuf>
+        <Protobuf Include="Protos\customers.proto">
+          <GrpcServices>Server</GrpcServices>
+          <Access>Public</Access>
+          <ProtoCompile>True</ProtoCompile>
+          <CompileOutputs>True</CompileOutputs>
+          <OutputDir>obj\Debug/net6.0/</OutputDir>
+          <Generator>MSBuild:Compile</Generator>
+        </Protobuf>
+        <Protobuf Include="Protos\possibleTime.proto">
+            <GrpcServices>Server</GrpcServices>
+            <Access>Public</Access>
+            <ProtoCompile>True</ProtoCompile>
+            <CompileOutputs>True</CompileOutputs>
+            <OutputDir>obj\Debug/net6.0/</OutputDir>
+            <Generator>MSBuild:Compile</Generator>
+        </Protobuf>
     </ItemGroup>
 
 </Project>

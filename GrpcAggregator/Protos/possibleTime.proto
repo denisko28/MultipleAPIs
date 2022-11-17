@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+import "google/protobuf/duration.proto";
+
+option csharp_namespace = "GrpcAggregator.Protos";
+
+service PossibleTime {
+  rpc GetAll (GetAllPossibleTimeRequest) returns (PossibleTimesResponse);
+}
+
+message GetAllPossibleTimeRequest { }
+
+message PossibleTimeResponse {
+  google.protobuf.Duration time = 1;
+}
+
+message PossibleTimesResponse {
+  repeated PossibleTimeResponse data = 1;
+}

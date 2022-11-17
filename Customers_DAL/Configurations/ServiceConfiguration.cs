@@ -9,11 +9,13 @@ namespace Customers_DAL.Configurations
     {
         public void Configure(EntityTypeBuilder<Service> builder)
         {
-            builder.ToTable("Service_");
+            builder.ToTable("Service");
+            
+            builder.HasKey(e => e.Id);
+            builder.Property(e => e.Id).ValueGeneratedNever();
 
             builder.Property(e => e.Name)
-                .HasMaxLength(30)
-                .HasColumnName("Name_");
+                .HasMaxLength(30);
 
             builder.Property(e => e.Price).HasColumnType("decimal(6, 2)");
             

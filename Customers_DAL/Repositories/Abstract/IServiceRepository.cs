@@ -1,10 +1,8 @@
-using System.Threading.Tasks;
 using Customers_DAL.Entities;
 
 namespace Customers_DAL.Repositories.Abstract
 {
-    public interface IServiceRepository
+    public interface IServiceRepository : IGenericRepository<Service>
     {
-        Task<Service> GetById(int id);
     }
 }

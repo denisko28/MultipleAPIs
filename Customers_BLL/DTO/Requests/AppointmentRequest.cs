@@ -12,6 +12,8 @@ namespace Customers_BLL.DTO.Requests
 
         public int AppointmentStatusId { get; set; }
 
+        public int BranchId { get; set; }
+
         public DateTime AppDate { get; set; }
 
         public TimeSpan BeginTime { get; set; }

@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using HR_BLL.DTO.Requests;
 using HR_BLL.DTO.Responses;
 using HR_BLL.Exceptions;
-using HR_BLL.Helpers;
 using HR_BLL.Services.Abstract;
 using HR_DAL.Exceptions;
+using IdentityServer.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 

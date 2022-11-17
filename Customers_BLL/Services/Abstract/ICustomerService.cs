@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Customers_BLL.DTO.Requests;
 using Customers_BLL.DTO.Responses;
-using Customers_BLL.Helpers;
+using IdentityServer.Helpers;
 
 namespace Customers_BLL.Services.Abstract
 {
@@ -11,8 +11,6 @@ namespace Customers_BLL.Services.Abstract
       Task<IEnumerable<CustomerResponse>> GetAllAsync();
 
       Task<CustomerResponse> GetByIdAsync(int id);
-      
-      Task<CustomerResponse> GetCompleteEntityAsync(int id);
 
       Task<IEnumerable<CustomersAppointmentResponse>> GetCustomersAppointments(int customerId, UserClaimsModel userClaims);
 

@@ -1,27 +1,24 @@
-using System;
-using System.Text;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.OpenApi.Models;
 using AutoMapper;
+using Common;
+using Common.Events.BranchEvents;
+using Dapper;
 using FluentValidation.AspNetCore;
 using HR_BLL.Configurations;
 using HR_BLL.Filters;
+using HR_BLL.Grpc;
 using HR_BLL.Services.Abstract;
 using HR_BLL.Services.Concrete;
-using HR_DAL.Connection.Abstract;
-using HR_DAL.Connection.Concrete;
-using HR_DAL.MongoRepositories.Abstract;
-using HR_DAL.MongoRepositories.Concrete;
 using HR_DAL.Repositories.Abstract;
 using HR_DAL.Repositories.Concrete;
+using HR_DAL.TypeHandlers;
 using HR_DAL.UnitOfWork.Abstract;
 using HR_DAL.UnitOfWork.Concrete;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using MassTransit;
 using Microsoft.IdentityModel.Tokens;
+using RabbitMQ.Client;
+using ConnectionFactory = HR_DAL.Connection.Concrete.ConnectionFactory;
+using IConnectionFactory = HR_DAL.Connection.Abstract.IConnectionFactory;
 
 namespace HR_API
 {
@@ -36,42 +33,55 @@ namespace HR_API
         // Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddGrpc();
+            services.AddGrpcReflection();
+
             services.AddSingleton<IConnectionFactory, ConnectionFactory>();
-            services.AddSingleton(_ => 
-                new MongoDbContext(Configuration.GetConnectionString("MongoDBConnection")));
 
             // Adding Authentication  
-            services.AddAuthentication(options =>
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    options.Authority = "https://localhost:7065";
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false
+                    };
+                });
+
+            // MassTransit-RabbitMQ Configuration
+            services.AddMassTransit(config =>
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer( options => 
-            {  
-                options.SaveToken = true;  
-                options.RequireHttpsMetadata = false;  
-                options.TokenValidationParameters = new TokenValidationParameters()  
-                {  
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(Configuration["JWT:Secret"])),
-                    ClockSkew = TimeSpan.Zero, 
-                };  
+                config.UsingRabbitMq((ctx, cfg) =>
+                {
+                    cfg.Host("localhost", "/", h =>
+                    {
+                        h.Password(Configuration["EventBusSettings:Password"]);
+                        h.Username(Configuration["EventBusSettings:Username"]);
+                    });
+
+                    cfg.Message<BranchInsertedEvent>(e =>
+                        e.SetEntityName(EventBusConstants.TopicExchange)); // name of the primary exchange
+                    cfg.Publish<BranchInsertedEvent>(e => e.ExchangeType = ExchangeType.Topic); // primary exchange type
+                    cfg.Send<BranchInsertedEvent>(e => { e.UseRoutingKeyFormatter(_ => "branch."); });
+
+                    cfg.Message<BranchUpdatedEvent>(e =>
+                        e.SetEntityName(EventBusConstants.TopicExchange)); // name of the primary exchange
+                    cfg.Publish<BranchUpdatedEvent>(e => e.ExchangeType = ExchangeType.Topic); // primary exchange type
+                    cfg.Send<BranchUpdatedEvent>(e => { e.UseRoutingKeyFormatter(_ => "branch."); });
+
+                    cfg.Message<BranchDeletedEvent>(e =>
+                        e.SetEntityName(EventBusConstants.TopicExchange)); // name of the primary exchange
+                    cfg.Publish<BranchDeletedEvent>(e => e.ExchangeType = ExchangeType.Topic); // primary exchange type
+                    cfg.Send<BranchDeletedEvent>(e => { e.UseRoutingKeyFormatter(_ => "branch."); });
+                });
             });
-            
-            services.AddTransient<IAppointmentRepository, AppointmentRepository>();
+
             services.AddTransient<IBarberRepository, BarberRepository>();
             services.AddTransient<IBranchRepository, BranchRepository>();
-            services.AddTransient<ICustomerRepository, CustomerRepository>();
             services.AddTransient<IDayOffRepository, DayOffRepository>();
             services.AddTransient<IEmployeeDayOffRepository, EmployeeDayOffRepository>();
             services.AddTransient<IEmployeeRepository, EmployeeRepository>();
-            services.AddTransient<IUserRepository, UserRepository>();
-            
-            services.AddTransient<IBranchMongoRepository, BranchMongoRepository>();
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
 
@@ -81,13 +91,12 @@ namespace HR_API
             services.AddTransient<IDayOffService, DayOffService>();
             services.AddTransient<IEmployeeService, EmployeeService>();
 
-            var mapperConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new AutoMapperProfile());
-            });
+            var mapperConfig = new MapperConfiguration(mc => { mc.AddProfile(new AutoMapperProfile()); });
 
-            IMapper mapper = mapperConfig.CreateMapper();
+            var mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
+            
+            SqlMapper.AddTypeHandler(new DateTimeHandler());
 
             services.AddRazorPages();
 
@@ -97,7 +106,7 @@ namespace HR_API
                     options.EnableEndpointRouting = false;
                     options.Filters.Add<ValidationFilter>();
                 })
-                .AddFluentValidation(options => 
+                .AddFluentValidation(options =>
                     options.RegisterValidatorsFromAssemblyContaining<ValidationFilter>());
 
             services.AddControllers();
@@ -107,6 +116,25 @@ namespace HR_API
                 {
                     Title = "HumanResourcesAPI",
                     Version = "v1"
+                });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme() {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                    {
+                        new OpenApiSecurityScheme {
+                            Reference = new OpenApiReference {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
                 });
             });
         }
@@ -124,10 +152,8 @@ namespace HR_API
                     "HumanResourcesAPI v1"));
             }
 
-            app.UseHttpsRedirection();
-
             app.UseRouting();
-            
+
             app.UseCors(options => options
                 .WithOrigins("http://localhost:3000")
                 .AllowAnyHeader()
@@ -137,11 +163,12 @@ namespace HR_API
             app.UseStaticFiles();
 
             app.UseAuthentication();
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapGrpcReflectionService();
+                endpoints.MapGrpcService<BarbersService>();
                 endpoints.MapControllers();
             });
         }

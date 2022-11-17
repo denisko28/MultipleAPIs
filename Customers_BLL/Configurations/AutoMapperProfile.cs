@@ -1,7 +1,11 @@
 using AutoMapper;
+using Common.Events.BranchEvents;
+using Common.Events.ServiceEvents;
 using Customers_BLL.DTO.Requests;
 using Customers_BLL.DTO.Responses;
 using Customers_DAL.Entities;
+using Google.Protobuf.WellKnownTypes;
+using PossibleTime = Customers_DAL.Entities.PossibleTime;
 
 namespace Customers_BLL.Configurations
 {
@@ -16,22 +20,34 @@ namespace Customers_BLL.Configurations
             CreateMap<Appointment, AppointmentResponse>();
 
             CreateMap<Appointment, CustomersAppointmentResponse>()
-                .ForMember(
-                    response => response.Avatar,
+                .ForMember(response => response.BranchAddress,
                     options =>
-                        options.MapFrom(appointment => appointment.Barber.Employee.User.Avatar)
-                )
-                .ForMember(
-                    response => response.BranchAddress,
+                        options.MapFrom(appointment => appointment.Branch.Address));
+
+            CreateMap<Appointment, Protos.AppointmentResponse>()
+                .ForMember(response => response.AppDate,
                     options =>
-                        options.MapFrom(appointment => appointment.Barber.Employee.Branch.Address)
-                )
-                .ForMember(
-                    response => response.BarberName,
+                        options.MapFrom(appointment => appointment.AppDate.ToTimestamp()))
+                .ForMember(response => response.BeginTime,
                     options =>
-                        options.MapFrom(appointment => appointment.Barber.Employee.User.FirstName +
-                                                       " " + appointment.Barber.Employee.User.LastName)
-                );
+                        options.MapFrom(appointment => appointment.BeginTime.ToDuration()))
+                .ForMember(response => response.EndTime,
+                    options =>
+                        options.MapFrom(appointment => appointment.EndTime.ToDuration()));;
+            
+            CreateMap<Appointment, Protos.CustomersAppointmentResponse>()
+                .ForMember(response => response.BranchAddress,
+                    options =>
+                        options.MapFrom(appointment => appointment.Branch.Address))
+                .ForMember(response => response.AppDate,
+                    options =>
+                        options.MapFrom(appointment => appointment.AppDate.ToTimestamp()))
+                .ForMember(response => response.BeginTime,
+                    options =>
+                        options.MapFrom(appointment => appointment.BeginTime.ToDuration()))
+                .ForMember(response => response.EndTime,
+                    options =>
+                        options.MapFrom(appointment => appointment.EndTime.ToDuration()));
         }
 
         private void CreateCustomerMaps()
@@ -40,29 +56,16 @@ namespace Customers_BLL.Configurations
 
             CreateMap<CustomerRegisterRequest, Customer>();
 
-            CreateMap<Customer, CustomerResponse>()
-                .ForMember(
-                    response => response.FirstName,
-                    options => 
-                        options.MapFrom(customer => customer.User.FirstName)
-                )
-                .ForMember(
-                    response => response.LastName,
-                    options => 
-                        options.MapFrom(customer => customer.User.LastName)
-                )
-                .ForMember(
-                    response => response.Avatar,
-                    options => 
-                        options.MapFrom(customer => customer.User.Avatar)
-                );
+            CreateMap<Customer, CustomerResponse>();
+
+            CreateMap<Customer, Protos.CustomerResponse>();
         }
 
         private void CreateEmployeeMaps()
         {
             CreateMap<EmployeeRegisterRequest, Employee>();
         }
-        
+
         private void CreateBarberMaps()
         {
             CreateMap<BarberRegisterRequest, Barber>();
@@ -71,32 +74,24 @@ namespace Customers_BLL.Configurations
         private void CreateServiceMaps()
         {
             CreateMap<Service, ServiceResponse>();
+
+            CreateMap<ServiceInsertedEvent, Service>();
+
+            CreateMap<ServiceUpdatedEvent, Service>();
         }
 
-        private void CreateUserMaps()
+        private void CreateBranchMaps()
         {
-            CreateMap<User, UserResponse>();
-            
-            CreateMap<CustomerRegisterRequest, User>()
-                .ForMember(
-                    user => user.UserName,
-                    options => 
-                        options.MapFrom(user => user.Email)
-                );
+            CreateMap<BranchInsertedEvent, Branch>();
+            CreateMap<BranchUpdatedEvent, Branch>();
+        }
 
-            CreateMap<EmployeeRegisterRequest, User>()
-                .ForMember(
-                    user => user.UserName,
-                    options => 
-                        options.MapFrom(user => user.Email)
-                );
-
-            CreateMap<BarberRegisterRequest, User>()
-                .ForMember(
-                    user => user.UserName,
-                    options => 
-                        options.MapFrom(user => user.Email)
-                );
+        private void CreatePossibleTimeMap()
+        {
+            CreateMap<PossibleTime, Protos.PossibleTimeResponse>()
+                .ForMember(response => response.Time, 
+                    options => options
+                        .MapFrom(entity => entity.Time.ToDuration()));
         }
 
         public AutoMapperProfile()
@@ -106,7 +101,8 @@ namespace Customers_BLL.Configurations
             CreateEmployeeMaps();
             CreateBarberMaps();
             CreateServiceMaps();
-            CreateUserMaps();
+            CreateBranchMaps();
+            CreatePossibleTimeMap();
         }
     }
 }

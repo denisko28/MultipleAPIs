@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using IdentityServer.Helpers;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -11,7 +12,6 @@ using Services_Application.Commands.Services.UpdateService;
 using Services_Application.DTO.Requests;
 using Services_Application.DTO.Responses;
 using Services_Application.Exceptions;
-using Services_Application.Helpers;
 using Services_Application.Queries.Services.GetAllServices;
 using Services_Application.Queries.Services.GetByIdService;
 
@@ -72,7 +72,7 @@ namespace Services_API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Post([FromBody] ServiceRequest request)
+        public async Task<ActionResult> Post([FromBody] ServicePostRequest request)
         {
             try
             {

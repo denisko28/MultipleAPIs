@@ -1,15 +1,12 @@
 ﻿using System;
 using Customers_DAL.Configurations;
 using Customers_DAL.Entities;
-using Customers_DAL.Seeding.Concrete;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace Customers_DAL
 {
-    public class BarbershopDbContext : IdentityDbContext<User, IdentityRole<int>,int>
+    public class BarbershopDbContext : DbContext
     {
         protected BarbershopDbContext()
         {
@@ -22,15 +19,10 @@ namespace Customers_DAL
 
         public virtual DbSet<Appointment> Appointments { get; set; } = null!;
         public virtual DbSet<AppointmentService> AppointmentServices { get; set; } = null!;
-        public virtual DbSet<Barber> Barbers { get; set; } = null!;
-        public virtual DbSet<Branch> Branches { get; set; } = null!;
         public virtual DbSet<Customer> Customers { get; set; } = null!;
-        public virtual DbSet<DayOff> DayOffs { get; set; } = null!;
-        public virtual DbSet<Employee> Employees { get; set; } = null!;
-        public virtual DbSet<EmployeeDayOff> EmployeeDayOffs { get; set; } = null!;
-        public virtual DbSet<PossibleTime> PossibleTimes { get; set; } = null!;
+        public virtual DbSet<Branch> Branches { get; set; } = null!;
         public virtual DbSet<Service> Services { get; set; } = null!;
-        public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<PossibleTime> PossibleTimes { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -50,20 +42,12 @@ namespace Customers_DAL
             
             modelBuilder.UseCollation("Latin1_General_100_CI_AS_SC_UTF8");
             
+            modelBuilder.ApplyConfiguration(new BranchConfiguration());
+            modelBuilder.ApplyConfiguration(new ServiceConfiguration());
             modelBuilder.ApplyConfiguration(new AppointmentConfiguration());
             modelBuilder.ApplyConfiguration(new AppointmentServiceConfiguration());
-            modelBuilder.ApplyConfiguration(new BarberConfiguration());
-            modelBuilder.ApplyConfiguration(new BranchConfiguration());
             modelBuilder.ApplyConfiguration(new CustomerConfiguration());
-            modelBuilder.ApplyConfiguration(new DayOffConfiguration());
-            modelBuilder.ApplyConfiguration(new EmployeeConfiguration());
-            modelBuilder.ApplyConfiguration(new EmployeeDayOffConfiguration());
             modelBuilder.ApplyConfiguration(new PossibleTimeConfiguration());
-            modelBuilder.ApplyConfiguration(new ServiceConfiguration());
-            modelBuilder.ApplyConfiguration(new ServiceDiscountConfiguration());
-            modelBuilder.ApplyConfiguration(new UserConfiguration());
-            
-            UsersWithRolesSeeder.Seed(modelBuilder);
         }
     }
 }

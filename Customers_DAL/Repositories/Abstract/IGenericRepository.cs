@@ -9,8 +9,6 @@ namespace Customers_DAL.Repositories.Abstract
 
         Task<TEntity> GetByIdAsync(int id);
 
-        Task<TEntity> GetCompleteEntityAsync(int id);
-
         Task InsertAsync(TEntity entity);
 
         Task UpdateAsync(TEntity entity);

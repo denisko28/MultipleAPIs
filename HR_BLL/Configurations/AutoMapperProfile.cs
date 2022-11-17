@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Common.Events.BranchEvents;
+using Google.Protobuf.WellKnownTypes;
 using HR_BLL.DTO.Requests;
 using HR_BLL.DTO.Responses;
 using HR_DAL.Entities;
@@ -14,13 +16,21 @@ namespace HR_BLL.Configurations
             CreateMap<Barber, BarberResponse>();
 
             CreateMap<Appointment, BarbersAppointmentResponse>();
+
+            CreateMap<Barber, Protos.BarberResponse>();
         }
 
         private void CreateBranchMaps()
         {
+            CreateMap<BranchPostRequest, Branch>();
+            
             CreateMap<BranchRequest, Branch>();
             
             CreateMap<Branch, BranchResponse>();
+
+            CreateMap<Branch, BranchInsertedEvent>();
+            
+            CreateMap<Branch, BranchUpdatedEvent>();
         }
 
         private void CreateDayOffMaps()
@@ -40,6 +50,13 @@ namespace HR_BLL.Configurations
                 );
             
             CreateMap<DayOff, DayOffResponse>();
+            
+            CreateMap<DayOff, Protos.BarbersDayOffResponse>()
+                .ForMember(
+                target => target.Date,
+                options => 
+                    options.MapFrom(request => request.Date_.ToTimestamp())
+            );
         }
 
         private void CreateEmployeeMaps()

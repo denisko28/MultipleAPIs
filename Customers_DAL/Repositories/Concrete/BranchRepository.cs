@@ -1,8 +1,5 @@
-using System.Threading.Tasks;
 using Customers_DAL.Entities;
-using Customers_DAL.Exceptions;
 using Customers_DAL.Repositories.Abstract;
-using Microsoft.EntityFrameworkCore;
 
 namespace Customers_DAL.Repositories.Concrete
 {
@@ -12,12 +9,9 @@ namespace Customers_DAL.Repositories.Concrete
         {
         }
 
-        public override async Task<Branch> GetCompleteEntityAsync(int id)
+        public override async Task InsertAsync(Branch entity)
         {
-            var branch = await Table.Include(branch => branch.Employees)
-                                     .SingleOrDefaultAsync(branch => branch.Id == id);
-
-            return branch ?? throw new EntityNotFoundException(GetEntityNotFoundErrorMessage(id));
+            await Table.AddAsync(entity);
         }
     }
 }

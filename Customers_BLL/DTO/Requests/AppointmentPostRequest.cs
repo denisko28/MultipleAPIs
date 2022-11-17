@@ -8,6 +8,8 @@ namespace Customers_BLL.DTO.Requests
         public int BarberUserId { get; set; }
 
         public int CustomerUserId { get; set; }
+        
+        public int BranchId { get; set; }
 
         public DateTime AppDate { get; set; }
 

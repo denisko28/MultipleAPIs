@@ -1,7 +1,4 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Customers_DAL.Entities;
-using Customers_DAL.Exceptions;
 using Customers_DAL.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
 

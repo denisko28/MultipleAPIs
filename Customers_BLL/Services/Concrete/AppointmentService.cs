@@ -10,6 +10,7 @@ using Customers_BLL.DTO.Requests;
 using Customers_BLL.DTO.Responses;
 using Customers_BLL.Exceptions;
 using Customers_BLL.Services.Abstract;
+using IdentityServer.Helpers;
 
 namespace Customers_BLL.Services.Concrete
 {
@@ -25,10 +26,6 @@ namespace Customers_BLL.Services.Concrete
         
         private readonly IPossibleTimeRepository possibleTimeRepository;
 
-        private readonly IBarberRepository barberRepository;
-
-        private readonly IEmployeeRepository employeeRepository;
-
         public AppointmentService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
@@ -36,36 +33,52 @@ namespace Customers_BLL.Services.Concrete
             appointmentRepository = unitOfWork.AppointmentRepository;
             appointmentServiceRepository = unitOfWork.AppointmentServiceRepository;
             possibleTimeRepository = unitOfWork.PossibleTimeRepository;
-            barberRepository = unitOfWork.BarberRepository;
-            employeeRepository = unitOfWork.EmployeeRepository;
         }
 
-        public async Task<IEnumerable<AppointmentResponse>> GetAllAsync()
+        public async Task<IEnumerable<AppointmentResponse>> GetAllAsync(UserClaimsModel userClaims)
+        {
+            return userClaims.Role switch
+            {
+                UserRoles.Admin => await GetAllForAdmin(),
+                UserRoles.Manager => await GetAllForManager(userClaims.BranchId),
+                _ => throw new ForbiddenAccessException("User role is undefined")
+            };
+        }
+
+        private async Task<IEnumerable<AppointmentResponse>> GetAllForAdmin()
         {
             var results = await appointmentRepository.GetAllAsync();
             return results.Select(mapper.Map<Appointment, AppointmentResponse>);
         }
         
-        public async Task<IEnumerable<AppointmentResponse>> GetAllForManager(int userId)
+        private async Task<IEnumerable<AppointmentResponse>> GetAllForManager(int branchId)
         {
-            var employee = await employeeRepository.GetByIdAsync(userId);
-            var result = await appointmentRepository.GetByBranchAsync(employee.Branch.Id);
+            var result = await appointmentRepository.GetByBranchAsync(branchId);
             return result.Select(mapper.Map<Appointment, AppointmentResponse>);
         }
         
-        public async Task<AppointmentResponse> GetByIdAsync(int id)
+        public async Task<AppointmentResponse> GetByIdAsync(int id, UserClaimsModel userClaims)
         {
-            var result = await appointmentRepository.GetByIdAsync(id);
-            return mapper.Map<Appointment, AppointmentResponse>(result);
+            return userClaims.Role switch
+            {
+                UserRoles.Admin => await GetByIdForAdmin(id),
+                UserRoles.Manager => await GetByIdForManager(id, userClaims.BranchId),
+                _ => throw new ForbiddenAccessException("User role is undefined")
+            };
         }
         
-        public async Task<AppointmentResponse> GetByIdForManager(int appointmentId, int userId)
+        private async Task<AppointmentResponse> GetByIdForAdmin(int id)
         {
-            var employee = await employeeRepository.GetByIdAsync(userId);
-            var appointment = await appointmentRepository.GetByIdIncludeEmployeeAsync(appointmentId);
+            var appointment = await appointmentRepository.GetByIdAsync(id);
+            return mapper.Map<Appointment, AppointmentResponse>(appointment);
+        }
+        
+        private async Task<AppointmentResponse> GetByIdForManager(int id, int branchId)
+        {
+            var appointment = await appointmentRepository.GetByIdAsync(id);
             
-            if(employee.BranchId != appointment.Barber.Employee.BranchId)
-                throw new ForbiddenAccessException($"You don't have access to the appointment with id: {appointmentId}");
+            if(appointment.BranchId != branchId)
+                throw new ForbiddenAccessException($"You don't have access to the appointment with id: {id}");
             
             return mapper.Map<Appointment, AppointmentResponse>(appointment);
         }
@@ -86,7 +99,8 @@ namespace Customers_BLL.Services.Concrete
         public async Task<IEnumerable<TimeResponse>> GetAvailableTimeAsync(int barberId, int duration, string dateStr)
         { 
             var availableTime = new List<TimeResponse>();
-            var barbersDayOffs = await barberRepository.GetBarbersDayOffs(barberId);
+            var barbersDayOffs = new List<DayOff>();
+            throw new NotImplementedException("Implement GetBarbersDayOffs using gRPC");
 
             var date = DateTime.Parse(dateStr);
             if(barbersDayOffs.Any( dayOff => dayOff.Date.Equals(date)))
@@ -143,7 +157,7 @@ namespace Customers_BLL.Services.Concrete
             await unitOfWork.SaveChangesAsync();
 
             var insertedId = entity.Id;
-            var appServices = request.ServiceIds!
+            var appServices = request.ServiceIds
                 .Select(serviceId => 
                     new Customers_DAL.Entities.AppointmentService {AppointmentId = insertedId, ServiceId = serviceId}
                 ).ToList();
@@ -152,18 +166,32 @@ namespace Customers_BLL.Services.Concrete
             await unitOfWork.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(AppointmentRequest request)
+        public async Task UpdateAsync(AppointmentRequest request, UserClaimsModel userClaims)
+        {
+            switch (userClaims.Role)
+            {
+                case UserRoles.Admin:
+                    await UpdateForAdminAsync(request);
+                    break;
+                case UserRoles.Manager:
+                    await UpdateForManagerAsync(request, userClaims.BranchId);
+                    break;
+                case UserRoles.Barber:
+                    await UpdateForBarberAsync(request, userClaims.UserId);
+                    break;
+            }
+        }
+
+        private async Task UpdateForAdminAsync(AppointmentRequest request)
         {
             var entity = mapper.Map<AppointmentRequest, Appointment>(request);
             await appointmentRepository.UpdateAsync(entity);
             await unitOfWork.SaveChangesAsync();
         }
-        
-        public async Task UpdateForManagerAsync(AppointmentRequest request, int userId)
+
+        private async Task UpdateForManagerAsync(AppointmentRequest request, int branchId)
         {
-            var manager = await employeeRepository.GetByIdAsync(userId);
-            var appointmentBarber = await appointmentRepository.GetAppointmentBarberAsync(request.Id);
-            if (manager.Branch.Id != appointmentBarber.Employee.BranchId)
+            if (request.BranchId != branchId)
                 throw new ForbiddenAccessException($"You don't have access to edit appointment with id: {request.Id}");
             
             var entity = mapper.Map<AppointmentRequest, Appointment>(request);
@@ -171,10 +199,9 @@ namespace Customers_BLL.Services.Concrete
             await unitOfWork.SaveChangesAsync();
         }
         
-        public async Task UpdateForBarberAsync(AppointmentRequest request, int userId)
+        private async Task UpdateForBarberAsync(AppointmentRequest request, int userId)
         {
-            var appointmentBarber = await appointmentRepository.GetAppointmentBarberAsync(request.Id);
-            if (userId != appointmentBarber.EmployeeUserId)
+            if (request.BarberUserId != userId)
                 throw new ForbiddenAccessException($"You don't have access to edit appointment with id: {request.Id}");
             
             var entity = mapper.Map<AppointmentRequest, Appointment>(request);

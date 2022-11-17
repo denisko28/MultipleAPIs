@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using HR_BLL.DTO.Requests;
 using HR_BLL.DTO.Responses;
-using HR_BLL.Helpers;
+using IdentityServer.Helpers;
 
 namespace HR_BLL.Services.Abstract
 {

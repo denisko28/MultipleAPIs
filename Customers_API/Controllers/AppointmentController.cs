@@ -1,15 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Customers_BLL.DTO.Requests;
 using Customers_BLL.DTO.Responses;
 using Customers_BLL.Exceptions;
-using Customers_BLL.Helpers;
 using Customers_BLL.Services.Abstract;
 using Customers_DAL.Exceptions;
-using Customers_DAL.Helpers;
+using IdentityServer.Helpers;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Customers_API.Controllers
@@ -18,48 +13,30 @@ namespace Customers_API.Controllers
     [Route("api/[controller]")]
     public class AppointmentController : ControllerBase
     {
-        private readonly IAppointmentService appointmentService;
+        private readonly IAppointmentService _appointmentService;
 
         public AppointmentController(IAppointmentService appointmentService)
         {
-            this.appointmentService = appointmentService;
+            _appointmentService = appointmentService;
         }
 
         // GET: api/Appointment
-        [Authorize(Roles = UserRoles.Admin)]
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.Manager)]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<AppointmentResponse>>> Get()
         {
             try
             {
-                IEnumerable<AppointmentResponse> results = await appointmentService.GetAllAsync();
+                var userClaims = UserClaimsHelper.GetUserClaims(HttpContext);
+                var results = await _appointmentService.GetAllAsync(userClaims);
                 return Ok(results);
             }
-            catch (Exception e)
+            catch (ForbiddenAccessException e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
-            }
-        }
-        
-        // GET: api/appointment/ForManager
-        [Authorize(Roles = UserRoles.Manager)]
-        [HttpGet("ForManager")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<AppointmentResponse>>> GetForManager()
-        {
-            try
-            {
-                var userId = UserClaimsHelper.GetUserId(HttpContext);
-                IEnumerable<AppointmentResponse> results = await appointmentService.GetAllForManager(userId);
-                return Ok(results);
-            }
-            catch (EntityNotFoundException e)
-            {
-                return NotFound(new { e.Message });
+                return StatusCode(StatusCodes.Status403Forbidden, new { e.Message });
             }
             catch (Exception e)
             {
@@ -68,41 +45,18 @@ namespace Customers_API.Controllers
         }
 
         // GET: api/Appointment/5
-        [Authorize(Roles = UserRoles.Admin)]
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.Manager)]
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<AppointmentResponse>> Get(int id)
         {
             try
             {
-                AppointmentResponse result = await appointmentService.GetByIdAsync(id);
-                return Ok(result);
-            }
-            catch (EntityNotFoundException e)
-            {
-                return NotFound(new { e.Message });
-            }
-            catch (Exception e)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
-            }
-        }
-        
-        // GET: api/appointment/ForManager/3
-        [Authorize(Roles = UserRoles.Manager)]
-        [HttpGet("ForManager/{id:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<AppointmentResponse>> GetForManager(int id)
-        {
-            try
-            {
-                var userId = UserClaimsHelper.GetUserId(HttpContext);
-                AppointmentResponse result = await appointmentService.GetByIdForManager(id, userId);
+                var userClaims = UserClaimsHelper.GetUserClaims(HttpContext);
+                AppointmentResponse result = await _appointmentService.GetByIdAsync(id, userClaims);
                 return Ok(result);
             }
             catch (EntityNotFoundException e)
@@ -128,7 +82,7 @@ namespace Customers_API.Controllers
         {
             try
             {
-                IEnumerable<AppointmentResponse> results = await appointmentService.GetByDateAsync(date);
+                IEnumerable<AppointmentResponse> results = await _appointmentService.GetByDateAsync(date);
                 return Ok(results);
             }
             catch (Exception e)
@@ -147,7 +101,7 @@ namespace Customers_API.Controllers
         {
             try
             {
-                IEnumerable<ServiceResponse> results = await appointmentService.GetAppointmentServicesAsync(id);
+                IEnumerable<ServiceResponse> results = await _appointmentService.GetAppointmentServicesAsync(id);
                 return Ok(results);
             }
             catch (EntityNotFoundException e)
@@ -170,7 +124,7 @@ namespace Customers_API.Controllers
         {
             try
             {
-                var result = await appointmentService.GetAvailableTimeAsync(barberId, duration, date);
+                var result = await _appointmentService.GetAvailableTimeAsync(barberId, duration, date);
                 return Ok(result);
             }
             catch (EntityNotFoundException e)
@@ -192,7 +146,7 @@ namespace Customers_API.Controllers
         {
             try
             {
-                await appointmentService.InsertAsync(request);
+                await _appointmentService.InsertAsync(request);
                 return Ok();
             }
             catch (Exception e)
@@ -202,65 +156,18 @@ namespace Customers_API.Controllers
         }
 
         // PUT: api/Appointment
-        [Authorize(Roles = UserRoles.Admin)]
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.Manager + "," + UserRoles.Barber)]
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Put([FromBody] AppointmentRequest request)
         {
             try
             {
-                await appointmentService.UpdateAsync(request);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
-            }
-        }
-        
-        // PUT: api/Appointment/ForManager
-        [Authorize(Roles = UserRoles.Manager)]
-        [HttpPut("ForManager")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> PutForManager([FromBody] AppointmentRequest request)
-        {
-            try
-            {
-                var userId = UserClaimsHelper.GetUserId(HttpContext);
-                await appointmentService.UpdateForManagerAsync(request, userId);
-                return Ok();
-            }
-            catch (EntityNotFoundException e)
-            {
-                return NotFound(new {e.Message});
-            }
-            catch (ForbiddenAccessException e)
-            {
-                return StatusCode(StatusCodes.Status403Forbidden, new { e.Message });
-            }
-            catch (Exception e)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
-            }
-        }
-        
-        // PUT: api/Appointment/ForBarber
-        [Authorize(Roles = UserRoles.Manager)]
-        [HttpPut("ForBarber")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> PutForBarber([FromBody] AppointmentRequest request)
-        {
-            try
-            {
-                var userId = UserClaimsHelper.GetUserId(HttpContext);
-                await appointmentService.UpdateForBarberAsync(request, userId);
+                var userClaims = UserClaimsHelper.GetUserClaims(HttpContext);
+                await _appointmentService.UpdateAsync(request, userClaims);
                 return Ok();
             }
             catch (EntityNotFoundException e)
@@ -287,7 +194,7 @@ namespace Customers_API.Controllers
         {
             try
             {
-                await appointmentService.DeleteByIdAsync(id);
+                await _appointmentService.DeleteByIdAsync(id);
                 return Ok();
             }
             catch (EntityNotFoundException e)

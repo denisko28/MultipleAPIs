@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Customers_DAL.Entities
+﻿namespace Customers_DAL.Entities
 {
     public class AppointmentService
     {

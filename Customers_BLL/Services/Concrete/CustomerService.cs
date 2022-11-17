@@ -9,9 +9,8 @@ using Customers_DAL.UnitOfWork.Abstract;
 using Customers_BLL.DTO.Requests;
 using Customers_BLL.DTO.Responses;
 using Customers_BLL.Exceptions;
-using Customers_BLL.Helpers;
 using Customers_BLL.Services.Abstract;
-using Customers_DAL.Helpers;
+using IdentityServer.Helpers;
 
 namespace Customers_BLL.Services.Concrete
 {
@@ -35,20 +34,16 @@ namespace Customers_BLL.Services.Concrete
 
         public async Task<IEnumerable<CustomerResponse>> GetAllAsync()
         {
-            var results = await customerRepository.GetAllAsync();
-            return results.Select(mapper.Map<Customer, CustomerResponse>);
+            var customers = await customerRepository.GetAllAsync();
+            throw new NotImplementedException("Test with gRPC aggregator");
+            return customers.Select(mapper.Map<Customer, CustomerResponse>);
         }
         
         public async Task<CustomerResponse> GetByIdAsync(int id)
         {
-            var result = await customerRepository.GetByIdAsync(id);
-            return mapper.Map<Customer, CustomerResponse>(result);
-        }
-
-        public async Task<CustomerResponse> GetCompleteEntityAsync(int id)
-        {
-            var result = await customerRepository.GetCompleteEntityAsync(id);
-            return mapper.Map<Customer, CustomerResponse>(result);
+            var customer = await customerRepository.GetByIdAsync(id);
+            throw new NotImplementedException("Test with gRPC aggregator");
+            return mapper.Map<Customer, CustomerResponse>(customer);
         }
         
         public async Task<IEnumerable<CustomersAppointmentResponse>> GetCustomersAppointments(int customerId, UserClaimsModel userClaims)
@@ -56,8 +51,9 @@ namespace Customers_BLL.Services.Concrete
             if (userClaims.Role != UserRoles.Admin && userClaims.UserId != customerId)
                 throw new ForbiddenAccessException($"You don't have access to appointments of the customer with id: {customerId}");
                 
-            var result = await customerRepository.GetCustomersAppointments(customerId);
-            return result.Select(mapper.Map<Appointment, CustomersAppointmentResponse>);
+            throw new NotImplementedException("Test with gRPC aggregator");
+            var appointments = await customerRepository.GetCustomersAppointments(customerId);
+            return appointments.Select(mapper.Map<Appointment, CustomersAppointmentResponse>);;
         }
 
         public async Task InsertAsync(CustomerRequest request)

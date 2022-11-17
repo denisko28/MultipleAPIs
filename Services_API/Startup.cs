@@ -1,7 +1,10 @@
 using System;
 using System.Text;
 using AutoMapper;
+using Common;
+using Common.Events.ServiceEvents;
 using FluentValidation.AspNetCore;
+using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -10,7 +13,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using RabbitMQ.Client;
 using Services_Application.Configurations;
+using Services_Application.EventBusConsumers.BranchConsumers;
 using Services_Application.Filters;
 using Services_Application.Queries.Services.GetByIdService;
 using Services_Infrastructure;
@@ -28,42 +33,77 @@ namespace Services_API
         // Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<SqlDbContext>();
-
-            services.AddSingleton(_ => 
+            services.AddSingleton(_ =>
                 new MongoDbContext(Configuration.GetConnectionString("MongoDBConnection")));
-            
+
             // Adding Authentication  
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer( options => 
-            {  
-                options.SaveToken = true;  
-                options.RequireHttpsMetadata = false;  
-                options.TokenValidationParameters = new TokenValidationParameters()  
-                {  
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(Configuration["JWT:Secret"])),
-                    ClockSkew = TimeSpan.Zero, 
-                };  
-            });
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    options.Authority = "https://localhost:7065";
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false
+                    };
+                });
 
             services.AddMediatR(typeof(GetByIdServiceQuery));
 
-            var mapperConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new AutoMapperProfile());
-            });
+            var mapperConfig = new MapperConfiguration(mc => { mc.AddProfile(new AutoMapperProfile()); });
 
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
+            
+            // MassTransit-RabbitMQ Configuration
+            services.AddMassTransit(config =>
+            {
+                config.AddConsumer<BranchInsertedConsumer>();
+                config.AddConsumer<BranchUpdatedConsumer>();
+                config.AddConsumer<BranchDeletedConsumer>();
+
+                config.UsingRabbitMq((ctx, cfg) =>
+                {
+                    cfg.Host("localhost", "/", h =>
+                    {
+                        h.Password(Configuration["EventBusSettings:Password"]);
+                        h.Username(Configuration["EventBusSettings:Username"]);
+                    });
+
+                    cfg.Message<ServiceInsertedEvent>(e =>
+                        e.SetEntityName(EventBusConstants.TopicExchange)); // name of the primary exchange
+                    cfg.Publish<ServiceInsertedEvent>(e =>
+                        e.ExchangeType = ExchangeType.Topic); // primary exchange type
+                    cfg.Send<ServiceInsertedEvent>(e => { e.UseRoutingKeyFormatter(_ => "service."); });
+
+                    cfg.Message<ServiceUpdatedEvent>(e =>
+                        e.SetEntityName(EventBusConstants.TopicExchange)); // name of the primary exchange
+                    cfg.Publish<ServiceUpdatedEvent>(e => e.ExchangeType = ExchangeType.Topic); // primary exchange type
+                    cfg.Send<ServiceUpdatedEvent>(e => { e.UseRoutingKeyFormatter(_ => "service."); });
+
+                    cfg.Message<ServiceDeletedEvent>(e =>
+                        e.SetEntityName(EventBusConstants.TopicExchange)); // name of the primary exchange
+                    cfg.Publish<ServiceDeletedEvent>(e => e.ExchangeType = ExchangeType.Topic); // primary exchange type
+                    cfg.Send<ServiceDeletedEvent>(e => { e.UseRoutingKeyFormatter(_ => "service."); });
+
+                    cfg.ReceiveEndpoint(EventBusConstants.BranchForServicesQueue, c =>
+                    {
+                        // turns off default fanout settings
+                        c.ConfigureConsumeTopology = false;
+
+                        // a replicated queue to provide high availability and data safety. available in RMQ 3.8+
+                        c.SetQuorumQueue();
+
+                        c.ConfigureConsumer<BranchInsertedConsumer>(ctx);
+                        c.ConfigureConsumer<BranchUpdatedConsumer>(ctx);
+                        c.ConfigureConsumer<BranchDeletedConsumer>(ctx);
+                        c.Bind(EventBusConstants.TopicExchange, e =>
+                        {
+                            e.RoutingKey = "branch.*";
+                            e.ExchangeType = ExchangeType.Topic;
+                        });
+                    });
+                });
+            });
 
             services.AddRazorPages();
 
@@ -73,7 +113,7 @@ namespace Services_API
                     options.EnableEndpointRouting = false;
                     options.Filters.Add<ValidationFilter>();
                 })
-                .AddFluentValidation(options => 
+                .AddFluentValidation(options =>
                     options.RegisterValidatorsFromAssemblyContaining<ValidationFilter>());
 
             services.AddControllers();
@@ -91,7 +131,7 @@ namespace Services_API
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            
+
             app.UseCors(options => options
                 .WithOrigins("http://localhost:3000")
                 .AllowAnyHeader()
@@ -104,10 +144,7 @@ namespace Services_API
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

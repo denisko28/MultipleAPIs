@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Customers_DAL.Entities;
 using Customers_DAL.Seeding.Concrete;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,15 @@ namespace Customers_DAL.Configurations
         public void Configure(EntityTypeBuilder<Branch> builder)
         {
             builder.ToTable("Branch");
+            
+            builder.HasKey(e => e.Id);
+            builder.Property(e => e.Id).ValueGeneratedNever();
+            
+            builder.HasMany(d => d.Appointments)
+                .WithOne(p => p.Branch)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasForeignKey(d => d.BranchId)
+                .HasConstraintName("FK__Branch");
 
             builder.Property(e => e.Address).HasMaxLength(80);
 

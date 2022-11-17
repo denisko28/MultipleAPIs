@@ -2,20 +2,17 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Customers_BLL.DTO.Requests;
 using Customers_BLL.DTO.Responses;
+using IdentityServer.Helpers;
 
 namespace Customers_BLL.Services.Abstract
 {
     public interface IAppointmentService
     {
-      Task<IEnumerable<AppointmentResponse>> GetAllAsync();
+      Task<IEnumerable<AppointmentResponse>> GetAllAsync(UserClaimsModel userClaims);
 
-      Task<AppointmentResponse> GetByIdAsync(int id);
+      Task<AppointmentResponse> GetByIdAsync(int id, UserClaimsModel userClaims);
 
       Task<IEnumerable<AppointmentResponse>> GetByDateAsync(string dateStr);
-
-      Task<IEnumerable<AppointmentResponse>> GetAllForManager(int userId);
-
-      Task<AppointmentResponse> GetByIdForManager(int appointmentId, int userId);
 
       Task<IEnumerable<ServiceResponse>> GetAppointmentServicesAsync(int appointmentId);
 
@@ -23,11 +20,7 @@ namespace Customers_BLL.Services.Abstract
 
       Task InsertAsync(AppointmentPostRequest request);
 
-      Task UpdateAsync(AppointmentRequest request);
-
-      Task UpdateForManagerAsync(AppointmentRequest request, int userId);
-
-      Task UpdateForBarberAsync(AppointmentRequest request, int userId);
+      Task UpdateAsync(AppointmentRequest request, UserClaimsModel userClaims);
 
       Task DeleteByIdAsync(int id);
     }
