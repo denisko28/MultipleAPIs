@@ -41,6 +41,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionsInProgressAPI", "Act
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions_In_Progress_API", "Actions_In_Progress_API", "{445CBF9F-6D51-494F-AD03-535D535B6F3F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests_Customers_API", "Tests_Customers_API", "{8EAF9858-3F0F-414F-9888-708CFE4DF1C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Customers_DAL_Tests", "Customers_DAL_Tests\Customers_DAL_Tests.csproj", "{2E1AD8EA-85E6-4D70-AC28-BC6F2F1691F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Customers_BLL_Tests", "Customers_BLL_Tests\Customers_BLL_Tests.csproj", "{DD75AD4E-1538-483F-A8D9-8F7820F8476E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Customers_API_Tests", "Customers_API_Tests\Customers_API_Tests.csproj", "{2B95C8B3-CF99-4305-9513-E16798A5BC6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

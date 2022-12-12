@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Customers_BLL.DTO.Requests;
 using Customers_BLL.DTO.Responses;
 using Customers_BLL.Exceptions;
@@ -8,7 +5,6 @@ using Customers_BLL.Services.Abstract;
 using Customers_DAL.Exceptions;
 using IdentityServer.Helpers;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Customers_API.Controllers
@@ -17,11 +13,11 @@ namespace Customers_API.Controllers
     [Route("api/[controller]")]
     public class CustomerController : ControllerBase
     {
-        private readonly ICustomerService customerService;
+        private readonly ICustomerService _customerService;
 
         public CustomerController(ICustomerService customerService)
         {
-            this.customerService = customerService;
+            _customerService = customerService;
         }
 
         // GET: api/Customer
@@ -33,7 +29,7 @@ namespace Customers_API.Controllers
         {
             try
             {
-                IEnumerable<CustomerResponse> results = await customerService.GetAllAsync();
+                var results = await _customerService.GetAllAsync();
                 return Ok(results);
             }
             catch (Exception e)
@@ -52,7 +48,7 @@ namespace Customers_API.Controllers
         {
             try
             {
-                CustomerResponse result = await customerService.GetByIdAsync(id);
+                var result = await _customerService.GetByIdAsync(id);
                 return Ok(result);
             }
             catch (EntityNotFoundException e)
@@ -77,8 +73,8 @@ namespace Customers_API.Controllers
             try
             {
                 var userClaims = UserClaimsHelper.GetUserClaims(HttpContext);
-                IEnumerable<CustomersAppointmentResponse> result =
-                    await customerService.GetCustomersAppointments(id, userClaims);
+                var result =
+                    await _customerService.GetCustomersAppointments(id, userClaims);
                 return Ok(result);
             }
             catch (EntityNotFoundException e)
@@ -123,8 +119,12 @@ namespace Customers_API.Controllers
             try
             {
                 var userClaims = UserClaimsHelper.GetUserClaims(HttpContext);
-                await customerService.UpdateAsync(request, userClaims);
+                await _customerService.UpdateAsync(request, userClaims);
                 return Ok();
+            }
+            catch (EntityNotFoundException e)
+            {
+                return NotFound(new { e.Message });
             }
             catch (ForbiddenAccessException e)
             {
@@ -146,7 +146,7 @@ namespace Customers_API.Controllers
         {
             try
             {
-                await customerService.DeleteByIdAsync(id);
+                await _customerService.DeleteByIdAsync(id);
                 return Ok();
             }
             catch (EntityNotFoundException e)

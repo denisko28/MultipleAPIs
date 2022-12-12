@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Customers_DAL.Entities
+﻿namespace Customers_DAL.Entities
 {
     public partial class Customer
     {
@@ -14,5 +12,12 @@ namespace Customers_DAL.Entities
         public int VisitsNum { get; set; }
         
         public virtual ICollection<Appointment> Appointments { get; set; }
+
+        public Customer(Customer customer)
+        {
+            UserId = customer.UserId;
+            VisitsNum = customer.VisitsNum;
+            Appointments = customer.Appointments;
+        }
     }
 }

@@ -23,5 +23,21 @@
         public virtual ICollection<AppointmentService> AppointmentServices { get; set; }
         
         public virtual Branch Branch { get; set; }
+
+        public Appointment()
+        {
+        }
+
+        public Appointment(Appointment appointment)
+        {
+            Id = appointment.Id;
+            BarberUserId = appointment.BarberUserId;
+            CustomerUserId = appointment.CustomerUserId;
+            AppointmentStatusId = appointment.AppointmentStatusId;
+            BranchId = appointment.BranchId;
+            AppDate = appointment.AppDate;
+            BeginTime = appointment.BeginTime;
+            EndTime = appointment.EndTime;
+        }
     }
 }
