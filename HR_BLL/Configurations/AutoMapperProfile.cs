@@ -3,6 +3,7 @@ using Common.Events.BranchEvents;
 using Google.Protobuf.WellKnownTypes;
 using HR_BLL.DTO.Requests;
 using HR_BLL.DTO.Responses;
+using HR_BLL.Protos;
 using HR_DAL.Entities;
 
 namespace HR_BLL.Configurations
@@ -11,22 +12,22 @@ namespace HR_BLL.Configurations
     {
         private void CreateBarberMaps()
         {
-            CreateMap<BarberRequest, Barber>();
+            CreateMap<BarberRequestDto, Barber>();
             
+            CreateMap<Barber, BarberResponseDto>();
+
+            CreateMap<Appointment, BarbersAppointmentResponseDto>();
+
             CreateMap<Barber, BarberResponse>();
-
-            CreateMap<Appointment, BarbersAppointmentResponse>();
-
-            CreateMap<Barber, Protos.BarberResponse>();
         }
 
         private void CreateBranchMaps()
         {
-            CreateMap<BranchPostRequest, Branch>();
+            CreateMap<BranchPostRequestDto, Branch>();
             
-            CreateMap<BranchRequest, Branch>();
+            CreateMap<BranchRequestDto, Branch>();
             
-            CreateMap<Branch, BranchResponse>();
+            CreateMap<Branch, BranchResponseDto>();
 
             CreateMap<Branch, BranchInsertedEvent>();
             
@@ -35,35 +36,54 @@ namespace HR_BLL.Configurations
 
         private void CreateDayOffMaps()
         {
-            CreateMap<DayOffRequest, DayOff>()
+            CreateMap<DayOffRequestDto, DayOff>()
                 .ForMember(
                     target => target.Date_,
                     options => 
                         options.MapFrom(request => request.Date)
                 );
             
-            CreateMap<DayOffPostRequest, DayOff>()
+            CreateMap<DayOffPostRequestDto, DayOff>()
                 .ForMember(
                     target => target.Date_,
                     options => 
                         options.MapFrom(request => request.Date)
                 );
             
-            CreateMap<DayOff, DayOffResponse>();
+            CreateMap<DayOff, DayOffResponseDto>();
             
-            CreateMap<DayOff, Protos.BarbersDayOffResponse>()
+            CreateMap<DayOff, BarbersDayOffResponse>()
                 .ForMember(
                 target => target.Date,
                 options => 
                     options.MapFrom(request => request.Date_.ToTimestamp())
             );
+            
+            CreateMap<DayOff, EmployeesDayOffResponse>()
+                .ForMember(
+                    target => target.Date,
+                    options => 
+                        options.MapFrom(request => request.Date_.ToTimestamp())
+                );
         }
 
         private void CreateEmployeeMaps()
         {
-            CreateMap<EmployeeRequest, Employee>();
+            CreateMap<EmployeeRequestDto, Employee>();
             
-            CreateMap<Employee, EmployeeResponse>();
+            CreateMap<Employee, EmployeeResponseDto>();
+            
+            CreateMap<Employee, EmployeeResponse>()
+                .ForMember(
+                    target => target.PassportImgPath,
+                    options => 
+                        options.MapFrom(request => request.PassportImgPath ?? "" )
+                )
+                .ForMember(
+                    target => target.Birthday,
+                    options => 
+                        options.MapFrom(request => request.Birthday.ToTimestamp())
+                );
         }
 
         public AutoMapperProfile()

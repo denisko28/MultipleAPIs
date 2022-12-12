@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "HR_BLL.Protos";
+
+service Employees {
+  rpc GetAll (GetAllEmployeesRequest) returns (EmployeesResponse);
+  rpc GetById (GetEmployeeByIdRequest) returns (EmployeeResponse);
+  rpc GetEmployeesDayOffs (GetEmployeeByIdRequest) returns (EmployeesDayOffsResponse);
+}
+
+message GetAllEmployeesRequest { }
+
+message GetEmployeeByIdRequest {
+  int32 id = 1;
+}
+
+message EmployeeResponse {
+  int32 UserId = 1;
+  int32 BranchId = 2;
+  int32 EmployeeStatusId = 3;
+  string Address = 4;
+  string PassportImgPath = 5;
+  google.protobuf.Timestamp Birthday = 6;
+}
+
+message EmployeesResponse {
+  repeated EmployeeResponse data = 1;
+}
+
+message EmployeesDayOffResponse {
+  int32 id = 1;
+  google.protobuf.Timestamp date = 2;
+}
+
+message EmployeesDayOffsResponse {
+  repeated EmployeesDayOffResponse data = 1;
+}

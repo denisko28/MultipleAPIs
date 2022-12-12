@@ -3,7 +3,7 @@ using HR_BLL.DTO.Requests;
 
 namespace HR_BLL.Validation.Requests
 {
-    public class BranchRequestValidator : AbstractValidator<BranchRequest>
+    public class BranchRequestValidator : AbstractValidator<BranchRequestDto>
     {
         public BranchRequestValidator()
         {

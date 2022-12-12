@@ -9,23 +9,23 @@ namespace HR_BLL.Services.Abstract
 {
     public interface IEmployeeService
     {
-        Task<IEnumerable<EmployeeResponse>> GetAllAsync();
+        Task<IEnumerable<EmployeeResponseDto>> GetAllAsync();
 
-        Task<IEnumerable<EmployeeResponse>> GetAllForManager(int userId);
+        Task<IEnumerable<EmployeeResponseDto>> GetAllForManager(int userId);
 
-        Task<EmployeeResponse> GetByIdAsync(int id);
+        Task<EmployeeResponseDto> GetByIdAsync(int id);
 
-        Task<EmployeeResponse> GetByIdForManager(int id, int userId);
+        Task<EmployeeResponseDto> GetByIdForManager(int id, int userId);
 
-        Task<IEnumerable<EmployeeResponse>> GetByStatusAsync(int statusCode);
+        Task<IEnumerable<EmployeeResponseDto>> GetByStatusAsync(int statusCode);
 
         Task<FileResult> GetPassportForEmployeeAsync(int employeeId, UserClaimsModel userClaims);
 
-        Task<int> InsertAsync(EmployeeRequest request);
+        Task<int> InsertAsync(EmployeeRequestDto requestDto);
 
-        Task<bool> UpdateAsync(EmployeeRequest request, UserClaimsModel userClaims);
+        Task<bool> UpdateAsync(EmployeeRequestDto requestDto, UserClaimsModel userClaims);
 
-        Task SetPassportForEmployeeAsync(ImageUploadRequest request, UserClaimsModel userClaims);
+        Task SetPassportForEmployeeAsync(ImageUploadRequestDto requestDto, UserClaimsModel userClaims);
 
         Task DeleteByIdAsync(int id);
     }

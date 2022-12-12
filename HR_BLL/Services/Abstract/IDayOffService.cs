@@ -9,27 +9,27 @@ namespace HR_BLL.Services.Abstract
 {
     public interface IDayOffService
     {
-        Task<IEnumerable<DayOffResponse>> GetAllAsync();
+        Task<IEnumerable<DayOffResponseDto>> GetAllAsync();
 
-        Task<IEnumerable<DayOffResponse>> GetAllForManager(int userId);
+        Task<IEnumerable<DayOffResponseDto>> GetAllForManager(int userId);
 
-        Task<DayOffResponse> GetByIdAsync(int id);
+        Task<DayOffResponseDto> GetByIdAsync(int id);
 
-        Task<DayOffResponse> GetByIdForManager(int id, int userId);
+        Task<DayOffResponseDto> GetByIdForManager(int id, int userId);
 
-        Task<IEnumerable<DayOffResponse>> GetDayOffsByEmployee(int employeeUserId, UserClaimsModel userClaims);
+        Task<IEnumerable<DayOffResponseDto>> GetDayOffsByEmployee(int employeeUserId, UserClaimsModel userClaims);
 
-        Task<IEnumerable<DayOffResponse>> GetDayOffsByEmployeeForManager(int employeeUserId, int userId);
+        Task<IEnumerable<DayOffResponseDto>> GetDayOffsByEmployeeForManager(int employeeUserId, int userId);
 
-        Task<IEnumerable<DayOffResponse>> GetCompleteEntitiesByDate(DateTime date);
+        Task<IEnumerable<DayOffResponseDto>> GetCompleteEntitiesByDate(DateTime date);
 
-        Task<int> InsertAsync(DayOffPostRequest request);
+        Task<int> InsertAsync(DayOffPostRequestDto requestDto);
 
-        Task<int> InsertForManagerAsync(DayOffPostRequest request, int userId);
+        Task<int> InsertForManagerAsync(DayOffPostRequestDto requestDto, int userId);
 
-        Task<bool> UpdateAsync(DayOffRequest request);
+        Task<bool> UpdateAsync(DayOffRequestDto requestDto);
 
-        Task<bool> UpdateForManager(DayOffRequest request, int userId);
+        Task<bool> UpdateForManager(DayOffRequestDto requestDto, int userId);
 
         Task DeleteByIdAsync(int id);
 

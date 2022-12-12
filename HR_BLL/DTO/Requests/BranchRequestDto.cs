@@ -1,6 +1,6 @@
 ﻿namespace HR_BLL.DTO.Requests
 {
-    public class BranchRequest
+    public class BranchRequestDto
     {
         public int Id { get; set; }
 

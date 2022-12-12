@@ -1,6 +1,6 @@
 ﻿namespace HR_BLL.DTO.Responses
 {
-    public class BranchResponse
+    public class BranchResponseDto
     {
         public int Id { get; set; }
 

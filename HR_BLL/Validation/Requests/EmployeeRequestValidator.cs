@@ -4,7 +4,7 @@ using HR_BLL.DTO.Requests;
 
 namespace HR_BLL.Validation.Requests
 {
-    public class EmployeeRequestValidator : AbstractValidator<EmployeeRequest>
+    public class EmployeeRequestValidator : AbstractValidator<EmployeeRequestDto>
     {
         public EmployeeRequestValidator()
         {

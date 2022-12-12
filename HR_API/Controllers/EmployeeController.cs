@@ -30,7 +30,7 @@ namespace HR_API.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> Get()
+        public async Task<ActionResult<IEnumerable<EmployeeResponseDto>>> Get()
         {
             try
             {
@@ -49,7 +49,7 @@ namespace HR_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> GetForManager()
+        public async Task<ActionResult<IEnumerable<EmployeeResponseDto>>> GetForManager()
         {
             try
             {
@@ -73,7 +73,7 @@ namespace HR_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<EmployeeResponse>> Get(int id)
+        public async Task<ActionResult<EmployeeResponseDto>> Get(int id)
         {
             try
             {
@@ -97,7 +97,7 @@ namespace HR_API.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<EmployeeResponse>> GetForManager(int id)
+        public async Task<ActionResult<EmployeeResponseDto>> GetForManager(int id)
         {
             try
             {
@@ -124,11 +124,11 @@ namespace HR_API.Controllers
         [HttpGet("statusId/{statusCode:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> GetByStatus(int statusCode)
+        public async Task<ActionResult<IEnumerable<EmployeeResponseDto>>> GetByStatus(int statusCode)
         {
             try
             {
-                IEnumerable<EmployeeResponse> results = await employeeService.GetByStatusAsync(statusCode);
+                IEnumerable<EmployeeResponseDto> results = await employeeService.GetByStatusAsync(statusCode);
                 return Ok(results);
             }
             catch (EntityNotFoundException e)
@@ -197,12 +197,12 @@ namespace HR_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Put([FromBody] EmployeeRequest request)
+        public async Task<ActionResult> Put([FromBody] EmployeeRequestDto requestDto)
         {
             try
             {
                 var userClaims = UserClaimsHelper.GetUserClaims(HttpContext);
-                await employeeService.UpdateAsync(request, userClaims);
+                await employeeService.UpdateAsync(requestDto, userClaims);
                 return Ok();
             }
             catch (ForbiddenAccessException e)
@@ -223,12 +223,12 @@ namespace HR_API.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> AttachPassport([FromForm] ImageUploadRequest request)
+        public async Task<ActionResult> AttachPassport([FromForm] ImageUploadRequestDto requestDto)
         {
             try
             {
                 var userClaims = UserClaimsHelper.GetUserClaims(HttpContext);
-                await employeeService.SetPassportForEmployeeAsync(request, userClaims);
+                await employeeService.SetPassportForEmployeeAsync(requestDto, userClaims);
                 return Ok();
             }
             catch (EntityNotFoundException e)

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using HR_BLL.DTO.Requests;
+﻿using HR_BLL.DTO.Requests;
 using HR_BLL.DTO.Responses;
 using HR_BLL.Exceptions;
 using HR_BLL.Services.Abstract;
 using HR_DAL.Exceptions;
 using IdentityServer.Helpers;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HR_API.Controllers
@@ -17,11 +13,11 @@ namespace HR_API.Controllers
     [Route("api/[controller]")]
     public class BarberController : ControllerBase
     {
-        private readonly IBarberService barberService;
+        private readonly IBarberService _barberService;
 
         public BarberController(IBarberService barberService)
         {
-            this.barberService = barberService;
+            this._barberService = barberService;
         }
 
         // GET: api/Barber
@@ -29,11 +25,11 @@ namespace HR_API.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<BarberResponse>>> Get()
+        public async Task<ActionResult<IEnumerable<BarberResponseDto>>> Get()
         {
             try
             {
-                IEnumerable<BarberResponse> results = await barberService.GetAllAsync();
+                var results = await _barberService.GetAllAsync();
                 return Ok(results);
             }
             catch (Exception e)
@@ -48,11 +44,11 @@ namespace HR_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<BarberResponse>> Get(int id)
+        public async Task<ActionResult<BarberResponseDto>> Get(int id)
         {
             try
             {
-                BarberResponse result = await barberService.GetByIdAsync(id);
+                var result = await _barberService.GetByIdAsync(id);
                 return Ok(result);
             }
             catch (EntityNotFoundException e)
@@ -72,13 +68,13 @@ namespace HR_API.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<BarbersAppointmentResponse>>> GetBarbersAppointments([FromQuery] int barberId, [FromQuery] string date)
+        public async Task<ActionResult<IEnumerable<BarbersAppointmentResponseDto>>> GetBarbersAppointments([FromQuery] int barberId, [FromQuery] string date)
         {
             try
             {
                 var userClaims = UserClaimsHelper.GetUserClaims(HttpContext);
-                IEnumerable<BarbersAppointmentResponse> result =
-                    await barberService.GetBarbersAppointmentsAsync(barberId, date, userClaims);
+                var result =
+                    await _barberService.GetBarbersAppointmentsAsync(barberId, date, userClaims);
                 return Ok(result);
             }
             catch (EntityNotFoundException e)
@@ -99,11 +95,11 @@ namespace HR_API.Controllers
         [HttpGet("Branch/{branchId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<BarberResponse>>> GetByBranchId(int branchId)
+        public async Task<ActionResult<IEnumerable<BarberResponseDto>>> GetByBranchId(int branchId)
         {
             try
             {
-                var result = await barberService.GetByBranchIdAsync(branchId);
+                var result = await _barberService.GetByBranchIdAsync(branchId);
                 return Ok(result);
             }
             catch (Exception e)
@@ -135,12 +131,12 @@ namespace HR_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Put([FromQuery] BarberRequest request)
+        public async Task<ActionResult> Put([FromQuery] BarberRequestDto requestDto)
         {
             try
             {
                 var userClaims = UserClaimsHelper.GetUserClaims(HttpContext);
-                await barberService.UpdateAsync(request, userClaims);
+                await _barberService.UpdateAsync(requestDto, userClaims);
                 return Ok();
             }
             catch (ForbiddenAccessException e)
@@ -163,7 +159,7 @@ namespace HR_API.Controllers
         {
             try
             {
-                await barberService.DeleteByIdAsync(id);
+                await _barberService.DeleteByIdAsync(id);
                 return Ok();
             }
             catch (EntityNotFoundException e)

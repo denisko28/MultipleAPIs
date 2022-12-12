@@ -29,9 +29,9 @@ namespace HR_BLL.Services.Concrete
             this.imageService = imageService;
         }
 
-        private async Task<EmployeeResponse> ExtendEmployee(Employee employee)
+        private async Task<EmployeeResponseDto> ExtendEmployee(Employee employee)
         {
-            var response = mapper.Map<Employee, EmployeeResponse>(employee);
+            var response = mapper.Map<Employee, EmployeeResponseDto>(employee);
             var user = new User();
             throw new NotImplementedException("Implement getting User by id using gRPC");
             response.FirstName = user.FirstName;
@@ -40,10 +40,10 @@ namespace HR_BLL.Services.Concrete
             return response;
         }
 
-        public async Task<IEnumerable<EmployeeResponse>> GetAllAsync()
+        public async Task<IEnumerable<EmployeeResponseDto>> GetAllAsync()
         {
             var employees = await employeeRepository.GetAllAsync();
-            var responses = new List<EmployeeResponse>();
+            var responses = new List<EmployeeResponseDto>();
             foreach (var employee in employees)
             {
                 var extendedEmployee = await ExtendEmployee(employee);
@@ -53,12 +53,12 @@ namespace HR_BLL.Services.Concrete
             return responses;
         }
         
-        public async Task<IEnumerable<EmployeeResponse>> GetAllForManager(int userId)
+        public async Task<IEnumerable<EmployeeResponseDto>> GetAllForManager(int userId)
         {
             var manager = await employeeRepository.GetByIdAsync(userId);
             var employees = await employeeRepository.GetByBranchId(manager.BranchId);
             
-            var responses = new List<EmployeeResponse>();
+            var responses = new List<EmployeeResponseDto>();
             foreach (var employee in employees)
             {
                 var extendedEmployee = await ExtendEmployee(employee);
@@ -68,14 +68,14 @@ namespace HR_BLL.Services.Concrete
             return responses;
         }
 
-        public async Task<EmployeeResponse> GetByIdAsync(int id)
+        public async Task<EmployeeResponseDto> GetByIdAsync(int id)
         {
             var employee = await employeeRepository.GetByIdAsync(id);
             var extendedEmployee = await ExtendEmployee(employee);
             return extendedEmployee;
         }
         
-        public async Task<EmployeeResponse> GetByIdForManager(int id, int userId)
+        public async Task<EmployeeResponseDto> GetByIdForManager(int id, int userId)
         {
             var manager = await employeeRepository.GetByIdAsync(userId);
             var employee = await employeeRepository.GetByIdAsync(id);
@@ -88,10 +88,10 @@ namespace HR_BLL.Services.Concrete
             return extendedEmployee;
         }
 
-        public async Task<IEnumerable<EmployeeResponse>> GetByStatusAsync(int statusCode)
+        public async Task<IEnumerable<EmployeeResponseDto>> GetByStatusAsync(int statusCode)
         {
             var employees = await employeeRepository.GetByStatusIdAsync(statusCode);
-            var responses = new List<EmployeeResponse>();
+            var responses = new List<EmployeeResponseDto>();
             foreach (var employee in employees)
             {
                 var extendedEmployee = await ExtendEmployee(employee);
@@ -119,36 +119,36 @@ namespace HR_BLL.Services.Concrete
             return await imageService.GetPrivateImageAsync(imgPath);
         }
 
-        public async Task<int> InsertAsync(EmployeeRequest request)
+        public async Task<int> InsertAsync(EmployeeRequestDto requestDto)
         {
-            var entity = mapper.Map<EmployeeRequest, Employee>(request);
+            var entity = mapper.Map<EmployeeRequestDto, Employee>(requestDto);
             var insertedId = await employeeRepository.InsertAsync(entity);
             return insertedId;
         }
 
-        public async Task<bool> UpdateAsync(EmployeeRequest request, UserClaimsModel userClaims)
+        public async Task<bool> UpdateAsync(EmployeeRequestDto requestDto, UserClaimsModel userClaims)
         {
-            if(userClaims.Role != UserRoles.Admin && userClaims.UserId != request.UserId)
+            if(userClaims.Role != UserRoles.Admin && userClaims.UserId != requestDto.UserId)
                 throw new ForbiddenAccessException(
-                    $"You don't have access to edit employee with id: {request.UserId}");
+                    $"You don't have access to edit employee with id: {requestDto.UserId}");
             
-            var entity = mapper.Map<EmployeeRequest, Employee>(request);
+            var entity = mapper.Map<EmployeeRequestDto, Employee>(requestDto);
             var result = await employeeRepository.UpdateAsync(entity);
             return result;
         }
         
-        public async Task SetPassportForEmployeeAsync(ImageUploadRequest request, UserClaimsModel userClaims)
+        public async Task SetPassportForEmployeeAsync(ImageUploadRequestDto requestDto, UserClaimsModel userClaims)
         {
-            var employee = await employeeRepository.GetByIdAsync(request.Id);
+            var employee = await employeeRepository.GetByIdAsync(requestDto.Id);
             if (userClaims.Role == UserRoles.Manager)
             {
                 var manager = await employeeRepository.GetByIdAsync(userClaims.UserId);
                 if(manager.BranchId != employee.BranchId)
                     throw new ForbiddenAccessException(
-                        $"You don't have access to edit passport of the employee with id: {request.Id}");
+                        $"You don't have access to edit passport of the employee with id: {requestDto.Id}");
             }
             
-            employee.PassportImgPath = await imageService.SavePrivateImageAsync(request.Image, "Images/Passports");
+            employee.PassportImgPath = await imageService.SavePrivateImageAsync(requestDto.Image, "Images/Passports");
             await employeeRepository.UpdateAsync(employee);
         }
 

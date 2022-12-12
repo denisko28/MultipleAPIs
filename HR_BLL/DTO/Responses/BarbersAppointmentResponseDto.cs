@@ -2,7 +2,7 @@
 
 namespace HR_BLL.DTO.Responses
 {
-    public class BarbersAppointmentResponse
+    public class BarbersAppointmentResponseDto
     {
         public int Id { get; set; }
 

@@ -29,7 +29,7 @@ namespace HR_API.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<DayOffResponse>>> Get()
+        public async Task<ActionResult<IEnumerable<DayOffResponseDto>>> Get()
         {
             try
             {
@@ -48,7 +48,7 @@ namespace HR_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<DayOffResponse>>> GetForManager()
+        public async Task<ActionResult<IEnumerable<DayOffResponseDto>>> GetForManager()
         {
             try
             {
@@ -72,7 +72,7 @@ namespace HR_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<DayOffResponse>> Get(int id)
+        public async Task<ActionResult<DayOffResponseDto>> Get(int id)
         {
             try
             {
@@ -96,7 +96,7 @@ namespace HR_API.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<DayOffResponse>> GetForManager(int id)
+        public async Task<ActionResult<DayOffResponseDto>> GetForManager(int id)
         {
             try
             {
@@ -125,7 +125,7 @@ namespace HR_API.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<DayOffResponse>>> GetByEmployee(int employeeUserId)
+        public async Task<ActionResult<IEnumerable<DayOffResponseDto>>> GetByEmployee(int employeeUserId)
         {
             try
             {
@@ -154,7 +154,7 @@ namespace HR_API.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<DayOffResponse>>> GetByEmployeeForManager(int employeeUserId)
+        public async Task<ActionResult<IEnumerable<DayOffResponseDto>>> GetByEmployeeForManager(int employeeUserId)
         {
             try
             {
@@ -182,7 +182,7 @@ namespace HR_API.Controllers
         [HttpGet("GetByDate/{dateStr}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<DayOffResponse>>> GetByDate(string dateStr)
+        public async Task<ActionResult<IEnumerable<DayOffResponseDto>>> GetByDate(string dateStr)
         {
             try
             {
@@ -201,11 +201,11 @@ namespace HR_API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Post([FromBody] DayOffPostRequest request)
+        public async Task<ActionResult> Post([FromBody] DayOffPostRequestDto requestDto)
         {
             try
             {
-                await dayOffService.InsertAsync(request);
+                await dayOffService.InsertAsync(requestDto);
                 return Ok();
             }
             catch (Exception e)
@@ -220,12 +220,12 @@ namespace HR_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> PostForManager([FromBody] DayOffPostRequest request)
+        public async Task<ActionResult> PostForManager([FromBody] DayOffPostRequestDto requestDto)
         {
             try
             {
                 var userId = UserClaimsHelper.GetUserId(HttpContext);
-                await dayOffService.InsertForManagerAsync(request, userId);
+                await dayOffService.InsertForManagerAsync(requestDto, userId);
                 return Ok();
             }
             catch (ForbiddenAccessException e)
@@ -243,11 +243,11 @@ namespace HR_API.Controllers
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Put([FromBody] DayOffRequest request)
+        public async Task<ActionResult> Put([FromBody] DayOffRequestDto requestDto)
         {
             try
             {
-                await dayOffService.UpdateAsync(request);
+                await dayOffService.UpdateAsync(requestDto);
                 return Ok();
             }
             catch (Exception e)
@@ -262,12 +262,12 @@ namespace HR_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> PutForManager([FromBody] DayOffRequest request)
+        public async Task<ActionResult> PutForManager([FromBody] DayOffRequestDto requestDto)
         {
             try
             {
                 var userId = UserClaimsHelper.GetUserId(HttpContext);
-                await dayOffService.UpdateForManager(request, userId);
+                await dayOffService.UpdateForManager(requestDto, userId);
                 return Ok();
             }
             catch (ForbiddenAccessException e)

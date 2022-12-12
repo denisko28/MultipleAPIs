@@ -4,7 +4,7 @@ using HR_BLL.DTO.Requests;
 
 namespace HR_BLL.Validation.Requests
 {
-    public class DayOffPostRequestValidator : AbstractValidator<DayOffPostRequest>
+    public class DayOffPostRequestValidator : AbstractValidator<DayOffPostRequestDto>
     {
         public DayOffPostRequestValidator()
         {

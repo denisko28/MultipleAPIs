@@ -1,4 +1,5 @@
 using AutoMapper;
+using Common.Events.AppointmentEvents;
 using Common.Events.BranchEvents;
 using Common.Events.ServiceEvents;
 using Customers_BLL.DTO.Requests;
@@ -48,6 +49,8 @@ namespace Customers_BLL.Configurations
                 .ForMember(response => response.EndTime,
                     options =>
                         options.MapFrom(appointment => appointment.EndTime.ToDuration()));
+
+            CreateMap<FinishedAppointmentEvent, Appointment>();
         }
 
         private void CreateCustomerMaps()

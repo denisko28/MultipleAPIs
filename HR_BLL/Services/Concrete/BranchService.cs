@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Common.Events.BranchEvents;
 using HR_BLL.DTO.Requests;
 using HR_BLL.DTO.Responses;
@@ -29,24 +25,24 @@ namespace HR_BLL.Services.Concrete
             this.publishEndpoint = publishEndpoint;
         }
 
-        public async Task<IEnumerable<BranchResponse>> GetAllAsync()
+        public async Task<IEnumerable<BranchResponseDto>> GetAllAsync()
         {
             var results = await branchRepository.GetAllAsync();
-            return results.Select(mapper.Map<Branch, BranchResponse>);
+            return results.Select(mapper.Map<Branch, BranchResponseDto>);
         }
 
-        public async Task<BranchResponse> GetByIdAsync(int id)
+        public async Task<BranchResponseDto> GetByIdAsync(int id)
         {
             var result = await branchRepository.GetByIdAsync(id);
-            return mapper.Map<Branch, BranchResponse>(result);
+            return mapper.Map<Branch, BranchResponseDto>(result);
         }
 
-        public async Task<int> InsertAsync(BranchPostRequest request)
+        public async Task<int> InsertAsync(BranchPostRequestDto requestDto)
         {
-            var entity = mapper.Map<BranchPostRequest, Branch>(request);
+            var entity = mapper.Map<BranchPostRequestDto, Branch>(requestDto);
             var insertedId = await branchRepository.InsertAsync(entity);
             
-            // send checkout event to rabbitmq
+            // send insert event to rabbitmq
             var eventMessage = mapper.Map<BranchInsertedEvent>(entity);
             eventMessage.Id = insertedId;
             await publishEndpoint.Publish(eventMessage);
@@ -54,9 +50,9 @@ namespace HR_BLL.Services.Concrete
             return insertedId;
         }
 
-        public async Task<bool> UpdateAsync(BranchRequest request)
+        public async Task<bool> UpdateAsync(BranchRequestDto requestDto)
         {
-            var entity = mapper.Map<BranchRequest, Branch>(request);
+            var entity = mapper.Map<BranchRequestDto, Branch>(requestDto);
             var result = await branchRepository.UpdateAsync(entity);
             
             var eventMessage = mapper.Map<BranchUpdatedEvent>(entity);

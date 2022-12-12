@@ -1,6 +1,6 @@
 ﻿namespace HR_BLL.DTO.Requests
 {
-    public class BarberRequest
+    public class BarberRequestDto
     {
         public int EmployeeUserId { get; set; }
         

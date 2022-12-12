@@ -18,8 +18,6 @@ namespace Customers_BLL.Services.Abstract
 
       Task<IEnumerable<TimeResponse>> GetAvailableTimeAsync(int barberId, int duration, string dateStr);
 
-      Task InsertAsync(AppointmentPostRequest request);
-
       Task UpdateAsync(AppointmentRequest request, UserClaimsModel userClaims);
 
       Task DeleteByIdAsync(int id);

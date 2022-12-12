@@ -5,7 +5,7 @@ using HR_BLL.DTO.Requests;
 
 namespace HR_BLL.Validation.Requests
 {
-    public class BarberRequestValidator : AbstractValidator<BarberRequest>
+    public class BarberRequestValidator : AbstractValidator<BarberRequestDto>
     {
         public BarberRequestValidator()
         {

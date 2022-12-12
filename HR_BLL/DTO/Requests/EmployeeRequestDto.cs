@@ -2,7 +2,7 @@
 
 namespace HR_BLL.DTO.Requests
 {
-    public class EmployeeRequest
+    public class EmployeeRequestDto
     {
         public int UserId { get; set; }
         

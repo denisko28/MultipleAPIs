@@ -27,7 +27,7 @@ namespace HR_API.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<BranchResponse>>> Get()
+        public async Task<ActionResult<IEnumerable<BranchResponseDto>>> Get()
         {
             try
             {
@@ -45,7 +45,7 @@ namespace HR_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<BranchResponse>> Get(int id)
+        public async Task<ActionResult<BranchResponseDto>> Get(int id)
         {
             try
             {
@@ -67,11 +67,11 @@ namespace HR_API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Post([FromBody] BranchPostRequest request)
+        public async Task<ActionResult> Post([FromBody] BranchPostRequestDto requestDto)
         {
             try
             {
-                await branchService.InsertAsync(request);
+                await branchService.InsertAsync(requestDto);
                 return Ok();
             }
             catch (Exception e)
@@ -85,11 +85,11 @@ namespace HR_API.Controllers
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Put([FromBody] BranchRequest request)
+        public async Task<ActionResult> Put([FromBody] BranchRequestDto requestDto)
         {
             try
             {
-                await branchService.UpdateAsync(request);
+                await branchService.UpdateAsync(requestDto);
                 return Ok();
             }
             catch (Exception e)

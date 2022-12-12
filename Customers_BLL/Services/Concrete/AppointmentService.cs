@@ -16,23 +16,20 @@ namespace Customers_BLL.Services.Concrete
 {
     public class AppointmentService : IAppointmentService
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
-        private readonly IMapper mapper;
+        private readonly IMapper _mapper;
 
-        private readonly IAppointmentRepository appointmentRepository;
-
-        private readonly IAppointmentServiceRepository appointmentServiceRepository;
+        private readonly IAppointmentRepository _appointmentRepository;
         
-        private readonly IPossibleTimeRepository possibleTimeRepository;
+        private readonly IPossibleTimeRepository _possibleTimeRepository;
 
         public AppointmentService(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            this.unitOfWork = unitOfWork;
-            this.mapper = mapper;
-            appointmentRepository = unitOfWork.AppointmentRepository;
-            appointmentServiceRepository = unitOfWork.AppointmentServiceRepository;
-            possibleTimeRepository = unitOfWork.PossibleTimeRepository;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+            _appointmentRepository = unitOfWork.AppointmentRepository;
+            _possibleTimeRepository = unitOfWork.PossibleTimeRepository;
         }
 
         public async Task<IEnumerable<AppointmentResponse>> GetAllAsync(UserClaimsModel userClaims)
@@ -47,14 +44,14 @@ namespace Customers_BLL.Services.Concrete
 
         private async Task<IEnumerable<AppointmentResponse>> GetAllForAdmin()
         {
-            var results = await appointmentRepository.GetAllAsync();
-            return results.Select(mapper.Map<Appointment, AppointmentResponse>);
+            var results = await _appointmentRepository.GetAllAsync();
+            return results.Select(_mapper.Map<Appointment, AppointmentResponse>);
         }
         
         private async Task<IEnumerable<AppointmentResponse>> GetAllForManager(int branchId)
         {
-            var result = await appointmentRepository.GetByBranchAsync(branchId);
-            return result.Select(mapper.Map<Appointment, AppointmentResponse>);
+            var result = await _appointmentRepository.GetByBranchAsync(branchId);
+            return result.Select(_mapper.Map<Appointment, AppointmentResponse>);
         }
         
         public async Task<AppointmentResponse> GetByIdAsync(int id, UserClaimsModel userClaims)
@@ -69,31 +66,31 @@ namespace Customers_BLL.Services.Concrete
         
         private async Task<AppointmentResponse> GetByIdForAdmin(int id)
         {
-            var appointment = await appointmentRepository.GetByIdAsync(id);
-            return mapper.Map<Appointment, AppointmentResponse>(appointment);
+            var appointment = await _appointmentRepository.GetByIdAsync(id);
+            return _mapper.Map<Appointment, AppointmentResponse>(appointment);
         }
         
         private async Task<AppointmentResponse> GetByIdForManager(int id, int branchId)
         {
-            var appointment = await appointmentRepository.GetByIdAsync(id);
+            var appointment = await _appointmentRepository.GetByIdAsync(id);
             
             if(appointment.BranchId != branchId)
                 throw new ForbiddenAccessException($"You don't have access to the appointment with id: {id}");
             
-            return mapper.Map<Appointment, AppointmentResponse>(appointment);
+            return _mapper.Map<Appointment, AppointmentResponse>(appointment);
         }
         
         public async Task<IEnumerable<AppointmentResponse>> GetByDateAsync(string dateStr)
         {
             var date = DateTime.Parse(dateStr);
-            var result = await appointmentRepository.GetByDateAsync(date);
-            return result.Select(mapper.Map<Appointment, AppointmentResponse>);
+            var result = await _appointmentRepository.GetByDateAsync(date);
+            return result.Select(_mapper.Map<Appointment, AppointmentResponse>);
         }
 
         public async Task<IEnumerable<ServiceResponse>> GetAppointmentServicesAsync(int appointmentId)
         {
-            var result = await appointmentRepository.GetAppointmentServicesAsync(appointmentId);
-            return result.Select(mapper.Map<Service, ServiceResponse>);
+            var result = await _appointmentRepository.GetAppointmentServicesAsync(appointmentId);
+            return result.Select(_mapper.Map<Service, ServiceResponse>);
         }
 
         public async Task<IEnumerable<TimeResponse>> GetAvailableTimeAsync(int barberId, int duration, string dateStr)
@@ -106,10 +103,10 @@ namespace Customers_BLL.Services.Concrete
             if(barbersDayOffs.Any( dayOff => dayOff.Date.Equals(date)))
               return availableTime;
             
-            var possibleTime = (await possibleTimeRepository.GetAllAvailableAsync())
+            var possibleTime = (await _possibleTimeRepository.GetAllAvailableAsync())
               .Select(possibleTime => possibleTime.Time).ToList();
             
-            var barbersAppointsForDate = (List<Appointment>) await appointmentRepository.GetByDateAndBarberAsync(date, barberId);
+            var barbersAppointsForDate = (List<Appointment>) await _appointmentRepository.GetByDateAndBarberAsync(date, barberId);
 
             for (var i = 0; i < barbersAppointsForDate.Count;)
             {
@@ -149,23 +146,6 @@ namespace Customers_BLL.Services.Concrete
             return availableTime;
         }
 
-        public async Task InsertAsync(AppointmentPostRequest request)
-        {
-            var entity = mapper.Map<AppointmentPostRequest, Appointment>(request);
-            entity.AppointmentStatusId = 0;
-            await appointmentRepository.InsertAsync(entity);
-            await unitOfWork.SaveChangesAsync();
-
-            var insertedId = entity.Id;
-            var appServices = request.ServiceIds
-                .Select(serviceId => 
-                    new Customers_DAL.Entities.AppointmentService {AppointmentId = insertedId, ServiceId = serviceId}
-                ).ToList();
-            await appointmentServiceRepository.InsertRangeAsync(appServices);
-
-            await unitOfWork.SaveChangesAsync();
-        }
-
         public async Task UpdateAsync(AppointmentRequest request, UserClaimsModel userClaims)
         {
             switch (userClaims.Role)
@@ -184,9 +164,9 @@ namespace Customers_BLL.Services.Concrete
 
         private async Task UpdateForAdminAsync(AppointmentRequest request)
         {
-            var entity = mapper.Map<AppointmentRequest, Appointment>(request);
-            await appointmentRepository.UpdateAsync(entity);
-            await unitOfWork.SaveChangesAsync();
+            var entity = _mapper.Map<AppointmentRequest, Appointment>(request);
+            await _appointmentRepository.UpdateAsync(entity);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         private async Task UpdateForManagerAsync(AppointmentRequest request, int branchId)
@@ -194,9 +174,9 @@ namespace Customers_BLL.Services.Concrete
             if (request.BranchId != branchId)
                 throw new ForbiddenAccessException($"You don't have access to edit appointment with id: {request.Id}");
             
-            var entity = mapper.Map<AppointmentRequest, Appointment>(request);
-            await appointmentRepository.UpdateAsync(entity);
-            await unitOfWork.SaveChangesAsync();
+            var entity = _mapper.Map<AppointmentRequest, Appointment>(request);
+            await _appointmentRepository.UpdateAsync(entity);
+            await _unitOfWork.SaveChangesAsync();
         }
         
         private async Task UpdateForBarberAsync(AppointmentRequest request, int userId)
@@ -204,15 +184,15 @@ namespace Customers_BLL.Services.Concrete
             if (request.BarberUserId != userId)
                 throw new ForbiddenAccessException($"You don't have access to edit appointment with id: {request.Id}");
             
-            var entity = mapper.Map<AppointmentRequest, Appointment>(request);
-            await appointmentRepository.UpdateAsync(entity);
-            await unitOfWork.SaveChangesAsync();
+            var entity = _mapper.Map<AppointmentRequest, Appointment>(request);
+            await _appointmentRepository.UpdateAsync(entity);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task DeleteByIdAsync(int id)
         {
-            await appointmentRepository.DeleteByIdAsync(id);
-            await unitOfWork.SaveChangesAsync();
+            await _appointmentRepository.DeleteByIdAsync(id);
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

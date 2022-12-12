@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using GrpcAggregator.Configurations;
+using GrpcAggregator.Services.Abstract;
+using GrpcAggregator.Services.Concrete;
 using Microsoft.OpenApi.Models;
 
 namespace GrpcAggregator;
@@ -28,6 +30,10 @@ public class Startup
 
         services.Configure<UrlsConfig>(Configuration.GetSection("urls"));
         services.AddGrpcServices();
+        
+        services.AddScoped<IAvailableTimeService, AvailableTimeService>();
+        services.AddScoped<ICustomersService, CustomersService>();
+        services.AddScoped<IBarbersService, BarbersService>();
 
         services.AddHttpContextAccessor();
         services.AddRazorPages();

@@ -7,4 +7,5 @@ public static class EventBusConstants
     public const string BranchForCustomersQueue = "branch.customers.queue";
     public const string BranchForServicesQueue = "branch.services.queue";
     public const string ServiceForCustomersQueue = "service.customers.queue";
+    public const string AppointmentForCustomersQueue = "appointment.customers.queue";
 }

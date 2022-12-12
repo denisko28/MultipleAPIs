@@ -1,13 +1,12 @@
-using System;
-using System.Text;
 using AutoMapper;
 using Common;
 using Customers_BLL.Configurations;
-using Customers_BLL.EventBusConsumers;
+using Customers_BLL.EventBusConsumers.AppointmentConsumers;
 using Customers_BLL.EventBusConsumers.BranchConsumers;
 using Customers_BLL.EventBusConsumers.ServiceConsumers;
 using Customers_BLL.Filters;
 using Customers_BLL.Grpc;
+using Customers_BLL.Protos;
 using Customers_BLL.Services.Abstract;
 using Customers_BLL.Services.Concrete;
 using Customers_DAL;
@@ -39,11 +38,11 @@ namespace Customers_API
             
             services.AddDbContext<BarbershopDbContext>();
 
-            // Adding Authentication  
+            //Adding Authentication  
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
-                    options.Authority = "https://localhost:7065";
+                    options.Authority = Configuration["jwtAuthorities:identityServerUrl"];
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateAudience = false
@@ -58,6 +57,11 @@ namespace Customers_API
             //         options.ApiName = "customerAPI";
             //         options.LegacyAudienceValidation = false;
             //     });
+            
+            services.AddGrpcClient<Employees.EmployeesClient>((_, options) =>
+            {
+                options.Address = new Uri(Configuration["urls:grpcEmployees"]);
+            });
 
             // MassTransit-RabbitMQ Configuration
             services.AddMassTransit(config =>
@@ -69,6 +73,8 @@ namespace Customers_API
                 config.AddConsumer<ServiceInsertedConsumer>();
                 config.AddConsumer<ServiceUpdatedConsumer>();
                 config.AddConsumer<ServiceDeletedConsumer>();
+                
+                config.AddConsumer<FinishedAppointmentConsumer>();
 
                 config.UsingRabbitMq((ctx, cfg) =>
                 {
@@ -108,6 +114,21 @@ namespace Customers_API
                         c.Bind(EventBusConstants.TopicExchange, e =>
                         {
                             e.RoutingKey = "service.*";
+                            e.ExchangeType = ExchangeType.Topic;
+                        });
+                    });
+                    cfg.ReceiveEndpoint(EventBusConstants.AppointmentForCustomersQueue, c =>
+                    {
+                        // turns off default fanout settings
+                        c.ConfigureConsumeTopology = false;
+
+                        // a replicated queue to provide high availability and data safety. available in RMQ 3.8+
+                        c.SetQuorumQueue();
+
+                        c.ConfigureConsumer<FinishedAppointmentConsumer>(ctx);
+                        c.Bind(EventBusConstants.TopicExchange, e =>
+                        {
+                            e.RoutingKey = "appointment.*";
                             e.ExchangeType = ExchangeType.Topic;
                         });
                     });

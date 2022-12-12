@@ -7,13 +7,13 @@ namespace HR_BLL.Services.Abstract
 {
     public interface IBranchService
     {
-        Task<IEnumerable<BranchResponse>> GetAllAsync();
+        Task<IEnumerable<BranchResponseDto>> GetAllAsync();
 
-        Task<BranchResponse> GetByIdAsync(int id);
+        Task<BranchResponseDto> GetByIdAsync(int id);
 
-        Task<int> InsertAsync(BranchPostRequest request);
+        Task<int> InsertAsync(BranchPostRequestDto requestDto);
 
-        Task<bool> UpdateAsync(BranchRequest request);
+        Task<bool> UpdateAsync(BranchRequestDto requestDto);
 
         Task DeleteByIdAsync(int id);
     }

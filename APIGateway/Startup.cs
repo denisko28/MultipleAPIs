@@ -1,11 +1,3 @@
-using System;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
@@ -27,7 +19,7 @@ namespace APIGateway
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
-                    options.Authority = "https://localhost:7065";
+                    options.Authority = Configuration["jwtAuthorities:identityServerUrl"];
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateAudience = false

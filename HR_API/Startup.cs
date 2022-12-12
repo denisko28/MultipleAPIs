@@ -42,7 +42,7 @@ namespace HR_API
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
-                    options.Authority = "https://localhost:7065";
+                    options.Authority = Configuration["jwtAuthorities:identityServerUrl"];
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateAudience = false
@@ -169,6 +169,7 @@ namespace HR_API
             {
                 endpoints.MapGrpcReflectionService();
                 endpoints.MapGrpcService<BarbersService>();
+                endpoints.MapGrpcService<EmployeesService>();
                 endpoints.MapControllers();
             });
         }

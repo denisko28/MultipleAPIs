@@ -1,7 +1,4 @@
 using GrpcAggregator.Protos;
-using GrpcAggregator.Exceptions;
-using GrpcAggregator.Services.Abstract;
-using GrpcAggregator.Services.Concrete;
 using Microsoft.Extensions.Options;
 
 namespace GrpcAggregator.Configurations;
@@ -10,8 +7,6 @@ public static class ServicesConfiguration
 {
     public static IServiceCollection AddGrpcServices(this IServiceCollection services)
     {
-        services.AddTransient<GrpcExceptionInterceptor>();
-
         services.AddGrpcClient<PossibleTime.PossibleTimeClient>((serv, options) =>
         {
             var possibleTimeApi = serv.GetRequiredService<IOptions<UrlsConfig>>().Value.GrpcPossibleTime;
@@ -41,11 +36,7 @@ public static class ServicesConfiguration
             var orderingApi = serv.GetRequiredService<IOptions<UrlsConfig>>().Value.GrpcUsers;
             options.Address = new Uri(orderingApi);
         });
-        
-        services.AddScoped<IAvailableTimeService, AvailableTimeService>();
-        services.AddScoped<ICustomersService, CustomersService>();
-        services.AddScoped<IBarbersService, BarbersService>();
-        
+
         return services;
     }
 }

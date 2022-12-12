@@ -8,17 +8,17 @@ namespace HR_BLL.Services.Abstract
 {
     public interface IBarberService
     {
-        Task<IEnumerable<BarberResponse>> GetAllAsync();
+        Task<IEnumerable<BarberResponseDto>> GetAllAsync();
 
-        Task<BarberResponse> GetByIdAsync(int id);
+        Task<BarberResponseDto> GetByIdAsync(int id);
 
-        Task<IEnumerable<BarbersAppointmentResponse>> GetBarbersAppointmentsAsync(int barberId, string dateStr, UserClaimsModel userClaims);
+        Task<IEnumerable<BarbersAppointmentResponseDto>> GetBarbersAppointmentsAsync(int barberId, string dateStr, UserClaimsModel userClaims);
 
-        Task<IEnumerable<BarberResponse>> GetByBranchIdAsync(int branchId);
+        Task<IEnumerable<BarberResponseDto>> GetByBranchIdAsync(int branchId);
         
-        Task<int> InsertAsync(BarberRequest request);
+        Task<int> InsertAsync(BarberRequestDto requestDto);
 
-        Task<bool> UpdateAsync(BarberRequest request, UserClaimsModel userClaims);
+        Task<bool> UpdateAsync(BarberRequestDto requestDto, UserClaimsModel userClaims);
 
         Task DeleteByIdAsync(int id);
     }

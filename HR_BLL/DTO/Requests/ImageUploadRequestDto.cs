@@ -2,7 +2,7 @@
 
 namespace HR_BLL.DTO.Requests
 {
-    public class ImageUploadRequest
+    public class ImageUploadRequestDto
     {
         public int Id { get; set; }
 

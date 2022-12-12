@@ -2,7 +2,7 @@
 
 namespace HR_BLL.DTO.Requests
 {
-    public class DayOffRequest
+    public class DayOffRequestDto
     {
         public int Id { get; set; }
         

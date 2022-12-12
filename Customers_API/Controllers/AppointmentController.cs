@@ -137,24 +137,6 @@ namespace Customers_API.Controllers
             }
         }
 
-        // POST: api/Appointment
-        [Authorize]
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Post([FromBody] AppointmentPostRequest request)
-        {
-            try
-            {
-                await _appointmentService.InsertAsync(request);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
-            }
-        }
-
         // PUT: api/Appointment
         [Authorize(Roles = UserRoles.Admin + "," + UserRoles.Manager + "," + UserRoles.Barber)]
         [HttpPut]

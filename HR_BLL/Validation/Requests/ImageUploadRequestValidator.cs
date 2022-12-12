@@ -3,7 +3,7 @@ using HR_BLL.DTO.Requests;
 
 namespace HR_BLL.Validation.Requests
 {
-    public class ImageUploadRequestValidator : AbstractValidator<ImageUploadRequest>
+    public class ImageUploadRequestValidator : AbstractValidator<ImageUploadRequestDto>
     {
         public ImageUploadRequestValidator()
         {

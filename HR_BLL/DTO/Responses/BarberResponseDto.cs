@@ -1,6 +1,6 @@
 ﻿namespace HR_BLL.DTO.Responses
 {
-    public class BarberResponse
+    public class BarberResponseDto
     {
         public int EmployeeUserId { get; set; }
         
