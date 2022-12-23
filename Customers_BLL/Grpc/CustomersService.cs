@@ -20,12 +20,19 @@ public class CustomersService : Customers.CustomersBase
 
     public override async Task<CustomersResponse> GetAll(GetAllCustomersRequest request, ServerCallContext context)
     {
-        var customersResponse = new CustomersResponse();
-        var customers = await _customerRepository.GetAllAsync();
-        var data = 
-            customers.Select(_mapper.Map<Customers_DAL.Entities.Customer, CustomerResponse>);
-        customersResponse.Data.AddRange(data);
-        return customersResponse;
+        try
+        {
+            var customersResponse = new CustomersResponse();
+            var customers = await _customerRepository.GetAllAsync();
+            var data =
+                customers.Select(_mapper.Map<Customers_DAL.Entities.Customer, CustomerResponse>);
+            customersResponse.Data.AddRange(data);
+            return customersResponse;
+        }
+        catch (Exception e)
+        {
+            throw new RpcException(new Status(StatusCode.Internal, e.Message));
+        }
     }
 
     public override async Task<CustomerResponse> GetById(GetCustomerByIdRequest request, ServerCallContext context)
@@ -38,6 +45,10 @@ public class CustomersService : Customers.CustomersBase
         catch (EntityNotFoundException e)
         {
             throw new RpcException(new Status(StatusCode.NotFound, e.Message));
+        }
+        catch (Exception e)
+        {
+            throw new RpcException(new Status(StatusCode.Internal, e.Message));
         }
     }
 
@@ -56,6 +67,10 @@ public class CustomersService : Customers.CustomersBase
         catch (EntityNotFoundException e)
         {
             throw new RpcException(new Status(StatusCode.NotFound, e.Message));
+        }
+        catch (Exception e)
+        {
+            throw new RpcException(new Status(StatusCode.Internal, e.Message));
         }
     }
 }

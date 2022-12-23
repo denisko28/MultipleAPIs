@@ -20,11 +20,18 @@ public class PossibleTimeService : PossibleTime.PossibleTimeBase
     public override async Task<PossibleTimesResponse> GetAll(GetAllPossibleTimeRequest request,
         ServerCallContext context)
     {
-        var possibleTimesResponse = new PossibleTimesResponse();
-        var allAvailable = await _possibleTimeRepository.GetAllAvailableAsync();
-        var data = 
-            allAvailable.Select(_mapper.Map<Customers_DAL.Entities.PossibleTime, PossibleTimeResponse>);
-        possibleTimesResponse.Data.AddRange(data);
-        return possibleTimesResponse;
+        try
+        {
+            var possibleTimesResponse = new PossibleTimesResponse();
+            var allAvailable = await _possibleTimeRepository.GetAllAvailableAsync();
+            var data =
+                allAvailable.Select(_mapper.Map<Customers_DAL.Entities.PossibleTime, PossibleTimeResponse>);
+            possibleTimesResponse.Data.AddRange(data);
+            return possibleTimesResponse;
+        }
+        catch (Exception e)
+        {
+            throw new RpcException(new Status(StatusCode.Internal, e.Message));
+        }
     }
 }

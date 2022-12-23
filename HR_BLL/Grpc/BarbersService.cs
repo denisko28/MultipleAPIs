@@ -23,11 +23,18 @@ public class BarbersService : Barbers.BarbersBase
 
     public override async Task<BarbersResponse> GetAll(GetAllBarbersRequest request, ServerCallContext context)
     {
-        var barbersResponse = new BarbersResponse();
-        var barbers = await _barberRepository.GetAllAsync();
-        var data = barbers.Select(_mapper.Map<Barber, BarberResponse>);
-        barbersResponse.Data.AddRange(data);
-        return barbersResponse;
+        try
+        {
+            var barbersResponse = new BarbersResponse();
+            var barbers = await _barberRepository.GetAllAsync();
+            var data = barbers.Select(_mapper.Map<Barber, BarberResponse>);
+            barbersResponse.Data.AddRange(data);
+            return barbersResponse;
+        }
+        catch (Exception e)
+        {
+            throw new RpcException(new Status(StatusCode.Internal, e.Message));
+        }
     }
 
     public override async Task<BarberResponse> GetById(GetBarberByIdRequest request, ServerCallContext context)
@@ -41,16 +48,27 @@ public class BarbersService : Barbers.BarbersBase
         {
             throw new RpcException(new Status(StatusCode.NotFound, e.Message));
         }
+        catch (Exception e)
+        {
+            throw new RpcException(new Status(StatusCode.Internal, e.Message));
+        }
     }
 
     public override async Task<BarbersDayOffsResponse> GetBarbersDayOffs(GetBarberByIdRequest request,
         ServerCallContext context)
     {
-        var response = new BarbersDayOffsResponse();
-        var dayOffs = await _employeeDayOffRepository.GetDayOffsByEmployee(request.Id);
-        var dayOffsData = dayOffs.Select(_mapper.Map<DayOff, BarbersDayOffResponse>);
-        response.Data.AddRange(dayOffsData);
+        try
+        {
+            var response = new BarbersDayOffsResponse();
+            var dayOffs = await _employeeDayOffRepository.GetDayOffsByEmployee(request.Id);
+            var dayOffsData = dayOffs.Select(_mapper.Map<DayOff, BarbersDayOffResponse>);
+            response.Data.AddRange(dayOffsData);
 
-        return response;
+            return response;
+        }
+        catch (Exception e)
+        {
+            throw new RpcException(new Status(StatusCode.Internal, e.Message));
+        }
     }
 }

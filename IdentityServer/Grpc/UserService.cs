@@ -30,15 +30,26 @@ public class UserService : User.UserBase
         {
             throw new RpcException(new Status(StatusCode.NotFound, e.Message));
         }
+        catch (Exception e)
+        {
+            throw new RpcException(new Status(StatusCode.Internal, e.Message));
+        }
     }
 
     public override async Task<UsersResponse> GetUsersByIds(UsersRequest request, ServerCallContext context)
     {
-        var usersResponse = new UsersResponse();
-        var ids = request.Data.Select(data => data.UserId);
-        var users = await _userRepository.GetUsersByIds(ids);
-        var data = users.Select(_mapper.Map<ApplicationUser, UserResponse>);
-        usersResponse.Data.AddRange(data);
-        return usersResponse;
+        try
+        {
+            var usersResponse = new UsersResponse();
+            var ids = request.Data.Select(data => data.UserId);
+            var users = await _userRepository.GetUsersByIds(ids);
+            var data = users.Select(_mapper.Map<ApplicationUser, UserResponse>);
+            usersResponse.Data.AddRange(data);
+            return usersResponse;
+        }
+        catch (Exception e)
+        {
+            throw new RpcException(new Status(StatusCode.Internal, e.Message));
+        }
     }
 }
