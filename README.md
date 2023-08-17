@@ -4,7 +4,8 @@ The backend part of the **Barbershop CRM**. The app was created with **C# .NET C
 * For the microservices version, view the "Microservice-Architecture" branch: https://github.com/denisko28/MultipleAPIs/tree/Microservice-Architecture
 
 ## The diagram of the project
-<img width="1038" alt="Снимок экрана 2023-08-17 в 16 22 11" src="https://github.com/denisko28/MultipleAPIs/assets/39884531/0697d748-0dc0-4a33-890a-363d7b4a2856">
+<img width="1038" alt="Снимок экрана 2023-08-17 в 16 22 11" src="https://github.com/denisko28/MultipleAPIs/assets/39884531/11afac6d-f796-4ac9-b69c-68646f20c228">
+
 
 ## Tech. stack used in the project
 **REST API, XUnit, Jwt Tokens, Microservices, RabbitMQ, MassTransit, gRPC, Ocelot, Entity Framework, Fluent Validation, Automapper, Serilog, 
